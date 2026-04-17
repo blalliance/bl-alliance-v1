@@ -1,0 +1,17 @@
+User-agent: *
+# Interdire l'indexation de tous les fichiers dans le dossier des profils
+Disallow: /profils_utilisateurs/
+
+# Interdire l'accès aux pages sensibles du front-end
+Disallow: /dashboard
+Disallow: /chat-box
+Disallow: /page-de-paiement
+Disallow: /edit-profil
+
+# Empêcher l'indexation directe des images si vous servez des proxies
+Disallow: /*.jpg$
+Disallow: /*.png$
+Disallow: /*.jpeg$
+
+# Autoriser le reste
+Allow: /
