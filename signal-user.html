@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BL Alliance - Centre de Signalement</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #D32F2F; /* Rouge BL Alliance */
+            --dark-bg: #0a0a0a;
+            --card-bg: rgba(20, 20, 20, 0.85);
+            --border-color: rgba(211, 47, 47, 0.3);
+            --text-gray: #b0b0b0;
+            --light-gray: #e0e0e0;
+            --btn-gray: #333;
+            --input-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--dark-bg);
+            background: radial-gradient(circle at center, #1a0505 0%, #050505 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8);
+            animation: fadeIn 0.6s ease-out;
+            overflow: hidden;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header { text-align: center; margin-bottom: 35px; }
+        
+        .icon-report {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 15px rgba(211, 47, 47, 0.4));
+        }
+
+        h1 { font-size: 1.7rem; font-weight: 700; margin-bottom: 10px; color: white; letter-spacing: -0.5px; }
+
+        .content-text {
+            line-height: 1.7;
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .highlight { color: var(--primary); font-weight: 600; }
+
+        /* Formulaire de signalement */
+        .report-form { display: flex; flex-direction: column; gap: 25px; }
+
+        .form-group { display: flex; flex-direction: column; gap: 10px; }
+
+        .form-label { font-size: 0.9rem; font-weight: 600; color: var(--light-gray); }
+
+        /* Champ de sélection de la raison */
+        .select-wrapper { position: relative; width: 100%; }
+
+		/* On cible le select lui-même */
+		.form-select {
+		    width: 100%;
+		    padding: 16px;
+		    border-radius: 12px;
+		    background-color: #1a1a1a; /* Fond solide pour éviter les transparences bizarres sur PC */
+		    border: 1px solid rgba(255,255,255,0.1);
+		    color: white;
+		    font-size: 0.95rem;
+		    appearance: none;
+		    -webkit-appearance: none;
+		    cursor: pointer;
+		    outline: none;
+		}
+
+		/* On cible les options à l'intérieur pour forcer le fond sombre sur PC */
+		.form-select option {
+		    background-color: #1a1a1a; /* Fond sombre */
+		    color: white;              /* Texte blanc */
+		    padding: 10px;
+		}
+
+        /*.form-select:focus { border-color: var(--primary); outline: none; }*/
+
+		/* Suppression du fond blanc au survol/focus sur certains navigateurs */
+		.form-select:focus {
+		    border-color: var(--primary);
+		    background-color: #222;
+		}
+
+        .select-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-gray);
+            pointer-events: none; /* L'icône ne bloque pas le clic */
+        }
+
+        /* Champ de texte détaillé */
+        .form-textarea {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            background-color: var(--input-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            font-size: 0.95rem;
+            resize: none; /* Empêche le redimensionnement manuel */
+            line-height: 1.5;
+            transition: border-color 0.3s;
+        }
+
+        .form-textarea:focus { border-color: var(--primary); outline: none; }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Bouton Signaler Rouge */
+        .btn-main {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 10px 25px rgba(211, 47, 47, 0.3);
+        }
+
+        .btn-main:active { transform: scale(0.98); box-shadow: 0 5px 15px rgba(211, 47, 47, 0.2); }
+
+        /* Bouton Annuler Gris */
+        .btn-secondary {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:active { transform: scale(0.98); }
+
+        /* Note de bas de page */
+        .footer-note {
+            margin-top: 30px;
+            font-size: 0.8rem;
+            color: #666;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container { padding: 30px 20px; border-radius: 20px; }
+            h1 { font-size: 1.5rem; }
+            .form-select, .form-textarea { padding: 14px; }
+            .btn { padding: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <i class="fas fa-flag icon-report"></i>
+            <h1>Signaler un comportement</h1>
+        </div>
+
+        <div class="content-text">
+            <p>Aidez-nous à maintenir <span class="highlight">BL Alliance</span> comme un espace sûr et respectueux. 
+               Votre signalement sera examiné avec soin par notre équipe de modération. Soyez précis pour nous aider à agir efficacement.</p>
+        </div>
+
+        <form class="report-form" onsubmit="handleReportSubmit(event)">
+            
+            <div class="form-group">
+                <label class="form-label" for="reportReason">Quelle est la raison principale ?</label>
+                <div class="select-wrapper">
+                    <select id="reportReason" class="form-select" required>
+                        <option value="" disabled selected>Choisissez une option...</option>
+                        <option value="harassment">Harcèlement ou intimidation</option>
+                        <option value="inappropriate_content">Contenu inapproprié ou offensant</option>
+                        <option value="spam">Spam ou sollicitation non désirée</option>
+                        <option value="impersonation">Usurpation d'identité</option>
+                        <option value="hate_speech">Discours de haine ou discrimination</option>
+                        <option value="fraud">Tentative d'escroquerie ou fraude</option>
+                        <option value="other">Autre raison...</option>
+                    </select>
+                    <i class="fas fa-chevron-down select-icon"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="reportDetails">Pouvez-vous nous donner plus de détails ? (Optionnel)</label>
+                <textarea id="reportDetails" class="form-textarea" rows="5" placeholder="Décrivez la situation, incluez des contextes spécifiques..."></textarea>
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn btn-main">
+                    <i class="fas fa-paper-plane"></i>
+                    Envoyer le signalement
+                </button>
+
+                <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                    <!-- <i class="fas fa-times"></i> -->
+                    <i class="fas fa-arrow-left"></i>
+                    Rentrer
+                </button>
+            </div>
+        </form>
+
+        <p class="footer-note">
+            BL Alliance : Sécurité, Éthique et Respect. <br>
+            Tout signalement abusif pourra faire l'objet de sanctions.
+        </p>
+    </div>
+
+<!--     <script>
+        function handleReportSubmit(event) {
+            event.preventDefault(); // Empêche le rechargement de la page
+
+            const reason = document.getElementById('reportReason').value;
+            const details = document.getElementById('reportDetails').value;
+
+            // Ici vous pouvez ajouter votre logique d'appel API (Firebase)
+            console.log("Signalement envoyé à la modération BL Alliance :");
+            console.log("Raison : " + reason);
+            console.log("Détails : " + details);
+
+            // Affiche une confirmation (vous pouvez remplacer par une alerte personnalisée plus tard)
+            alert("Merci. Votre signalement a bien été envoyé et sera examiné par notre équipe de modération.");
+
+            // Redirige l'utilisateur vers la page principale
+            window.location.href = "votre_page_principale.html";
+        }
+    </script> -->
+
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const reportedId = urlParams.get('contact_id'); // La personne signalée
+    const reporterId = localStorage.getItem('user_id'); // Toi
+    const API_URL = "https://bl-alliance-api.onrender.com";
+
+    async function handleReportSubmit(event) {
+        event.preventDefault();
+
+        const reason = document.getElementById('reportReason').value;
+        const details = document.getElementById('reportDetails').value;
+        const submitBtn = event.target.querySelector('button[type="submit"]');
+
+        // Validation simple
+        if (!reason) {
+            alert("Veuillez choisir une raison pour le signalement.");
+            return;
+        }
+
+        // UI : Désactiver le bouton pendant l'envoi
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+
+        try {
+            const response = await fetch(`${API_URL}/submit_report`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    reporter_id: reporterId,
+                    reported_id: reportedId,
+                    reason: reason,
+                    details: details
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert("Merci. Votre signalement a bien été enregistré. Nos modérateurs vont l'examiner.");
+                // Retour à la messagerie
+                window.location.href = `chat-box-2.html?contact_id=${reportedId}`;
+            } else {
+                alert("Erreur lors de l'envoi : " + (data.error || "Erreur inconnue"));
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer le signalement';
+            }
+        } catch (error) {
+            console.error("Erreur réseau :", error);
+            alert("Impossible de contacter le serveur de sécurité.");
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer le signalement';
+        }
+    }
+</script>    
+
+</body>
+</html>

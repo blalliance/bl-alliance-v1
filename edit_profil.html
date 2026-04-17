@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <title>Éditer Profil | BL Alliance</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background: #0a0a0a; color: white; font-family: sans-serif; margin: 0; padding-bottom: 50px; }
+
+        :root {
+            --primary: #ff4d4d;
+            --bg-dark: #121212;
+            --card-bg: #1e1e1e;
+            --text: #ffffff;
+            --text-muted: #b0b0b0;
+            --border: #333;
+        }
+        
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background: rgba(0, 0, 0, 0.8);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .container { max-width: 500px; margin: 20px auto; padding: 15px; }
+        
+        .profile-header { text-align: center; margin-bottom: 30px; }
+        .avatar-upload { position: relative; width: 120px; height: 120px; margin: 0 auto 10px auto; }
+        .avatar-preview { width: 100%; height: 100%; border-radius: 50%; border: 3px solid #D32F2F; background-size: cover; background-position: center; background-image: url('https://via.placeholder.com/150'); }
+        .avatar-edit { position: absolute; right: 0; bottom: 0; z-index: 1; }
+        .avatar-edit input { display: none; }
+        .avatar-edit label { display: inline-block; width: 34px; height: 34px; background: #D32F2F; border-radius: 50%; color: white; line-height: 34px; cursor: pointer; text-align: center; }
+
+        .form-section { background: #141414; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #222; }
+        h3 { color: #D32F2F; margin-top: 0; font-size: 1.1rem; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; color: #888; margin-bottom: 5px; }
+        .form-control { width: 100%; padding: 12px; background: #1f1f1f; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box; }
+        
+        /* Style des Tags */
+        .tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px; }
+        .tag-item { padding: 8px 12px; background: #222; border: 1px solid #444; border-radius: 20px; font-size: 0.8rem; cursor: pointer; transition: 0.3s; }
+        .tag-item.selected { background: #D32F2F; border-color: #D32F2F; color: white; }
+        .tag-limit-info { font-size: 0.7rem; color: #D32F2F; font-style: italic; }
+
+        .btn-save { width: 100%; padding: 15px; background: #D32F2F; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        .social-footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #555; }
+        .logo-container img { height: 40px; margin-right: 10px; }
+        .brand-name { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
+
+        .btn-back-circle {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-back-circle:hover { background: var(--primary); }
+
+        /* Modal de Sécurité (Strictement identique à Chat-Box-2) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: #1e1e1e;
+            padding: 30px;
+            border-radius: 15px;
+            width: calc(100% - 60px); /* Laisse 30px de chaque côté */
+            max-width: 360px;
+            text-align: center;
+            border: 1px solid #333;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            box-sizing: border-box;
+        }
+        .modal-content i {
+            font-size: 3rem;
+            color: #ff4d4d;
+            margin-bottom: 20px;
+        }
+        .modal-content h2 {
+            margin-top: 0;
+            color: #fff;
+            font-size: 1.4rem;
+        }
+        .modal-content p {
+            color: #b0b0b0;
+            line-height: 1.5;
+            margin: 20px 0;
+        }
+        .btn-modal {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <a href="index.html" style="display: flex; align-items: center; text-decoration: none;">
+                <img src="assets/logo2.png" alt="BL Alliance">
+                <span class="brand-name">BL Alliance</span>
+            </a>
+        </div>
+        <div class="header-actions">
+            <a href="dashboard.html" class="btn-back-link">
+                <button class="btn-back-circle" title="Retour au Dashboard">
+                    <i class="fas fa-angles-left"></i>
+                </button>
+            </a>
+        </div>
+    </header>
+    <div class="container">
+        <form id="editProfileForm">
+            <div class="profile-header">
+                <div class="avatar-upload">
+                    <div class="avatar-edit">
+                        <input type='file' id="imageUpload" accept="image/*" />
+                        <label for="imageUpload"><i class="fas fa-pencil-alt"></i></label>
+                    </div>
+                    <div class="avatar-preview" id="imagePreview"></div>
+                </div>
+                <p style="font-size: 0.8rem; color: #888;">Cliquez sur le crayon pour changer votre photo</p>
+            </div>
+
+            <div class="form-section">
+                <h3>Informations de base</h3>
+                <div class="form-group">
+                    <label>Nom complet</label>
+                    <input type="text" id="full_name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Date de naissance</label>
+                    <input type="date" id="birth_date" class="form-control" required>
+                </div>
+                <div class="form-group" style="display: none;">
+                    <label>Numéro de téléphone</label>
+                    <input type="tel" id="phone" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Sexe</label>
+                    <select id="gender" class="form-control">
+                        <option value="Homme">Homme</option>
+                        <option value="Femme">Femme</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Ma personnalité & Ma vie</h3>
+                <div class="form-group">
+                    <label>État civil</label>
+                    <select id="etat_civil" class="form-control" required>
+                        <option value="Célibataire">Célibataire</option>
+                        <option value="Marié(e)">Marié(e)</option>
+                        <option value="Divorcé(e)">Divorcé(e)</option>
+                        <option value="Veuf(ve)">Veuf(ve)</option>
+                        <option value="Engagé(e) dans une union libre">Engagé(e) dans une union libre</option>
+                        <option value="Séparé(e) de corps">Séparé(e) de corps</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Couleur de peau</label>
+                    <select id="coleur_de_peau" class="form-control" required>
+                        <option>Teint foncé</option>
+                        <option>Teint intermédiaire</option>
+                        <option>Brun(e)</option>
+                        <option>Très Brun(e)</option>
+                        <option>Métis(e)</option>
+                        <option>Blanc(he)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Taille (mètres)</label>
+                    <input type="number" id="taille_m" step="0.01" class="form-control" placeholder="Ex: 1.75">
+                </div>
+
+                <div class="form-group">
+                    <label>Poids (Kilos)</label>
+                    <input type="number" id="poids_kg" class="form-control" placeholder="Ex: 75">
+                </div>
+
+                <div class="form-group">
+                    <label>Profession(s) <span class="tag-limit-info">(Max 3)</span></label>
+                    <div class="tags-container" id="tags-profession" data-limit="3">
+                        <span class="tag-item">Médecin</span><span class="tag-item">Agronome</span><span class="tag-item">Sociologue</span>
+                        <span class="tag-item">Économiste</span><span class="tag-item">Comptable</span><span class="tag-item">Banquier</span>
+                        <span class="tag-item">Infirmier</span><span class="tag-item">Informaticien</span><span class="tag-item">Programmeur</span>
+                        <span class="tag-item">Entrepreneur</span><span class="tag-item">Enseignant</span><span class="tag-item">Professeur</span>
+                        <span class="tag-item">Chercheur</span><span class="tag-item">Petit Commerçant</span><span class="tag-item">Commerçant Moyen</span>
+                        <span class="tag-item">Grand Commerçant</span><span class="tag-item">Avocat</span><span class="tag-item">Ingénieur en Mines</span>
+                        <span class="tag-item">Mécanicien</span><span class="tag-item">Maçon</span><span class="tag-item">Journaliste</span>
+                        <span class="tag-item">Savetier</span><span class="tag-item">Autre</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Études faites</label>
+                    <input type="text" id="etudes_faites" class="form-control" placeholder="Ex: Licence en Économie">
+                </div>
+
+                <div class="form-group">
+                    <label>Bio (Moi en détail)</label>
+                    <textarea id="bio" class="form-control" rows="4"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Religion</label>
+                    <select id="religion" class="form-control">
+                        <option>Catholique</option><option>Protestante</option><option>Musulmane</option>
+                        <option>Anglicane</option><option>Orthodoxe</option><option>Néo-Apostolique</option>
+                        <option>Témoin de Jéhovah</option><option>Église de réveil</option><option>Kimbanguiste</option>
+                        <option>Adventiste</option><option>Autre</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Sport(s) <span class="tag-limit-info">(Max 5)</span></label>
+                    <div class="tags-container" id="tags-sport" data-limit="5">
+                        <span class="tag-item">Football</span><span class="tag-item">Basket-ball</span>
+                        <span class="tag-item">Fitness</span><span class="tag-item">Natation</span>
+                        <span class="tag-item">Tennis</span><span class="tag-item">Marche</span>
+                        <span class="tag-item">Autre</span><span class="tag-item">Aucun</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Divertissement <span class="tag-limit-info">(Max 10)</span></label>
+                    <div class="tags-container" id="tags-divertissement" data-limit="10">
+                        <span class="tag-item">Cinéma</span><span class="tag-item">Musique</span>
+                        <span class="tag-item">Balade</span><span class="tag-item">Lecture</span>
+                        <span class="tag-item">Voyage</span><span class="tag-item">Cuisine</span>
+                        <span class="tag-item">Jeux Vidéo</span><span class="tag-item">Théâtre</span>
+                        <span class="tag-item">Séries TV</span><span class="tag-item">Danse</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Origines & Résidence</h3>
+                <div class="form-group">
+                    <label>Lieu de naissance</label>
+                    <input type="text" id="lieu_de_naissance" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Village d'origine</label>
+                    <input type="text" id="village_d_origine" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Adresse actuelle</label>
+                    <input type="text" id="adresse_actuelle" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Langues parlées</label>
+                    <div class="tags-container" id="tags-langues_parlees" data-limit="5">
+                        <span class="tag-item">Français</span><span class="tag-item">Swahili</span>
+                        <span class="tag-item">Lingala</span><span class="tag-item">Tshiluba</span>
+                        <span class="tag-item">Kikongo</span><span class="tag-item">Anglais</span>
+                        <span class="tag-item">Latin</span><span class="tag-item">Espagnol</span>
+                        <span class="tag-item">Arabe</span><span class="tag-item">Autre</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Style de vie</h3>
+                <div class="form-group">
+                    <label>Désir d'enfants</label>
+                    <select id="desir_enfants" class="form-control" onchange="toggleChildCount()">
+                        <option value="Non">Non</option>
+                        <option value="Peut-être">Peut-être</option>
+                        <option value="Oui">Oui</option>
+                    </select>
+                </div>
+                <div class="form-group" id="child-count-group" style="display: none;">
+                    <label>Combien d'enfants ?</label>
+                    <input type="number" id="nbr_enfants_desires" class="form-control" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label>Habitudes <span class="tag-limit-info">(Max 10)</span></label>
+                    <div class="tags-container" id="tags-habitudes" data-limit="10">
+                        <span class="tag-item">Fumeur</span><span class="tag-item">Abstème (Ne boit pas)</span>
+                        <span class="tag-item">Buveur occasionnel</span><span class="tag-item">Buveur (regulier)</span>
+                        <span class="tag-item">Ivrogne</span><span class="tag-item">Végétarien</span>
+                        <span class="tag-item">Lève-tôt</span><span class="tag-item">Couche-tard</span>
+                        <span class="tag-item">Casanier</span><span class="tag-item">Voyageur occasionnel</span>
+                        <span class="tag-item">Voyageur regulier</span><span class="tag-item">Bavard</span>
+                        <span class="tag-item">Discret</span><span class="tag-item">Introverti</span>
+                        <span class="tag-item">Extraverti</span><span class="tag-item">Sportif</span>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" id="btnSave" class="btn-save">Enregistrer les modifications</button>
+        </form>
+    </div>
+
+    <footer class="social-footer">
+        <p>© 2026 BL Alliance — Agence de Courtage Matrimonial. Tous droits réservés.</p>
+    </footer>
+
+    <script>
+        const USER_ID = localStorage.getItem('user_id');
+        const API_URL = "https://bl-alliance-api.onrender.com";
+
+        // Configuration de sécurité (Identique à Chat-Box-2)
+        // const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+        // const phoneRegex = new RegExp([
+        //     /(\+\d{1,4}[\s.-]?\d{3}[\s.-]?\d{3}[\s.-]?\d{3})/,
+        //     /(\b\d{2,4}[\s.-]?\d{3}[\s.-]?\d{3}[\s.-]?\d{3}\b)/,
+        //     /(\b0\d{1,2}[\s.-]?\d{3}[\s.-]?\d{4}\b)/,
+        //     /(\b[789]\d{2}[\s.-]?\d{3}[\s.-]?\d{3}\b)/
+        // ].map(r => r.source).join('|'), 'g');
+
+        const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/gi;
+
+        const phoneRegex = new RegExp([
+            // 1. Format National (0 + préfixe + 7 chiffres) = Total 10 chiffres
+            // Détecte: 081, 082, 083, 097, 098, 099, 084, 085, 089, 090, 091 suivis de 7 chiffres
+            /(?:0)(?:81|82|83|97|98|99|84|85|89|90|91)\d{7}/,
+
+            // 2. Format Court (préfixe + 7 chiffres) = Total 9 chiffres
+            // Détecte: 81, 82, 83, 97, 98, 99, 84, 85, 89, 90, 91 suivis de 7 chiffres
+            /\b(?:81|82|83|97|98|99|84|85|89|90|91)\d{7}\b/,
+
+            // 3. Format International (+243 ou 243 + préfixe + 7 chiffres)
+            // Détecte: +24381..., 24399... (Vérifie strictement les préfixes opérateurs après le 243)
+            /(?:\+243|243)(?:81|82|83|97|98|99|84|85|89|90|91)\d{7}/
+        ].map(r => r.source).join('|'), 'g');
+
+
+        function showSecurityModal(type) {
+            const title = document.getElementById('modalTitle');
+            const msg = document.getElementById('modalMessage');
+            
+            if(type === 'email') {
+                title.innerText = "Email détecté";
+                msg.innerText = "Par mesure de sécurité et pour protéger votre vie privée, vous ne devez pas communiquer votre adresse mail dans votre biographie.";
+            } else {
+                title.innerText = "Numéro détecté";
+                msg.innerText = "Par mesure de sécurité et pour protéger votre vie privée, vous ne devez pas communiquer votre numéro de téléphone dans votre biographie.";
+            }
+            document.getElementById('securityModal').style.display = 'flex';
+        }
+
+        function closeSecurityModal() {
+            document.getElementById('securityModal').style.display = 'none';
+        }
+        
+        // 1. GESTION DES TAGS (Selection multiple)
+        document.querySelectorAll('.tag-item').forEach(tag => {
+            tag.addEventListener('click', function() {
+                const container = this.parentElement;
+                const limit = parseInt(container.dataset.limit);
+                const selectedCount = container.querySelectorAll('.tag-item.selected').length;
+
+                if (!this.classList.contains('selected') && selectedCount >= limit) {
+                    alert(`Limite de ${limit} choix pour cette section.`);
+                    return;
+                }
+                this.classList.toggle('selected');
+            });
+        });
+
+        // 2. PREVIEW IMAGE
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('imagePreview').style.backgroundImage = `url(${e.target.result})`;
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+
+        function toggleChildCount() {
+            const val = document.getElementById('desir_enfants').value;
+            document.getElementById('child-count-group').style.display = (val === 'Oui' || val === 'Peut-être') ? 'block' : 'none';
+        }
+
+        // 3. CHARGER LES DONNÉES ACTUELLES (Initialisation)
+        async function loadCurrentData() {
+            try {
+                const response = await fetch(`${API_URL}/dashboard?user_id=${USER_ID}`);
+                const data = await response.json();
+                
+                // Regarde dans la console F12 pour vérifier la structure
+                console.log("Données reçues du serveur :", data);
+
+                const user = data.user_info; 
+
+                if (!user) {
+                    console.error("Impossible de trouver user_info dans la réponse");
+                    return;
+                }
+
+                // REMPLISSAGE FORCE DES CHAMPS
+                document.getElementById('full_name').value = user.full_name || "";
+                document.getElementById('birth_date').value = user.birth_date || "";
+                document.getElementById('phone').value = user.phone || "";
+                document.getElementById('gender').value = user.gender || "Homme";
+                document.getElementById('bio').value = user.bio || "";
+                document.getElementById('taille_m').value = user.taille_m || "";
+                document.getElementById('poids_kg').value = user.poids_kg || "";
+                document.getElementById('etudes_faites').value = user.etudes_faites || "";
+                document.getElementById('religion').value = user.religion || "Catholique";
+                document.getElementById('etat_civil').value = user.etat_civil || "";
+                document.getElementById('coleur_de_peau').value = user.coleur_de_peau || "";
+                document.getElementById('lieu_de_naissance').value = user.lieu_de_naissance || "";
+                document.getElementById('village_d_origine').value = user.village_d_origine || "";
+                document.getElementById('adresse_actuelle').value = user.adresse_actuelle || "";
+                document.getElementById('desir_enfants').value = user.desir_enfants || "Non";
+                document.getElementById('nbr_enfants_desires').value = user.nbr_enfants_desires || 0;
+                
+                toggleChildCount();
+
+                // Image de profil
+                if(user.photo) {
+                    document.getElementById('imagePreview').style.backgroundImage = `url(${user.photo})`;
+                }
+
+                // Tags (Professions, Sports, etc.)
+                const listFields = ['profession', 'sport', 'divertissement', 'langues_parlees', 'habitudes'];
+                listFields.forEach(field => {
+                    const userValues = user[field] || [];
+                    const container = document.getElementById(`tags-${field}`);
+                    if(container) {
+                        container.querySelectorAll('.tag-item').forEach(tag => {
+                            // On compare le texte du tag avec ce qui est en base
+                            if(userValues.includes(tag.innerText)) {
+                                tag.classList.add('selected');
+                            }
+                        });
+                    }
+                });
+
+            } catch (err) { 
+                console.error("Erreur critique lors du chargement des données :", err); 
+            }
+        }
+
+        // 4. ENVOI DES MODIFICATIONS (POST)
+        document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const bioText = document.getElementById('bio').value;
+
+            // if (emailRegex.test(bioText)) {
+            //     showSecurityModal('email');
+            //     return;
+            // }
+            // if (phoneRegex.test(bioText)) {
+            //     showSecurityModal('phone');
+            //     return;
+            // }
+
+            if (bioText.match(emailRegex)) {
+                showSecurityModal('email');
+                return;
+            }
+            if (bioText.match(phoneRegex)) {
+                showSecurityModal('phone');
+                return;
+            }
+            
+            const btn = document.getElementById('btnSave');
+            btn.innerText = "Enregistrement...";
+            btn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('user_id', USER_ID);
+
+            // Champs simples
+            const simpleFields = [
+                'full_name', 'birth_date', 'gender', 'bio', 'taille_m', 'poids_kg', 
+                'etudes_faites', 'religion', 'etat_civil', 'coleur_de_peau', 
+                'lieu_de_naissance', 'village_d_origine', 'adresse_actuelle', 
+                'desir_enfants', 'nbr_enfants_desires'
+            ];
+            
+            simpleFields.forEach(id => {
+                formData.append(id, document.getElementById(id).value);
+            });
+
+            // Champs listes (Tags)
+            const listFields = ['profession', 'sport', 'divertissement', 'langues_parlees', 'habitudes'];
+            listFields.forEach(id => {
+                const selected = Array.from(document.querySelectorAll(`#tags-${id} .tag-item.selected`))
+                                     .map(el => el.innerText);
+                selected.forEach(val => formData.append(id, val)); // Envoi multiple pour .getlist()
+            });
+
+            // Photo
+            const photoFile = document.getElementById('imageUpload').files[0];
+            if (photoFile) formData.append('photo', photoFile);
+
+            try {
+                const response = await fetch(`${API_URL}/edit_profil`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                if(response.ok) {
+                    alert("Profil mis à jour !");
+                    window.location.href = "dashboard.html";
+                } else {
+                    alert("Erreur: " + result.error);
+                }
+            } catch (err) {
+                alert("Erreur serveur");
+            } finally {
+                btn.innerText = "Enregistrer les modifications";
+                btn.disabled = false;
+            }
+        });
+
+        // Lancer le chargement au démarrage
+        loadCurrentData();
+    </script>
+
+    <div id="securityModal" class="modal">
+        <div class="modal-content">
+            <i class="fas fa-shield-alt"></i>
+            <h2 id="modalTitle">Action Bloquée</h2>
+            <p id="modalMessage"></p>
+            <button class="btn-modal" onclick="closeSecurityModal()">J'ai compris</button>
+        </div>
+    </div>
+</body>
+</html>

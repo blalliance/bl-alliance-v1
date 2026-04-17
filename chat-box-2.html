@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BL Alliance | Chat-Box</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="style/style-chatbox.css">
+
+</head>
+<body>
+    <script>
+        // On vérifie l'URL avant que le reste de la page ne charge
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('view') === 'sidebar' && window.innerWidth <= 1024) {
+                // On ajoute une classe temporaire au document
+                document.documentElement.classList.add('force-sidebar');
+            }
+        })();
+    </script>
+
+    <div class="app-container"> <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <aside class="sidebar" id="sidebar" style="display: none;">
+        <div class="sidebar-header">
+            <img src="assets/logo2.png" alt="BL ALLIANCE" class="sidebar-logo">
+            <h2>BL ALLIANCE</h2>
+        </div>
+
+        <div class="contacts-list">
+            <div class="contact-item support active">
+                <div class="contact-avatar-wrapper">
+                    <img src="https://i.pravatar.cc/100?u=support" class="contact-avatar">
+                    <span class="online-badge"></span>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-name-row">
+                        <span class="contact-name">Support BL ALLIANCE</span>
+                        <span class="unread-badge" style="background-color: var(--primary);">1</span>
+                    </div>
+                    <div class="contact-last-msg">Comment pouvons-nous vous aider ?</div>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <img src="https://i.pravatar.cc/100?u=correspondant" class="contact-avatar">
+                <div class="contact-info">
+                    <div class="contact-name">Correspondant BL</div>
+                    <div class="contact-last-msg">Message simulé n°31...</div>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <img src="https://i.pravatar.cc/100?u=af1" class="contact-avatar">
+                <div class="contact-info">
+                    <div class="contact-name-row">
+                        <span class="contact-name">Sarah Mwamba</span>
+                        <span class="unread-badge">3</span>
+                    </div>
+                    <div class="contact-last-msg">Le rapport est prêt pour Kinshasa.</div>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <img src="https://i.pravatar.cc/100?u=user3" class="contact-avatar">
+                <div class="contact-info">
+                    <div class="contact-name">Jean-Pierre Muzerwa</div>
+                    <div class="contact-last-msg">Le projet avance bien.</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+    <main class="main-chat-area">
+    <header class="chat-header">
+        <div class="header-left">
+            <i class="fas fa-arrow-left back-icon" style="display: none;"></i>
+            <img class="header-avatar">
+            <div class="header-info">
+                <!-- <span class="header-name">Correspondant BL</span> -->
+                <span class="header-name">...</span>
+                <span class="header-status" style="display: none;">En ligne</span>
+            </div>
+        </div>
+<!--         <div class="header-actions">
+            <div class="menu-container">
+                <i class="fas fa-ellipsis-v" id="menuBtn"></i>
+                
+                <div class="dropdown-menu" id="headerDropdown">
+                    <a href="others_profil.html" style="text-decoration: none; color: inherit; cursor: pointer;"><div class="dropdown-item"><i class="fas fa-user"></i> Afficher le contact</div></a>
+                    <a href="signal-user.html" style="text-decoration: none; color: inherit; cursor: pointer;"><div class="dropdown-item"><i class="fas fa-flag"></i> Signaler</div></a>
+                    <a href="block-user.html" style="text-decoration: none; color: inherit; cursor: pointer;"><div class="dropdown-item danger"><i class="fas fa-ban"></i> Bloquer</div></a>
+                </div>
+            </div>
+        </div> -->
+        <div class="header-actions">
+            <a href="chat-box.html" class="btn-back-link">
+                <button class="btn-back-circle" title="Retour au Dashboard">
+                    <i class="fas fa-angles-left"></i>
+                </button>
+            </a>
+
+            <div class="menu-container">
+                <i class="fas fa-ellipsis-v" id="menuBtn"></i>
+                <div class="dropdown-menu" id="headerDropdown">
+                    <a id="viewProfileLink" style="text-decoration: none; color: inherit; cursor: pointer;">
+                        <div class="dropdown-item"><i class="fas fa-user"></i> Afficher le contact</div>
+                    </a>
+
+                    <a id="reportLink" style="text-decoration: none; color: inherit; cursor: pointer;">
+                        <div class="dropdown-item"><i class="fas fa-flag"></i> Signaler</div>
+                    </a>
+                    <a id="blockLink" style="text-decoration: none; color: inherit; cursor: pointer;">
+                        <div class="dropdown-item danger"><i class="fas fa-ban"></i> Bloquage</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+    </header>
+
+    <div class="chat-messages-area" id="chatMessages">
+    </div>
+
+    </div> 
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content" id="modalOptions">
+            </div>
+    </div>
+
+    <footer class="chat-input-container">
+        <div class="emoji-picker" id="emojiPicker"></div>
+
+        <button class="btn-emoji" id="emojiBtn" title="Ajouter un emoji">
+            <i class="far fa-face-smile"></i>
+        </button>
+
+        <div class="chat-input-wrapper">
+            <textarea 
+                id="chatInput" 
+                placeholder="Votre message..." 
+                rows="1"
+            ></textarea>
+        </div>
+
+        <button class="btn-send" id="sendBtn">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </footer>
+    </main>
+
+
+<script type="text/javascript" src="script/script-chatbox.js"></script>
+<div class="modal-overlay" id="securityModal">
+    <div class="modal-content security-content">
+        <div class="security-icon">
+            <i class="fas fa-user-shield"></i>
+        </div>
+        <h3>Action bloquée</h3>
+        <p>S'il vous plaît, vous ne devez pas communiquer à un(e) correspondant(e) votre numéro de téléphone ni votre adresse mail.</p>
+        <button class="btn-modal-close" onclick="closeSecurityModal()">J'ai compris</button>
+    </div>
+</div>
+</body>
+</html>

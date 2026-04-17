@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BL Alliance - Centre de Confidentialité</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #D32F2F;
+            --dark-bg: #0a0a0a;
+            --card-bg: rgba(20, 20, 20, 0.8);
+            --border-color: rgba(211, 47, 47, 0.3);
+            --text-gray: #b0b0b0;
+            --light-gray: #e0e0e0;
+            --btn-gray: #333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--dark-bg);
+            background: radial-gradient(circle at center, #1a0505 0%, #050505 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 40px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        
+        .icon-shield {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 10px rgba(211, 47, 47, 0.3));
+        }
+
+        h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 10px; color: white; }
+
+        .content-text {
+            line-height: 1.7;
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+        }
+
+        .highlight { color: var(--primary); font-weight: 600; }
+
+        /* Section des règles BL Alliance */
+        .rules-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            background: rgba(0,0,0,0.4);
+            padding: 20px;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 30px;
+        }
+
+        .rule-item {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .rule-item i { color: var(--primary); margin-top: 4px; font-size: 1rem; }
+
+        .rule-item p { font-size: 0.88rem; color: var(--light-gray); }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* État initial : bouton Bloquer Rouge */
+        .btn-main {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 8px 20px rgba(211, 47, 47, 0.25);
+        }
+
+        /* État après clic : Débloquer Gris */
+        .btn-main.blocked {
+            background-color: var(--btn-gray);
+            color: var(--text-gray);
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .btn:active { transform: scale(0.98); }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .container { padding: 30px 20px; }
+            h1 { font-size: 1.4rem; }
+            .btn { padding: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <i class="fas fa-user-shield icon-shield"></i>
+            <h1>Gestion de l'accès</h1>
+        </div>
+
+        <div class="content-text">
+            <p>Vous êtes sur le point de modifier vos interactions avec cet utilisateur au sein de 
+               <span class="highlight">BL Alliance</span>. Notre plateforme valorise l'éthique et le respect mutuel. 
+               Le blocage est un outil conçu pour garantir votre sécurité et votre sérénité numérique.</p>
+        </div>
+
+        <div class="rules-grid">
+            <div class="rule-item">
+                <i class="fas fa-ban"></i>
+                <p><strong>Coupure des flux :</strong> Aucun message, appel ou document ne pourra vous être transmis par ce contact.</p>
+            </div>
+            <div class="rule-item">
+                <i class="fas fa-eye-slash"></i>
+                <p><strong>Invisibilité :</strong> Vos informations de profil et votre statut en ligne ne seront plus partagés avec cet utilisateur.</p>
+            </div>
+            <div class="rule-item">
+                <i class="fas fa-shield-alt"></i>
+                <p><strong>Protection BL Alliance :</strong> Cette action est réversible, mais protège instantanément votre environnement de travail et d'échange.</p>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button id="mainBtn" class="btn btn-main" onclick="handleBlockAction()">
+                <i class="fas fa-lock" id="btnIcon"></i>
+                <span id="btnText">Bloquer cette personne</span>
+            </button>
+
+            <button class="btn btn-secondary" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i>
+                Rentrer
+            </button>
+        </div>
+    </div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const blockedId = urlParams.get('contact_id');
+    const blockerId = localStorage.getItem('user_id');
+    const API_URL = "https://bl-alliance-api.onrender.com";
+
+    let isBlocked = false;
+
+    // --- NOUVEAU : FONCTION DE MISE À JOUR VISUELLE ---
+    function updateButtonUI() {
+        const btn = document.getElementById('mainBtn');
+        const text = document.getElementById('btnText');
+        const icon = document.getElementById('btnIcon');
+
+        if (isBlocked) {
+            btn.classList.add('blocked');
+            text.innerText = "Débloquer cette personne";
+            icon.className = "fas fa-unlock-alt";
+        } else {
+            btn.classList.remove('blocked');
+            text.innerText = "Bloquer cette personne";
+            icon.className = "fas fa-lock";
+        }
+    }
+
+    // --- NOUVEAU : VÉRIFIER L'ÉTAT AU CHARGEMENT ---
+    async function checkCurrentStatus() {
+        try {
+            const response = await fetch(`${API_URL}/check_block?blocker_id=${blockerId}&blocked_id=${blockedId}`);
+            const data = await response.json();
+            isBlocked = data.is_blocked;
+            updateButtonUI();
+        } catch (e) {
+            console.error("Erreur lors de la vérification du statut:", e);
+        }
+    }
+
+    // Lancer la vérification dès que la page est prête
+    document.addEventListener('DOMContentLoaded', checkCurrentStatus);
+
+    // --- FONCTION DE CLIC (MODIFIÉE) ---
+    async function handleBlockAction() {
+        const btn = document.getElementById('mainBtn');
+        btn.style.pointerEvents = "none"; // Empêcher le double clic
+        
+        const action = !isBlocked ? "block" : "unblock";
+
+        try {
+            const response = await fetch(`${API_URL}/toggle_block`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    blocker_id: blockerId,
+                    blocked_id: blockedId,
+                    action: action
+                })
+            });
+
+            if (response.ok) {
+                isBlocked = !isBlocked; // On inverse l'état
+                updateButtonUI(); // On met à jour le look du bouton
+            }
+        } catch (e) {
+            alert("Erreur de connexion au serveur");
+        } finally {
+            btn.style.pointerEvents = "auto";
+        }
+    }
+</script>
+</body>
+</html>

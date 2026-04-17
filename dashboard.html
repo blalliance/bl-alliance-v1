@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | BL Alliance</title>
+    <style>
+        body { background: #0a0a0a; color: white; font-family: sans-serif; margin: 0; overflow-x: hidden; }
+        
+        /* -- DEBUT DU BLOCK À MODIFIER -- */
+        /* Navbar optimisée avec Recherche au centre */
+        /* -- DEBUT DU BLOCK À MODIFIER -- */
+        nav { background: #141414; padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #222; backdrop-filter: blur(10px); min-height: 60px; box-sizing: border-box; }
+        .logo { color: #D32F2F; font-weight: bold; font-size: 20px; flex-shrink: 0; transition: 0.3s; }
+        
+        .search-container { flex-grow: 1; max-width: 400px; margin: 0 20px; position: relative; display: flex; align-items: center; justify-content: flex-end; }
+        .search-container input { width: 100%; padding: 10px 15px; background: #0a0a0a; border: 1px solid #333; color: white; border-radius: 20px; font-size: 14px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .search-container input:focus { border-color: #D32F2F; outline: none; box-shadow: 0 0 10px rgba(211, 47, 47, 0.2); }
+
+        .search-icon-mobile { display: none; font-size: 18px; cursor: pointer; color: #888; padding: 8px; transition: 0.3s; }
+
+        @media (max-width: 768px) {
+            .logo.hide-mobile { display: none; }
+            .search-icon-mobile { display: block; }
+            .search-container { margin: 0 10px; flex-grow: 0; }
+            .search-container input { width: 0; padding: 0; border: none; opacity: 0; pointer-events: none; }
+            .search-container.active { flex-grow: 1; justify-content: center; }
+            .search-container.active input { width: 100%; padding: 10px 15px; border: 1px solid #D32F2F; opacity: 1; pointer-events: all; background: #000; }
+            .search-container.active + .nav-right { display: none; }
+            .search-container.active .search-icon-mobile { color: #D32F2F; position: absolute; right: 10px; z-index: 5; }
+        }
+
+        .nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; transition: 0.3s; }
+        /* -- FIN DU BLOCK À MODIFIER -- */
+        .user-thumb { width: 38px; height: 38px; border-radius: 50%; cursor: pointer; border: 2px solid #D32F2F; object-fit: cover; transition: 0.3s; }
+        .user-thumb:hover { transform: scale(1.05); }
+        .menu-dots { font-size: 24px; cursor: pointer; color: white; padding: 5px; user-select: none; transition: 0.3s; }
+        .menu-dots:hover { color: #D32F2F; }
+
+        /* Sidebar Scrollable et Stylée */
+        .side-menu {
+            position: fixed; top: 0; right: -280px;
+            width: 280px; height: 100vh;
+            background: #0d0d0d; z-index: 200;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 1px solid #222;
+            display: flex; flex-direction: column;
+            overflow-y: auto; /* Scrollable */
+        }
+        .side-menu::-webkit-scrollbar { width: 5px; }
+        .side-menu::-webkit-scrollbar-track { background: #0d0d0d; }
+        .side-menu::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        .side-menu::-webkit-scrollbar-thumb:hover { background: #D32F2F; }
+        /* -- FIN DU BLOCK À MODIFIER -- */
+        .side-menu.active { right: 0; } /* Affiche le menu */
+
+        .menu-header { padding: 25px; border-bottom: 1px solid #222; text-align: center; }
+        .menu-items { padding: 15px 0; flex-grow: 1; }
+        
+        
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.7); z-index: 150;
+            display: none;
+        }
+        .overlay.active { display: block; }
+
+        /* --- FIN DU MENU --- */
+
+        /* Moteur de recherche */
+        .search-bar { width: 90%; max-width: 600px; margin: 20px auto; display: flex; gap: 10px; }
+        .search-bar input { flex: 1; padding: 12px; background: #141414; border: 1px solid #333; color: white; border-radius: 5px; }
+
+        /* -- DEBUT DU BLOCK À MODIFIER -- */
+        .menu-item {
+            display: flex; align-items: center;
+            padding: 14px 25px;
+            text-decoration: none; color: #999;
+            font-size: 14px; transition: 0.3s ease;
+            cursor: pointer; border-left: 3px solid transparent;
+        }
+        .menu-item:hover { background: linear-gradient(90deg, #1a1a1a, #0d0d0d); color: white; border-left: 3px solid #D32F2F; padding-left: 30px; }
+        .menu-item i { margin-right: 15px; font-size: 18px; width: 25px; text-align: center; filter: grayscale(1); transition: 0.3s; }
+        .menu-item:hover i { filter: grayscale(0); transform: scale(1.2); }
+        
+        .menu-sep { height: 1px; background: linear-gradient(90deg, transparent, #222, transparent); margin: 10px 25px; }
+
+        /* Grille de profils & Effets Cards */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 20px; padding: 20px 5%; }
+        .card { background: #141414; border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; padding-bottom: 15px; position: relative; }
+        .card:hover { transform: translateY(-10px); border-color: #D32F2F; box-shadow: 0 10px 25px rgba(211, 47, 47, 0.15); }
+        .card img { width: 100%; height: 190px; object-fit: cover; transition: 0.5s; }
+        .card:hover img { transform: scale(1.08); }
+        /* -- DEBUT DU BLOCK À MODIFIER -- */
+        .card h4 { margin: 10px 10px 5px 10px; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        /* -- FIN DU BLOCK À MODIFIER -- */
+        .card p { font-size: 12px; color: #888; margin: 0 0 10px 0; }
+        
+        .card-actions { display: flex; flex-direction: column; gap: 5px; padding: 0 10px; }
+        .btn-card { background: #333; color: white; border: none; padding: 8px; border-radius: 5px; font-size: 11px; cursor: pointer; transition: 0.3s; }
+        .btn-connect { background: #D32F2F; font-weight: bold; }
+        .btn-card:hover { opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+<script>
+    if (!localStorage.getItem('user_id')) window.location.href = "login.html";
+    if (localStorage.getItem('is_paid') !== 'true') window.location.href = "paiement.html";
+</script>
+
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<div class="side-menu" id="sideMenu">
+    <div class="menu-header">
+        <img id="my-avatar-large" class="user-thumb" style="width: 80px; height: 80px; margin-bottom: 12px; border-width: 3px;">
+        <div id="completion-text" style="font-size: 13px; font-weight: bold; color: #D32F2F; letter-spacing: 0.5px;">Profil : 0%</div>
+    </div>
+    
+    <div class="menu-items">
+        <a href="edit_profil.html" class="menu-item"><i>⚙️</i> Paramètres du profil</a>
+        <a href="mon_ideal.html" class="menu-item"><i>✨</i> Mon partenaire idéal</a>
+        <a href="chat-box.html" class="menu-item"><i>💌</i> Correspondance</a>
+        <a href="feedback.html" class="menu-item"><i>📣</i> Envoyer un avis</a>
+        
+        <div class="menu-sep"></div>
+        
+        <a href="guide-de-securite-et-rencontres.html" class="menu-item"><i>🛡️</i> Conseils Sécurité</a>
+        <a href="about-us.html" class="menu-item"><i>💎</i> À propos de nous</a>
+        <a style="display: none;" href="conditions-generales-d-utilisations.html" class="menu-item"><i>📜</i> CGU & Légal</a>
+        
+        <div class="menu-sep"></div>
+        
+        <a href="#" onclick="logout()" class="menu-item" style="color: #D32F2F; font-weight: bold;"><i>🏃‍♂️</i> Se déconnecter</a>
+    </div>
+</div>
+
+<nav>
+    <div class="logo" id="navLogo">BL Alliance</div>
+    <div class="search-container" id="searchWrapper">
+        <!-- <span class="search-icon-mobile" onclick="toggleSearch(true)">🔍</span> -->
+        <span class="search-icon-mobile" onclick="toggleSearch(true)">Rechercher 🔍</span>
+        <input type="text" id="searchInput" placeholder="Chercher un membre..." onkeyup="search()" onblur="toggleSearch(false)">
+    </div>
+    <div class="nav-right" id="navRight">
+        <img id="my-avatar" class="user-thumb" onclick="toggleMenu()">
+        <div class="menu-dots" onclick="toggleMenu()">⋮</div>
+    </div>
+</nav>
+
+<div class="grid" id="profileGrid"></div>
+
+<div id="loader" style="text-align: center; padding: 20px; color: #888;">Chargement...</div>
+
+<script>
+    let currentPage = 0;
+    let isFetching = false;
+
+    // FONCTION TOGGLE MENU (Affiche / Cache)
+    function toggleMenu() {
+        document.getElementById('sideMenu').classList.toggle('active');
+        document.getElementById('overlay').classList.toggle('active');
+    }
+
+
+
+    // FONCTION TOGGLE MENU (Affiche / Cache)
+    function toggleMenu() {
+        document.getElementById('sideMenu').classList.toggle('active');
+        document.getElementById('overlay').classList.toggle('active');
+    }
+
+    // -- DEBUT DU BLOCK À AJOUTER --
+    function toggleSearch(show) {
+        if (window.innerWidth > 768) return; // Uniquement sur mobile
+        
+        const wrapper = document.getElementById('searchWrapper');
+        const logo = document.getElementById('navLogo');
+        const navRight = document.getElementById('navRight');
+        const input = document.getElementById('searchInput');
+
+        if (show) {
+            wrapper.classList.add('active');
+            logo.classList.add('hide-mobile');
+            navRight.style.display = 'none';
+            input.focus();
+        } else {
+            // On ne ferme que si l'input est vide
+            if (input.value.trim() === "") {
+                wrapper.classList.remove('active');
+                logo.classList.remove('hide-mobile');
+                navRight.style.display = 'flex';
+            }
+        }
+    }
+    // -- FIN DU BLOCK À AJOUTER --
+
+
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = "login.html";
+    }
+
+//     async function openSupport() {
+//         const uid = localStorage.getItem('user_id');
+//         try {
+//             const response = await fetch('https://bl-alliance-api.onrender.com/connect_support', {
+//                 method: 'POST',
+//                 headers: { 'Content-Type': 'application/json' },
+//                 body: JSON.stringify({ user_id: uid })
+//             });
+//             const data = await response.json();
+//             if (data.status === "success") {
+//                 window.location.href = `chat-box-2.html?contact_id=${data.support_id}`;
+//             }
+//         } catch (e) {
+//             console.error("Erreur Support:", e);
+//         }
+//     }
+
+    async function loadProfiles(searchQuery = "") {
+        if (isFetching) return;
+        isFetching = true;
+        
+        const uid = localStorage.getItem('user_id');
+        const url = `https://bl-alliance-api.onrender.com/dashboard?user_id=${uid}&page=${currentPage}&search=${searchQuery}`;
+        
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+
+            // Mise à jour des infos utilisateur dans le menu
+            document.getElementById('my-avatar').src = data.user_info.photo;
+            document.getElementById('my-avatar-large').src = data.user_info.photo;
+            document.getElementById('completion-text').innerText = "Profil complété à " + data.user_info.completion + "%";
+
+            const grid = document.getElementById('profileGrid');
+            if(currentPage === 0) grid.innerHTML = "";
+
+            data.matches.forEach(user => {
+                const age = new Date().getFullYear() - new Date(user.birth_date).getFullYear();
+                grid.innerHTML += `
+                    <div class="card">
+                        <img src="${user.url_profil_img}" alt="Photo">
+                        <h4>${user.full_name}</h4>
+                        <p>${age} ans</p>
+                        <div class="card-actions">
+                            <button class="btn-card btn-connect" onclick="connectUser('${user.id}')">Connecter</button>
+                            <button class="btn-card" onclick="viewProfile('${user.id}')">Voir Profil</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            currentPage = data.next_page;
+        } catch (e) { console.error(e); }
+        isFetching = false;
+    }
+
+    async function connectUser(targetId) {
+        const senderId = localStorage.getItem('user_id');
+        const btn = event.target; // On récupère le bouton cliqué
+
+        if (btn.disabled) return; // Empêche le double clic
+        
+        btn.disabled = true;
+        btn.innerText = "Patientez...";
+
+        try {
+            const response = await fetch('https://bl-alliance-api.onrender.com/create_connection', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sender_id: senderId, target_id: targetId })
+            });
+
+            const data = await response.json();
+
+            if (data.status === "payment_required") {
+                window.location.href = `paiement-connexion.html?target_id=${targetId}`;
+            } else {
+                // Succès ou déjà existant -> On va au chat
+                window.location.href = `chat-box.html`;
+            }
+        } catch (e) {
+            console.error("Erreur:", e);
+            alert("Erreur de connexion au serveur (10054). Réessayez dans un instant.");
+            btn.disabled = false;
+            btn.innerText = "Connecter";
+        }
+    }
+
+
+
+    function viewProfile(targetId) {
+        window.location.href = `others_profil.html?id=${targetId}`;
+    }
+
+    window.onscroll = () => {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+            loadProfiles(document.getElementById('searchInput').value);
+        }
+    };
+
+    let typingTimer;
+    function search() {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+            currentPage = 0;
+            loadProfiles(document.getElementById('searchInput').value);
+        }, 500);
+    }
+
+    loadProfiles();
+</script>
+
+</body>
+</html>

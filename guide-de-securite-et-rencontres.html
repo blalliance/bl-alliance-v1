@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Guide de Sécurité | BL Alliance</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #D32F2F;
+            --dark: #0a0a0a;
+            --card-bg: #141414;
+            --text: #ffffff;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- RESET TACTILE & BASE --- */
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            padding-top: 90px;
+        }
+
+        /* --- HEADER ÉLITE --- */
+        header {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 75px;
+            z-index: 1000;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            padding: 0 5%;
+            background: rgba(0,0,0,0.95);
+            border-bottom: 1px solid rgba(211, 47, 47, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .logo-container a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            outline: none;
+        }
+
+        .logo-container img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            color: var(--primary);
+            font-size: clamp(1.1rem, 4vw, 1.8rem);
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: 'Century Gothic', sans-serif;
+            margin-left: 12px;
+        }
+
+        /* --- ACTIONS HEADER (BOUTON BACK) --- */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            min-width: 50px;
+        }
+
+        .btn-back-link {
+            text-decoration: none !important;
+            outline: none !important;
+            display: flex;
+        }
+
+        .btn-back-circle {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.4);
+            outline: none !important;
+        }
+
+        .btn-back-circle i {
+            font-size: 1.1rem;
+        }
+
+        /* --- EFFETS HOVER & CLIC --- */
+        @media (hover: hover) {
+            .btn-back-circle:hover {
+                background-color: white;
+                color: var(--primary);
+                transform: scale(1.05);
+            }
+        }
+
+        .btn-back-circle:active {
+            transform: scale(0.9);
+            background-color: white;
+            color: var(--primary);
+        }
+
+        /* --- CONTENU --- */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px 120px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.6rem, 5vw, 2.5rem);
+            text-align: center;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .last-update {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .intro-text {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #bbb;
+            font-size: 1rem;
+        }
+
+        /* --- ACCORDÉON --- */
+        .cgu-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #222;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .cgu-header {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            user-select: none;
+            color: #eee;
+        }
+
+        .cgu-header span {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cgu-header i.icon-main { color: var(--primary); width: 20px; text-align: center; }
+        .cgu-header i.chevron { color: var(--primary); transition: transform 0.4s; font-size: 0.8rem; }
+
+        .cgu-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+            background: #0d0d0d;
+            color: #aaa;
+        }
+
+        .cgu-item.active .cgu-content {
+            max-height: 2000px;
+            padding: 25px;
+            border-top: 1px solid #222;
+        }
+
+        .cgu-item.active .cgu-header i.chevron { transform: rotate(180deg); }
+
+        /* --- FOOTER --- */
+        .social-footer {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            padding: 15px;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(211, 47, 47, 0.2);
+            text-align: center;
+            z-index: 999;
+        }
+
+        .social-footer p { color: #888; font-size: 0.75rem; margin: 0; }
+
+        /* --- RESPONSIVE FIX --- */
+        @media (max-width: 768px) {
+            header { padding: 0 15px; height: 70px; }
+            body { padding-top: 85px; }
+            .btn-back-circle { width: 40px; height: 40px; }
+            .btn-back-circle i { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <a href="index.html">
+                <img src="assets/logo2.png" alt="BL Alliance">
+                <span class="brand-name">BL Alliance</span>
+            </a>
+        </div>
+
+        <div class="header-actions">
+            <a href="dashboard.html" class="btn-back-link">
+                <button class="btn-back-circle" title="Retour au Dashboard">
+                    <i class="fas fa-angles-left"></i>
+                </button>
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Guide de Sécurité</h1>
+        <p class="last-update">Mise à jour : 23 Mars 2026</p>
+        
+        <p class="intro-text">Votre sécurité est notre priorité absolue.</p>
+
+        <div class="cgu-accordion">
+            <div class="cgu-item">
+                <div class="cgu-header">
+                    <span><i class="fas fa-comment-dots icon-main"></i> 1. Communication sur la Plateforme</span>
+                    <i class="fas fa-chevron-down chevron"></i>
+                </div>
+                <div class="cgu-content">
+                    Gardez vos échanges sur le chat de <strong>BL Alliance</strong> aussi longtemps que possible. Notre plateforme est modérée pour détecter les comportements suspects. 
+                    <ul>
+                        <li>Ne partagez pas votre numéro privé trop vite.</li>
+                        <li>Méfiez-vous de ceux qui demandent immédiatement à basculer sur WhatsApp sans avoir établi un lien de confiance.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="cgu-item">
+                <div class="cgu-header">
+                    <span><i class="fas fa-money-bill-wave icon-main"></i> 2. Alerte : Demandes d'Argent</span>
+                    <i class="fas fa-chevron-down chevron"></i>
+                </div>
+                <div class="cgu-content">
+                    <strong>Ne donnez JAMAIS d'argent</strong> à une personne rencontrée en ligne, peu importe l'urgence invoquée (soins médicaux, frais de transport, problème familial). 
+                    <ul>
+                        <li>Les escrocs sentimentaux utilisent souvent l'urgence pour manipuler vos émotions.</li>
+                        <li>Signalez immédiatement tout profil vous sollicitant financièrement via notre support.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="cgu-item">
+                <div class="cgu-header">
+                    <span><i class="fas fa-map-marker-alt icon-main"></i> 3. La Première Rencontre Physique</span>
+                    <i class="fas fa-chevron-down chevron"></i>
+                </div>
+                <div class="cgu-content">
+                    Pour vos premiers rendez-vous à Bukavu, Goma ou ailleurs :
+                    <ul>
+                        <li><strong>Lieu Public :</strong> Choisissez un café, un restaurant ou un lieu fréquenté.</li>
+                        <li><strong>Transport :</strong> Soyez autonome. Ne vous faites pas récupérer à votre domicile et ne montez pas dans la voiture de l'autre pour le premier rendez-vous.</li>
+                        <li><strong>Informer un proche :</strong> Dites à un ami ou un membre de votre famille où vous allez et avec qui.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="cgu-item">
+                <div class="cgu-header">
+                    <span><i class="fas fa-shield-virus icon-main"></i> 4. Discrétion et Identité</span>
+                    <i class="fas fa-chevron-down chevron"></i>
+                </div>
+                <div class="cgu-content">
+                    Protéger votre réputation et votre identité est essentiel :
+                    <ul>
+                        <li>Ne partagez pas de photos ou de vidéos intimes. Une fois envoyées, vous perdez le contrôle de ces fichiers.</li>
+                        <li>Vérifiez la cohérence des propos de votre partenaire au fil du temps.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="cgu-item">
+                <div class="cgu-header">
+                    <span><i class="fas fa-flag icon-main"></i> 5. Quand Signaler un Profil ?</span>
+                    <i class="fas fa-chevron-down chevron"></i>
+                </div>
+                <div class="cgu-content">
+                    Aidez-nous à garder notre communauté saine. Signalez si vous constatez :
+                    <ul>
+                        <li>Un profil utilisant des photos manifestement fausses ou de célébrités.</li>
+                        <li>Des propos agressifs, harcelants ou déplacés.</li>
+                        <li>Une personne déjà mariée cherchant des aventures extraconjugales.</li>
+                    </ul>
+                </div>
+            </div>
+
+
+            </div>
+    </div>
+
+    <footer class="social-footer">
+        <p>© 2026 BL Alliance — Tous droits réservés.</p>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.cgu-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const item = header.parentElement;
+                document.querySelectorAll('.cgu-item').forEach(otherItem => {
+                    if (otherItem !== item) otherItem.classList.remove('active');
+                });
+                item.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>

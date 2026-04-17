@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement | BL Alliance</title>
+    <style>
+        /* -- DEBUT DU BLOCK À MODIFIER -- */
+        body { background-color: #0a0a0a; color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .main-card { background-color: #141414; padding: 25px; border-radius: 12px; width: 100%; max-width: 400px; border: 1px solid #222; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; }
+        .logo-container { margin-bottom: 15px; }
+        .logo-container img { max-width: 120px; height: auto; }
+        h2 { color: #D32F2F; font-size: 1.4rem; margin: 10px 0; }
+        .subtitle { font-size: 13px; color: #888; margin-bottom: 20px; line-height: 1.4; }
+        .operator-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+        .op-box { background: #1a1a1a; border: 1px solid #333; padding: 12px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-size: 11px; font-weight: bold; color: #bbb; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .op-box:hover { border-color: #D32F2F; }
+        .op-box.active { border-color: #D32F2F; background: rgba(211, 47, 47, 0.1); color: white; }
+        .price-tag { font-size: 22px; color: #D32F2F; font-weight: bold; margin: 15px 0; background: #000; padding: 10px; border-radius: 6px; border: 1px dashed #444; }
+        .input-group { text-align: left; margin-bottom: 15px; }
+        label { display: block; font-size: 12px; color: #888; margin-bottom: 5px; }
+        .phone-container { display: flex; align-items: center; background: #1a1a1a; border: 1px solid #333; border-radius: 6px; padding: 0 12px; }
+        .prefix { color: #D32F2F; font-weight: bold; font-size: 14px; margin-right: 10px; border-right: 1px solid #333; padding-right: 10px; }
+        input { width: 100%; padding: 12px 0; background: transparent; border: none; color: white; outline: none; font-size: 15px; }
+        button { width: 100%; padding: 15px; background: #D32F2F; color: white; border: none; font-weight: bold; cursor: pointer; border-radius: 6px; font-size: 14px; margin-top: 10px; }
+        .secure-text { font-size: 10px; color: #555; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        /* Modals style unique */
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 15px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #D32F2F; color: white; border: none; font-weight: bold; cursor: pointer; border-radius: 6px; font-size: 14px; margin-top: 10px; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        button:active { transform: scale(0.97); background: #b71c1c; }
+        button:disabled { background: #444; cursor: not-allowed; opacity: 0.8; }
+        .spinner { display: none; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @media (min-width: 768px) { .main-card { max-width: 450px; padding: 40px; } }
+        @media (min-width: 1200px) { .main-card { max-width: 500px; } }
+        .modal-content { background: #1a1a1a; padding: 25px; border-radius: 12px; width: 100%; max-width: 350px; border: 1px solid #333; text-align: center; }
+        .modal-content h3 { color: #D32F2F; margin-top: 0; }
+        .modal-content p { font-size: 14px; color: #ccc; margin-bottom: 20px; line-height: 1.5; }
+        @media (max-width: 480px) { .main-card { padding: 20px; } }
+        /* -- FIN DU BLOCK À MODIFIER -- */
+    </style>
+</head>
+<body>
+    <div class="main-card">
+        <div class="logo-container">
+            <img src="assets/logo2.png" alt="BL Alliance">
+        </div>
+        <h2>Veuillez payer les frais d'inscription</h2>
+        <p class="subtitle">La création de compte est soumise à des frais d'adhésion pour garantir la qualité de nos membres.</p>
+        
+        <label>CHOISISSEZ VOTRE OPÉRATEUR :</label>
+        <div class="operator-grid">
+            <div class="op-box" id="op-airtel" onclick="selectOp('Airtel')"><span>AIRTEL MONEY</span></div>
+            <div class="op-box" id="op-voda" onclick="selectOp('Vodacom')"><span>VODACOM MPESA</span></div>
+            <div class="op-box" id="op-orange" onclick="selectOp('Orange')"><span>ORANGE MONEY</span></div>
+            <div class="op-box" id="op-code" onclick="selectOp('Special')"><span>CODE SPÉCIAL</span></div>
+        </div>
+
+        <div class="input-group">
+            <label id="phone-label">VOTRE NUMÉRO MOBILE MONEY :</label>
+            <div class="phone-container">
+                <span class="prefix">+243</span>
+                <input type="text" id="pay_phone" placeholder="0...">
+            </div>
+        </div>
+        <div class="price-tag">Montant : 15.000 FC</div>
+        <p class="subtitle" style="font-size: 11px;">Vous recevrez une demande de confirmation. Validez avec votre code PIN pour terminer.</p>
+        
+        <button id="main-btn" onclick="handlePaymentProcess()">
+            <span id="btn-text">PAYER ET S'INSCRIRE</span>
+            <div id="loader" class="spinner"></div>
+        </button>
+        <div class="secure-text">
+            🔒 Sécurisé par Flutterwave
+        </div>
+    </div>
+
+    <div id="modal-error" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modal-title">Format Incorrect</h3>
+            <p id="modal-body">Veuillez saisir un numéro valide commençant par les préfixes autorisés.</p>
+            <button onclick="closeModal()">Réessayer</button>
+        </div>
+    </div>
+<script>
+        let selectedOperator = 'Airtel';
+
+        window.onload = function() {
+            selectOp('Airtel');
+        };
+        function selectOp(op) {
+            selectedOperator = op;
+            // -- DEBUT DU BLOCK À MODIFIER --
+            document.querySelectorAll('.op-box').forEach(el => el.classList.remove('active'));
+            
+            const targetId = 'op-' + (op === 'Vodacom' ? 'voda' : op.toLowerCase());
+            const activeEl = document.getElementById(targetId);
+            if (activeEl) activeEl.classList.add('active');
+            
+            const label = document.getElementById('phone-label');
+            const prefix = document.querySelector('.prefix');
+            const priceTag = document.querySelector('.price-tag');
+
+            if (label) {
+                label.innerText = (op === 'Special') ? 'VOTRE CODE SPÉCIAL :' : 'VOTRE NUMÉRO ' + op.toUpperCase() + ' :';
+            }
+
+            if (op === 'Special') {
+                prefix.innerText = '🔒';
+                priceTag.innerText = 'Accès : Gratuit (Code)';
+            } else {
+                prefix.innerText = '+243';
+                priceTag.innerText = 'Montant : 15.000 FC';
+            }
+        }
+
+        function openModal(title, body) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-body').innerText = body;
+            document.getElementById('modal-overlay').style.display = 'flex'; // Note: fixed ID below
+        }
+        
+        // Correction de l'ID pour le script
+        function closeModal() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); }
+
+        function validatePhone(num) {
+            const rules = {
+                'Vodacom': ['081', '082', '083', '81', '82', '83'],
+                'Airtel': ['097', '098', '099', '97', '98', '99'],
+                'Orange': ['084', '085', '089', '84', '85', '89'],
+                'Special': ['000']
+            };
+            
+            if (!selectedOperator) return "Veuillez d'abord choisir un opérateur.";
+
+            if (selectedOperator === 'Special') return null;
+
+            const prefixes = rules[selectedOperator];
+            const isValid = prefixes.some(p => num.startsWith(p));
+
+            if (!isValid) {
+                return `Numéro invalide pour ${selectedOperator}. Les numéros autorisés commencent par : ${prefixes.join(', ')}`;
+            }
+            return null;
+        }
+
+        async function handlePaymentProcess() {
+            const phone = document.getElementById('pay_phone').value.trim();
+            const error = validatePhone(phone);
+
+            if (error) {
+                const modal = document.getElementById('modal-error');
+                document.getElementById('modal-body').innerText = error;
+                modal.style.display = 'flex';
+                return;
+            }
+
+            const btn = document.getElementById('main-btn');
+            const btnText = document.getElementById('btn-text');
+            const loader = document.getElementById('loader');
+
+            // État de chargement
+            btn.disabled = true;
+            btnText.innerText = "PATIENTEZ...";
+            loader.style.display = "block";
+
+            const uid = localStorage.getItem('user_id');
+            try {
+                const response = await fetch('https://bl-alliance-api.onrender.com/verify_payment', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ user_id: uid, phone_or_code: phone, operator: selectedOperator })
+                });
+
+                if(response.ok) {
+                    localStorage.setItem('is_paid', 'true');
+                    window.location.href = "dashboard.html";
+                } else {
+                    const res = await response.json();
+                    document.getElementById('modal-body').innerText = res.error || "Échec de la transaction.";
+                    document.getElementById('modal-error').style.display = 'flex';
+                }
+            } catch (e) {
+                alert("Erreur de connexion au serveur.");
+            } finally {
+                // Rétablissement de l'état initial
+                btn.disabled = false;
+                btnText.innerText = "PAYER ET S'INSCRIRE";
+                loader.style.display = "none";
+            }
+        }
+        /* -- FIN DU BLOCK À MODIFIER -- */
+    </script>
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ | BL Alliance</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #D32F2F;
+            --dark: #0a0a0a;
+            --card-bg: #141414;
+            --text: #ffffff;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding-top: 100px;
+        }
+
+        /* --- HEADER REPRIS --- */
+        header {
+            position: fixed;
+            top: 0; width: 100%; z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 5%;
+            background: rgba(0,0,0,0.95);
+            border-bottom: 1px solid rgba(211, 47, 47, 0.2);
+        }
+
+        .logo img { height: 35px; }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px 80px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--primary);
+        }
+
+        /* --- ACCORDÉONS --- */
+        .faq-item {
+            background: var(--card-bg);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #222;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .faq-item:hover {
+            border-color: var(--primary);
+        }
+
+        .faq-question {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            user-select: none;
+        }
+
+        .faq-question i {
+            color: var(--primary);
+            transition: transform 0.4s;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.3s;
+            background: #1a1a1a;
+            color: #ccc;
+            font-size: 0.95rem;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px; /* Largeur suffisante pour le texte */
+            padding: 20px;
+            border-top: 1px solid #222;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        /* --- BOUTON RETOUR --- */
+        .back-home {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            transition: 0.3s;
+        }
+        .back-home:hover { opacity: 1; color: var(--primary); }
+
+
+        /* Conteneur pour aligner logo + texte */
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* Espace entre le logo et le texte */
+        }
+
+        .logo-container img {
+            height: 40px; /* Légèrement plus grand pour l'équilibre */
+            width: auto;
+        }
+
+        .brand-name {
+            color: var(--primary);
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            margin: 0px 0px 0px 10px;
+            text-transform: uppercase;
+            font-family: 'Century Gothic';
+        }
+
+        /* Style pour le titre FAQ à droite */
+        .header-tag {
+            font-family: 'Playfair Display', serif;
+            color: var(--text);
+            font-weight: bold;
+            opacity: 0.6;
+            font-size: 0.9rem;
+        }
+
+
+
+        .social-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px 5%;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(211, 47, 47, 0.2);
+            text-align: center;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            z-index: 999;
+        }
+
+        .social-footer p {
+            color: #888;
+            /* Font-size responsive: min 10px, idéal 2.5vw, max 14px */
+            font-size: clamp(10px, 2.5vw, 14px);
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+
+        /* État masqué */
+        .social-footer.hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+
+        /* --- AJUSTEMENT RESPONSIVE --- */
+        @media (max-width: 480px) {
+            .brand-name {
+                font-size: 1.1rem; /* Texte plus petit sur mobile */
+            }
+            .logo-container img {
+                height: 30px;
+            }
+            .logo-container {
+                gap: 8px;
+            }
+            .header-tag {
+                display: none; /* On cache le mot FAQ à droite sur mobile pour aérer */
+            }
+        }
+
+
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .faq-question { font-size: 0.9rem; padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<!--     <header>
+        <div class="logo"><img src="assets/logo2.png" alt="BL Alliance"></div>
+        <div style="font-family: 'Playfair Display'; color: var(--primary); font-weight: bold;">FAQ</div>
+    </header> -->
+
+    <header>
+        <div class="logo-container">
+            <a href="index.html" style="display: flex; align-items: center; text-decoration: none;">
+                <img src="assets/logo2.png" alt="BL Alliance">
+                <span class="brand-name">BL Alliance</span>
+            </a>
+        </div>
+        <div class="header-tag">FAQ</div>
+    </header>
+
+    <div class="container">
+        <!-- <a href="index.html" class="back-home"><i class="fas fa-arrow-left"></i> Retour à l'accueil</a> -->
+        
+        <h1>Questions Fréquentes</h1>
+
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question">Qu'est-ce que BL Alliance ? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">BL Alliance est la première agence de courtage matrimonial moderne basée à Bukavu, dédiée à connecter des profils sérieux, ambitieux et partageant les mêmes valeurs au Sud-Kivu.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Que faire si je n'arrive pas à me connecter à mon compte BL Alliance ?<i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Si vous n'arrivez pas à vous connecter sur votre compte BL Alliance, veuillez tout simplement nous contacter au: +243 89 39 58 170. Vous pouvez nous écrire un message sur Whatsapp sur ce numéro et nous nous arrangerons de résoudre votre problème au plus vite.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Comment garantissez-vous la discrétion ? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">La confidentialité est notre priorité absolue. Vos photos et informations personnelles ne sont jamais publiques. Elles ne sont partagées qu'avec des profils compatibles après votre consentement explicite.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Est-ce que l'inscription est payante ? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Oui l'inscription est payante. Cela nous permet de ne prendre en compte que les utilisateurs sérieux.</div>
+            </div>
+
+            <!-- <div class="faq-item">
+                <div class="faq-question">Qu'est-ce que le "Badge de Vérification" ? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Ce badge confirme que l'identité du membre a été vérifiée physiquement ou par document officiel par notre équipe, garantissant ainsi un réseau de confiance sans faux profils.</div>
+            </div> -->
+
+            <div class="faq-item">
+                <div class="faq-question">Quels sont vos critères de sélection ? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Nous nous concentrons sur la maturité, la situation stable et surtout la volonté réelle de construire une relation durable.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Comment fonctionne le système d'affinités ? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Grâce à notre section "Mon Idéal", vous définissez vos attentes (valeurs, projets, style de vie). Notre algorithme filtre ensuite les profils qui correspondent le mieux à votre vision du futur.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Puis-je utiliser le service en dehors de Bukavu ? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Bien que nous soyons ancrés au Sud-Kivu, nous acceptons les membres de toute la RDC et de la diaspora souhaitant s'établir ou rencontrer quelqu'un dans la région.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Comment contacter un membre ? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Une fois qu'un "match" est établi ou que votre demande de contact est acceptée, vous pouvez échanger via notre messagerie sécurisée intégrée au tableau de bord.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Que faire en cas de comportement suspect ? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Vous pouvez signaler tout profil suspect via le bouton "Signaler" présent sur chaque carte de membre. Notre équipe de sécurité intervient sous 24h.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Où se trouve votre bureau physique ? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Pour des raisons de discrétion envers nos membres, les rencontres en bureau se font uniquement sur rendez-vous confirmé après une première étape d'inscription en ligne.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Autorisez-vous des connexions entre homosexuels et lesbiennes ? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Étant donné le contexte de notre culture et les valeurs de notre communauté du Kivu en particulier et de la R.D.Congo en général, nous ne permettons pas des connexions entre homosexuels ni lesbiennes.</div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="social-footer" id="dynamicFooter">
+        <p>© 2026 BL Alliance — Connecter les gens selon leurs destinés en RDC.</p>
+    </footer>
+    <script>
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                
+                // Fermer les autres accordéons (optionnel)
+                document.querySelectorAll('.faq-item').forEach(otherItem => {
+                    if (otherItem !== item) otherItem.classList.remove('active');
+                });
+
+                item.classList.toggle('active');
+            });
+        });
+
+        let lastScrollTop = 0;
+        const footer = document.getElementById('dynamicFooter');
+
+        window.addEventListener('scroll', () => {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > lastScrollTop && scrollTop > 50) {
+                // Scroll vers le bas -> Masquer
+                footer.classList.add('hidden');
+            } else {
+                // Scroll vers le haut -> Afficher
+                footer.classList.remove('hidden');
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        }, { passive: true });        
+    </script>
+</body>
+</html>

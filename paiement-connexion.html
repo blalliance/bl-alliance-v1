@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quota Atteint | BL Alliance</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* STYLE IDENTIQUE À PAIEMENT.HTML POUR L'HARMONIE */
+        body { background-color: #0a0a0a; color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        
+        .main-card { background-color: #141414; padding: 25px; border-radius: 12px; width: 100%; max-width: 400px; border: 1px solid #D32F2F; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; position: relative; }
+        
+        .logo-container { margin-bottom: 15px; }
+        .logo-container img { max-width: 120px; height: auto; }
+        
+        h2 { color: #D32F2F; font-size: 1.4rem; margin: 10px 0; }
+        .subtitle { font-size: 13px; color: #888; margin-bottom: 20px; line-height: 1.4; }
+        
+        /* Grille Opérateurs */
+        label { display: block; font-size: 11px; color: #888; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; text-align: left; }
+        .operator-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+        .op-box { background: #1a1a1a; border: 1px solid #333; padding: 12px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-size: 11px; font-weight: bold; color: #bbb; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .op-box i { font-size: 18px; margin-bottom: 5px; }
+        .op-box:hover { border-color: #D32F2F; }
+        .op-box.active { border-color: #D32F2F; background: rgba(211, 47, 47, 0.1); color: white; }
+
+        /* Input Group */
+        .input-group { text-align: left; margin-bottom: 15px; }
+        .phone-container { display: flex; align-items: center; background: #000; border: 1px solid #333; border-radius: 6px; padding: 0 12px; transition: 0.3s; }
+        .phone-container:focus-within { border-color: #D32F2F; }
+        .prefix { color: #D32F2F; font-weight: bold; font-size: 14px; margin-right: 10px; border-right: 1px solid #333; padding-right: 10px; }
+        input { width: 100%; padding: 12px 0; background: transparent; border: none; color: white; outline: none; font-size: 15px; }
+
+        .price-tag { font-size: 20px; color: #D32F2F; font-weight: bold; margin: 15px 0; background: #000; padding: 10px; border-radius: 6px; border: 1px dashed #444; }
+
+        /* Buttons */
+        button { width: 100%; padding: 15px; background: #D32F2F; color: white; border: none; font-weight: bold; cursor: pointer; border-radius: 6px; font-size: 14px; margin-top: 10px; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        button:active { transform: scale(0.97); background: #b71c1c; }
+        button:disabled { background: #444; cursor: not-allowed; opacity: 0.8; }
+        
+        .btn-secondary { 
+            background: rgba(255, 255, 255, 0.05); 
+            border: 1px solid #222; 
+            color: #777; 
+            margin-top: 20px; 
+            text-decoration: none; 
+            display: flex; 
+            font-size: 11px; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 8px; 
+            padding: 12px; 
+            border-radius: 6px; 
+            transition: 0.3s; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+        }
+        .btn-secondary:hover { 
+            background: rgba(255, 255, 255, 0.1); 
+            color: #fff; 
+            border-color: #444; 
+        }
+        /* Loader Spinner */
+        .spinner { display: none; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Modals style unique */
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 15px; box-sizing: border-box; }
+        .modal-content { background: #1a1a1a; padding: 25px; border-radius: 12px; width: 100%; max-width: 350px; border: 1px solid #333; text-align: center; }
+        .modal-content h3 { color: #D32F2F; margin-top: 0; }
+        .modal-content p { font-size: 14px; color: #ccc; margin-bottom: 20px; line-height: 1.5; }
+        /* Responsivité PC / Tablette */
+        @media (min-width: 768px) { .main-card { max-width: 450px; padding: 40px; } }
+        @media (min-width: 1200px) { .main-card { max-width: 500px; } }
+    </style>
+</head>
+<body>
+
+    <div class="main-card">
+        <div class="logo-container">
+            <img src="assets/logo2.png" alt="BL Alliance">
+        </div>
+        
+        <i class="fas fa-lock" style="font-size: 30px; color: #D32F2F; margin-bottom: 10px;"></i>
+        <h2>Quota Atteint</h2>
+        <p class="subtitle">Vous avez utilisé votre contact gratuit. Pour débloquer ce lien, utilisez un code privilège ou payez l'accès.</p>
+        
+        <label>MOYEN DE DÉBLOCAGE :</label>
+        <div class="operator-grid">
+            <div class="op-box" id="op-airtel" onclick="selectOp('Airtel')">
+                <i class="fas fa-mobile-alt"></i>
+                <span>AIRTEL MONEY</span>
+            </div>
+            <div class="op-box" id="op-voda" onclick="selectOp('Vodacom')">
+                <i class="fas fa-mobile-alt"></i>
+                <span>VODA MPESA</span>
+            </div>
+            <div class="op-box" id="op-orange" onclick="selectOp('Orange')">
+                <i class="fas fa-mobile-alt"></i>
+                <span>ORANGE MONEY</span>
+            </div>
+            <div class="op-box active" id="op-code" onclick="selectOp('Special')">
+                <i class="fas fa-key"></i>
+                <span>CODE SPÉCIAL</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label id="input-label">VOTRE CODE PRIVILÈGE :</label>
+            <div class="phone-container" id="container-field">
+                <span class="prefix" id="prefix-val">🔒</span>
+                <input type="text" id="userInput" placeholder="Ex: 0002026">
+            </div>
+        </div>
+        <div class="price-tag" id="price-display">Accès : Gratuit (Code)</div>
+        <button id="main-btn" onclick="processAction()">
+            <span id="btn-text">DÉBLOQUER LE CONTACT</span>
+            <div id="loader" class="spinner"></div>
+        </button>
+
+        <a href="dashboard.html" class="btn-secondary">
+            <i class="fas fa-arrow-left"></i> Retour au catalogue
+        </a>
+    </div>
+
+    <div id="modal-error" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modal-title">Attention</h3>
+            <p id="modal-body">...</p>
+            <button onclick="closeModal()">Compris</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedOperator = 'Special';
+        const targetId = new URLSearchParams(window.location.search).get('target_id');
+
+        function selectOp(op) {
+            selectedOperator = op;
+            document.querySelectorAll('.op-box').forEach(el => el.classList.remove('active'));
+            
+            const btnId = (op === 'Vodacom') ? 'op-voda' : (op === 'Special' ? 'op-code' : 'op-' + op.toLowerCase());
+            document.getElementById(btnId).classList.add('active');
+
+            const label = document.getElementById('input-label');
+            const prefix = document.getElementById('prefix-val');
+            const input = document.getElementById('userInput');
+            const price = document.getElementById('price-display');
+
+            if (op === 'Special') {
+                label.innerText = 'VOTRE CODE PRIVILÈGE :';
+                prefix.innerText = '🔒';
+                input.placeholder = 'Ex: 0002026';
+                price.innerText = 'Accès : Gratuit (Code)';
+            } else {
+                label.innerText = 'NUMÉRO ' + op.toUpperCase() + ' :';
+                prefix.innerText = '+243';
+                input.placeholder = '08... ou 09...';
+                price.innerText = 'Accès : 5.000 FC';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal-error').style.display = 'none';
+        }
+        function validateInput(val) {
+            const rules = {
+                'Vodacom': ['081', '082', '083', '81', '82', '83'],
+                'Airtel': ['097', '098', '099', '97', '98', '99'],
+                'Orange': ['084', '085', '089', '84', '85', '89'],
+                'Special': [] // Pas de règle de préfixe pour le code spécial
+            };
+            
+            if (selectedOperator === 'Special') return null; // Valide par défaut si non vide
+            
+            const prefixes = rules[selectedOperator];
+            const isValid = prefixes.some(p => val.startsWith(p));
+            
+            if (!isValid) {
+                return `Numéro invalide pour ${selectedOperator}. Les numéros autorisés commencent par : ${prefixes.join(', ')}`;
+            }
+            return null;
+        }
+        function showModal(title, text) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-body').innerText = text;
+            document.getElementById('modal-error').style.display = 'flex';
+        }
+
+        async function processAction() {
+            const val = document.getElementById('userInput').value.trim();
+            const uid = localStorage.getItem('user_id');
+            const btn = document.getElementById('main-btn');
+            const loader = document.getElementById('loader');
+            const btnText = document.getElementById('btn-text');
+            if (!val) {
+                showModal("Champ vide", "Veuillez saisir votre code ou numéro de téléphone.");
+                return;
+            }
+
+            const error = validateInput(val);
+            if (error) {
+                showModal("Format Incorrect", error);
+                return;
+            }
+            
+            // État de chargement
+            btn.disabled = true;
+            btnText.innerText = "PATIENTEZ...";
+            loader.style.display = "block";
+
+            try {
+                if (selectedOperator === 'Special') {
+                    // LOGIQUE CODE SPÉCIAL
+                    const res = await fetch('https://bl-alliance-api.onrender.com/verify_special_code', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ user_id: uid, code: val })
+                    });
+                    const data = await res.json();
+
+                    if (data.status === "success") {
+                        // Si code valide, on crée la connexion directement
+                        const createRes = await fetch('https://bl-alliance-api.onrender.com/create_connection', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ sender_id: uid, target_id: targetId })
+                        });
+                        window.location.href = "chat-box-2.html?contact_id=" + targetId;
+                    } else {
+                        showModal("Échec", "Code privilège invalide ou déjà utilisé.");
+                    }
+                } else {
+                    // LOGIQUE PAIEMENT MOBILE (Simulation ou Flutterwave)
+                    // Ici on simule l'appel au backend de paiement
+                    // alert("Demande de paiement envoyée sur " + val + ". Validez sur votre téléphone.");
+                    alert("Veuillez patienter ...");
+                    // En production, vous appelleriez une route /pay_connection
+                }
+            } catch (e) {
+                showModal("Erreur", "Connexion au serveur impossible.");
+            } finally {
+                btn.disabled = false;
+                btnText.innerText = "DÉBLOQUER LE CONTACT";
+                loader.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

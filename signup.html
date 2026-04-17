@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <title>Inscription | BL Alliance</title> -->
+    <!-- <meta charset="UTF-8"> -->
+    <title>Inscription | BL Alliance</title>
+    <style>
+        body { background-color: #0a0a0a; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        /* -- DEBUT DU BLOCK À MODIFIER -- */
+        .main-card { background-color: #141414; padding: 25px; border-radius: 12px; width: 100%; max-width: 400px; border: 1px solid #222; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .logo-container { text-align: center; margin-bottom: 20px; }
+        .logo-container img { max-width: 150px; height: auto; }
+        h2 { color: #D32F2F; margin: 0 0 20px 0; text-align: center; font-size: 1.5rem; }
+        .form-group { margin-bottom: 15px; position: relative; }
+        label { display: block; font-size: 13px; color: #bbb; margin-bottom: 5px; font-weight: 500; }
+        input, select { width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #333; color: white; box-sizing: border-box; border-radius: 6px; font-size: 14px; transition: border 0.3s; }
+        input:focus { border-color: #D32F2F; outline: none; }
+        .pass-wrapper { position: relative; }
+        .eye-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #666; font-size: 18px; }
+        .terms-container { margin: 20px 0; font-size: 12px; color: #888; }
+        .terms-item { display: flex; align-items: flex-start; margin-bottom: 8px; cursor: pointer; }
+        .terms-item input { width: auto; margin-right: 10px; margin-top: 2px; }
+        button { width: 100%; padding: 14px; background: #D32F2F; color: white; border: none; font-weight: bold; cursor: pointer; border-radius: 6px; font-size: 16px; transition: 0.3s; }
+        button:disabled { background: #333 !important; color: #666; cursor: not-allowed; }
+        button:active { transform: scale(0.98); opacity: 0.9; }
+        .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.8s linear infinite; margin-left: 10px; vertical-align: middle; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        /* Styles Modal */
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 15px; box-sizing: border-box; }
+        .modal-content { background: #1a1a1a; padding: 25px; border-radius: 12px; width: 100%; max-width: 350px; border: 1px solid #333; text-align: center; }
+        .modal-content h3 { color: #D32F2F; margin-top: 0; }
+        .modal-content p { font-size: 14px; line-height: 1.5; color: #ccc; }
+        .phone-highlight { display: block; font-size: 18px; font-weight: bold; color: white; margin: 15px 0; letter-spacing: 1px; }
+        @media (max-width: 480px) { .main-card { padding: 20px; } h2 { font-size: 1.2rem; } }
+        /* -- FIN DU BLOCK À MODIFIER -- */
+    </style>
+</head>
+<body>
+    <script>
+        if (localStorage.getItem('user_id') && localStorage.getItem('is_paid') === 'true') {
+            window.location.href = "dashboard.html";
+        }
+    </script>
+    <div class="main-card">
+        <div class="logo-container">
+            <img src="assets/logo2.png" alt="BL Alliance Logo">
+        </div>
+        <h2>Créer un compte</h2>
+        
+        <div class="form-group">
+            <label for="full_name">Nom et Prénom</label>
+            <input type="text" id="full_name" placeholder="Ex: Jean Dupont">
+        </div>
+        
+        <div class="form-group">
+            <label for="birth_date">Date de naissance</label>
+            <input type="date" id="birth_date" onblur="validateDate(this)">
+        </div>
+        
+        <div class="form-group">
+            <label for="phone">Téléphone</label>
+            <input type="text" id="phone" placeholder="Ex: 0820000000">
+        </div>
+        
+        <div class="form-group">
+            <label for="gender">Genre</label>
+            <select id="gender">
+                <option value="Femme">Je suis une Femme</option>
+                <option value="Homme">Je suis un Homme</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <div class="pass-wrapper">
+                <input type="password" id="password" placeholder="Minimum 6 caractères">
+                <span class="eye-icon" onclick="togglePass('password')">👁️</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="confirm_password">Confirmer le mot de passe</label>
+            <div class="pass-wrapper">
+                <input type="password" id="confirm_password" placeholder="Répétez le mot de passe">
+                <span class="eye-icon" onclick="togglePass('confirm_password')">👁️</span>
+            </div>
+        </div>
+
+        <div class="terms-container">
+            <label class="terms-item">
+                <input type="checkbox" id="cgu" onchange="toggleSubmit()"> 
+                J'accepte les <a href="conditions-generales-d-utilisations.html" style="color:#D32F2F"> CGU</a>
+            </label>
+            <label class="terms-item">
+                <input type="checkbox" id="privacy" onchange="toggleSubmit()"> 
+                J'accepte la <a href="privacy-policy.html" style="color:#D32F2F"> politique de confidentialité</a>
+            </label>
+        </div>
+        
+        <button id="btn-submit" onclick="preVerifyPhone()" disabled>S'inscrire</button>
+        <div id="message"></div>
+        
+        <p style="text-align: center; font-size: 12px; margin-top: 15px;">
+            Déjà inscrit ? <a href="login.html" style="color: #D32F2F; text-decoration: none;">Se connecter</a>
+        </p>
+        <p style="text-align: center; font-size: 12px; margin-top: 10px;">
+            <a href="index.html" style="color: #888; text-decoration: none;">← Retour</a>
+        </p>
+    </div>
+
+    <div id="modal-confirm" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Vérifiez votre numéro</h3>
+            <p>Est-ce bien votre numéro de téléphone ?</p>
+            <span class="phone-highlight" id="modal-phone-display"></span>
+            <p style="color: #ff4444; font-size: 12px;">ATTENTION: Si ce numéro est incorrect, vous ne pourrez pas récupérer votre compte après la déconnexion.</p>
+            <button id="btn-confirm-final" onclick="handleSignup()">
+                <span id="text-confirm">Oui, c'est correct</span>
+                <div id="loader-confirm" class="spinner" style="display:none;"></div>
+            </button>
+            <button onclick="closeModal('modal-confirm')" style="background:#333; margin-top:10px;">Modifier</button>
+        </div>
+    </div>
+
+    <div id="modal-exists" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Compte déjà existant</h3>
+            <p>Ce numéro de téléphone est déjà associé à un compte BL Alliance.</p>
+            <span class="phone-highlight" id="modal-phone-exists"></span>
+            <p>Si c'est vous, connectez-vous directement. Si vous avez oublié votre mot de passe, contactez le support.</p>
+            <button onclick="window.location.href='login.html'">Se connecter</button>
+            <button onclick="closeModal('modal-exists')" style="background:#333; margin-top:10px;">J'ai compris</button>
+        </div>
+    </div>
+
+<script>
+        // -- DEBUT DU BLOCK À AJOUTER/MODIFIER --
+        function togglePass(id) {
+            const input = document.getElementById(id);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        function toggleSubmit() {
+            const cgu = document.getElementById('cgu').checked;
+            const privacy = document.getElementById('privacy').checked;
+            document.getElementById('btn-submit').disabled = !(cgu && privacy);
+        }
+
+        function validateDate(input) {
+            const date = new Date(input.value);
+            const now = new Date();
+            if (date > now || date.getFullYear() < 1920) {
+                alert("Veuillez saisir une date de naissance valide.");
+                input.value = "";
+            }
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function preVerifyPhone() {
+            const phone = document.getElementById('phone').value;
+            const pass = document.getElementById('password').value;
+            const confirm = document.getElementById('confirm_password').value;
+            
+            if(!phone || pass.length < 6) {
+                alert("Veuillez remplir correctement les champs (Pass: min 6 car.)");
+                return;
+            }
+            if(pass !== confirm) {
+                alert("Les mots doivent être identiques.");
+                return;
+            }
+            
+            document.getElementById('modal-phone-display').innerText = phone;
+            openModal('modal-confirm');
+        }
+
+        async function handleSignup() {
+            // -- DEBUT DU BLOCK À MODIFIER --
+            const btnConfirm = document.getElementById('btn-confirm-final');
+            const textConfirm = document.getElementById('text-confirm');
+            const loaderConfirm = document.getElementById('loader-confirm');
+            const btnSubmit = document.getElementById('btn-submit');
+            const msgDiv = document.getElementById('message');
+
+            // État de chargement immédiat sur le bouton du modal
+            btnConfirm.disabled = true;
+            textConfirm.innerText = "Veuillez patienter...";
+            loaderConfirm.style.display = "inline-block";
+
+            const data = {
+                full_name: document.getElementById('full_name').value,
+                birth_date: document.getElementById('birth_date').value,
+                phone: document.getElementById('phone').value,
+                gender: document.getElementById('gender').value,
+                password: document.getElementById('password').value
+            };
+
+            btnSubmit.disabled = true;
+            msgDiv.style.color = "white";
+            msgDiv.innerText = "Création du profil...";
+
+            try {
+                const response = await fetch('https://bl-alliance-api.onrender.com/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    closeModal('modal-confirm');
+                    localStorage.setItem('user_id', result.user_id);
+                    localStorage.setItem('is_paid', 'false');
+                    window.location.href = "paiement.html";
+                } else {
+                    // Réinitialisation en cas d'erreur
+                    btnConfirm.disabled = false;
+                    textConfirm.innerText = "Oui, c'est correct";
+                    loaderConfirm.style.display = "none";
+                    btnSubmit.disabled = false;
+                    if(result.error === "User already registered" || response.status === 409) {
+                        closeModal('modal-confirm');
+                        document.getElementById('modal-phone-exists').innerText = data.phone;
+                        openModal('modal-exists');
+                        msgDiv.innerText = "";
+                    } else {
+                        msgDiv.style.color = "#ff4444";
+                        msgDiv.innerText = result.error;
+                    }
+                }
+            } catch (error) {
+                btnConfirm.disabled = false;
+                textConfirm.innerText = "Oui, c'est correct";
+                loaderConfirm.style.display = "none";
+                btnSubmit.disabled = false;
+                msgDiv.style.color = "#ff4444";
+                msgDiv.innerText = "Erreur de connexion au serveur";
+            }
+            // -- FIN DU BLOCK À MODIFIER --
+        }
+    </script>
+</body>
+</html>

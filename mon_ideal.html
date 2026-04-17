@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Idéal - BL Alliance</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ff4d4d;
+            --bg-dark: #121212;
+            --card-bg: #1e1e1e;
+            --text: #ffffff;
+            --text-muted: #b0b0b0;
+            --border: #333;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background: rgba(0, 0, 0, 0.8);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-container img { height: 40px; margin-right: 10px; }
+        .brand-name { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
+
+        .btn-back-circle {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-back-circle:hover { background: var(--primary); }
+
+        /* Formulaire */
+        .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
+        .page-header { text-align: center; margin-bottom: 40px; }
+        .page-header h1 { color: var(--primary); margin-bottom: 10px; }
+        .page-header p { color: var(--text-muted); }
+
+        .form-section {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+
+        .form-section h3 { margin-top: 0; border-bottom: 2px solid var(--primary); display: inline-block; padding-bottom: 5px; margin-bottom: 20px; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-muted); }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            background: #2a2a2a;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        .range-container { display: flex; align-items: center; gap: 10px; }
+        .range-container input { flex: 1; }
+
+        /* Tags */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .tag-item {
+            padding: 8px 15px;
+            background: #2a2a2a;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .tag-item:hover { border-color: var(--primary); }
+        .tag-item.selected { background: var(--primary); border-color: var(--primary); color: white; }
+
+        .tag-limit-info { font-size: 0.8rem; color: #ff9999; }
+
+        .btn-save {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 77, 77, 0.3);
+        }
+
+        .btn-save:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+        footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-size: 0.9rem; }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container { margin: 15px auto; }
+            .form-section { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <a href="index.html" style="display: flex; align-items: center; text-decoration: none;">
+                <img src="assets/logo2.png" alt="BL Alliance">
+                <span class="brand-name">BL Alliance</span>
+            </a>
+        </div>
+        <div class="header-actions">
+            <a href="dashboard.html" class="btn-back-link">
+                <button class="btn-back-circle" title="Retour au Dashboard">
+                    <i class="fas fa-angles-left"></i>
+                </button>
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Mon/Ma Partenaire Idéal(e)</h1>
+            <p>Définissez vos attentes avec précision pour que notre algorithme vous propose les profils compatibles.</p>
+        </div>
+
+        <form id="idealForm">
+            <div class="form-section">
+                <h3>Critères Physiques & Identité</h3>
+                
+                <div class="form-group">
+                    <label>Tranche d'âge (18 ans min.)</label>
+                    <div class="range-container">
+                        <input type="number" id="age_min" name="age_min" class="form-control" placeholder="De (ex: 20)" min="18">
+                        <span>à</span>
+                        <input type="number" id="age_max" name="age_max" class="form-control" placeholder="À (ex: 25)" min="18">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Couleur de peau souhaitée</label>
+                    <select id="couleur_peau" name="couleur_peau" class="form-control">
+                        <option value="" selected>Peu importe</option>
+                        <option>Teint foncé</option>
+                        <option>Teint intermédiaire</option>
+                        <option>Brun(e)</option>
+                        <option>Très Brun(e)</option>
+                        <option>Métis(e)</option>
+                        <option>Blanc(he)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Taille (mètres)</label>
+                    <div class="range-container">
+                        <input type="number" id="taille_min_m" name="taille_min_m" step="0.01" class="form-control" placeholder="De (ex: 1.50)">
+                        <span>à</span>
+                        <input type="number" id="taille_max_m" name="taille_max_m" step="0.01" class="form-control" placeholder="À (ex: 1.65)">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Religion</label>
+                    <select id="religion" name="religion" class="form-control">
+                        <option value="" selected>Peu importe</option>
+                        <option>Catholique</option>
+                        <option>Protestante</option>
+                        <option>Musulmane</option>
+                        <option>Anglicane</option>
+                        <option>Orthodoxe</option>
+                        <option>Néo-Apostolique</option>
+                        <option>Témoin de Jéhovah</option>
+                        <option>Église de réveil</option>
+                        <option>Kimbanguiste</option>
+                        <option>Adventiste</option>
+                        <option>Autre</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Masse corporelle</label>
+                    <select id="masse_corporelle" name="masse_corporelle" class="form-control">
+                        <option value="" selected>Peu importe</option>
+                        <option>Maigre</option>
+                        <option>Mince</option>
+                        <option>Moyen(ne)</option>
+                        <option>Gras(se)</option>
+                        <option>Très gras(se)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Parcours & Profession</h3>
+                
+                <div class="form-group">
+                    <label>Niveau d'études min.</label>
+                    <input type="text" id="niveau_etude" name="niveau_etude" class="form-control" placeholder="Ex: Licence, Graduat, Master...">
+                </div>
+
+                <div class="form-group">
+                    <label>Profession souhaitée <span class="tag-limit-info">(Max 3)</span></label>
+                    <div class="tags-container" id="tags-professions_souhaitees">
+                        <span class="tag-item">Médecin</span>
+                        <span class="tag-item">Agronome</span>
+                        <span class="tag-item">Sociologue</span>
+                        <span class="tag-item">Économiste</span>
+                        <span class="tag-item">Comptable</span>
+                        <span class="tag-item">Banquier</span>
+                        <span class="tag-item">Infirmier</span>
+                        <span class="tag-item">Informaticien</span>
+                        <span class="tag-item">Programmeur</span>
+                        <span class="tag-item">Entrepreneur</span>
+                        <span class="tag-item">Enseignant</span>
+                        <span class="tag-item">Professeur</span>
+                        <span class="tag-item">Juriste / Avocat</span>
+                        <span class="tag-item">Ingénieur</span>
+                        <span class="tag-item">Journaliste</span>
+                        <span class="tag-item">Artiste</span>
+                        <span class="tag-item">Autre</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Adresse actuelle / Ville</label>
+                    <input type="text" id="adresse_actuelle" name="adresse_actuelle" class="form-control" placeholder="Ex: Goma, Bukavu, Lubumbashi...">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Loisirs & Style de vie</h3>
+                
+                <div class="form-group">
+                    <label>Sport(s) souhaité(s) <span class="tag-limit-info">(Max 5)</span></label>
+                    <div class="tags-container" id="tags-sports_souhaites">
+                        <span class="tag-item">Football</span>
+                        <span class="tag-item">Basket-ball</span>
+                        <span class="tag-item">Fitness</span>
+                        <span class="tag-item">Natation</span>
+                        <span class="tag-item">Tennis</span>
+                        <span class="tag-item">Marche</span>
+                        <span class="tag-item">Aucun</span>
+                        <span class="tag-item">Autre</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Habitudes acceptées <span class="tag-limit-info">(Max 10)</span></label>
+                    <div class="tags-container" id="tags-habitudes_acceptees">
+                        <span class="tag-item">Fumeur</span>
+                        <span class="tag-item">Non-fumeur</span>
+                        <span class="tag-item">Abstème (Ne boit pas)</span>
+                        <span class="tag-item">Buveur occasionnel</span>
+                        <span class="tag-item">Buveur regulier</span>
+                        <span class="tag-item">Végétarien</span>
+                        <span class="tag-item">Lève-tôt</span>
+                        <span class="tag-item">Couche-tard</span>
+                        <span class="tag-item">Casanier</span>
+                        <span class="tag-item">Voyageur</span>
+                        <span class="tag-item">Extraverti</span>
+                        <span class="tag-item">Introverti</span>
+                        <span class="tag-item">Discret</span>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-save">Valider mes critères de recherche</button>
+        </form>
+    </div>
+
+    <footer>
+        <p>© 2026 BL Alliance — Agence de Courtage Matrimonial. Tous droits réservés.</p>
+    </footer>
+
+    <script>
+        const API_URL = "https://bl-alliance-api.onrender.com";
+        const USER_ID = localStorage.getItem('user_id');
+
+        // Gérer la sélection des tags
+        document.querySelectorAll('.tag-item').forEach(tag => {
+            tag.addEventListener('click', function() {
+                this.classList.toggle('selected');
+            });
+        });
+
+        async function loadIdealData() {
+            try {
+                const response = await fetch(`${API_URL}/dashboard?user_id=${USER_ID}`);
+                const data = await response.json();
+                
+                // Note : On suppose ici que ta route dashboard renvoie maintenant 'user_criteres'
+                // Si ce n'est pas encore le cas, il faudra modifier ton API dashboard.
+                const crit = data.user_criteres || {}; 
+
+                // Remplissage auto
+                const fields = ['age_min', 'age_max', 'couleur_peau', 'taille_min_m', 'taille_max_m', 'religion', 'masse_corporelle', 'niveau_etude', 'adresse_actuelle'];
+                fields.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el && crit[id]) el.value = crit[id];
+                });
+
+                // Tags selected
+                const tagFields = ['professions_souhaitees', 'sports_souhaites', 'habitudes_acceptees'];
+                tagFields.forEach(field => {
+                    const savedValues = crit[field] || [];
+                    const container = document.getElementById(`tags-${field}`);
+                    if (container) {
+                        container.querySelectorAll('.tag-item').forEach(tag => {
+                            if (savedValues.includes(tag.innerText)) {
+                                tag.classList.add('selected');
+                            }
+                        });
+                    }
+                });
+            } catch (err) { console.error("Erreur de chargement:", err); }
+        }
+
+        document.getElementById('idealForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('user_id', USER_ID);
+
+            const fields = ['age_min', 'age_max', 'couleur_peau', 'taille_min_m', 'taille_max_m', 'religion', 'masse_corporelle', 'niveau_etude', 'adresse_actuelle'];
+            fields.forEach(id => formData.append(id, document.getElementById(id).value));
+
+            const tagFields = ['professions_souhaitees', 'sports_souhaites', 'habitudes_acceptees'];
+            tagFields.forEach(field => {
+                const selected = Array.from(document.querySelectorAll(`#tags-${field} .tag-item.selected`)).map(t => t.innerText);
+                selected.forEach(v => formData.append(field, v));
+            });
+
+            try {
+                const res = await fetch(`${API_URL}/edit_criteres`, { method: 'POST', body: formData });
+                if(res.ok) {
+                    alert("Préférences enregistrées !");
+                    window.location.href = "dashboard.html";
+                }
+            } catch (err) { alert("Erreur réseau"); }
+        });
+
+        window.onload = loadIdealData;
+    </script>
+</body>
+</html>

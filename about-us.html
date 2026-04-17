@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>À Propos | BL Alliance</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #D32F2F;
+            --primary-hover: #B71C1C;
+            --dark: #0a0a0a;
+            --card-bg: #141414;
+            --text: #ffffff;
+            --border: rgba(211, 47, 47, 0.2);
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* --- HEADER --- */
+        header {
+            position: fixed;
+            top: 0; width: 100%; z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 5%;
+            background: rgba(0,0,0,0.95);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            box-sizing: border-box;
+        }
+
+        .logo-container { display: flex; align-items: center; gap: 12px; }
+        .logo-container img { height: 40px; }
+        .brand-name { color: var(--primary); font-size: 1.8rem; font-weight: 900; text-transform: uppercase; margin-left: 10px; }
+
+        /* --- HERO SECTION --- */
+        .hero-about {
+            padding: 150px 10% 80px;
+            padding-top: 70px;
+            padding-bottom: 30px;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('assets/about-bg.jpg'); /* Prévoir une image de couple élégant ou de fond abstrait */
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+        }
+
+        .hero-about h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .hero-about p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #ddd;
+        }
+
+        /* --- SECTION CONTENU --- */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            margin-bottom: 80px;
+        }
+
+        .section-text h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .section-text p {
+            color: #bbb;
+            margin-bottom: 15px;
+        }
+
+        /* --- VALEURS --- */
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .value-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #222;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .value-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-10px);
+        }
+
+        .value-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .value-card h4 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        /* --- STATISTIQUES --- */
+        .stats-bar {
+            background: var(--card-bg);
+            padding: 50px 0;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            margin: 60px 0;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .stat-item { text-align: center; }
+        .stat-number { display: block; font-size: 2.5rem; font-weight: 900; color: var(--primary); }
+        .stat-label { font-size: 0.9rem; text-transform: uppercase; color: #888; }
+
+        /* --- CTA --- */
+        .about-cta {
+            text-align: center;
+            padding: 60px;
+            background: rgba(211, 47, 47, 0.05);
+            border-radius: 20px;
+        }
+
+        .btn-start {
+            background: var(--primary);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 25px;
+            transition: 0.3s;
+        }
+        .btn-start:hover { background: var(--primary-hover); transform: scale(1.05); }
+
+        /* --- FOOTER --- */
+        .social-footer {
+            padding: 30px 0;
+            background: rgba(10, 10, 10, 0.95);
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+        .social-footer p { color: #888; font-size: 13px; }
+
+
+        /* --- RESET DU LIEN ET ACTIONS HEADER --- */
+        .header-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        /* 4. On force aussi le reset sur le lien parent pour être sûr */
+        .btn-back-link {
+            text-decoration: none !important;
+            -webkit-tap-highlight-color: transparent;
+            outline: none !important;
+        }
+
+        /* --- BOUTON ROND --- */
+        .btn-back-circle {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 10px rgba(211, 47, 47, 0.3);
+            
+            /* 1. Supprime le rectangle gris/bleu sur Android/iOS */
+            -webkit-tap-highlight-color: transparent;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            
+            /* 2. Supprime la bordure de focus (souvent bleue ou orange) */
+            outline: none !important;
+            
+            /* 3. Empêche la sélection de texte parasite lors du clic répété */
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .btn-back-circle i {
+            font-size: 1.1rem;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- EFFET HOVER (PC) --- */
+        @media (hover: hover) {
+            .btn-back-circle:hover {
+                background-color: white;
+                /*transform: scale(1.1);
+                box-shadow: 0 6px 15px rgba(255, 255, 255, 0.2);*/
+            }
+            
+            .btn-back-circle:hover i {
+                color: var(--primary);
+                /*transform: translateX(-3px);*/
+            }
+        }
+
+        /* --- EFFET CLIC / ACTIVE (Mobile & Tablette) --- */
+        /* 5. Feedback propre : le bouton change de couleur SANS le carré */
+        .btn-back-circle:active {
+            background-color: white !important;
+            transform: scale(0.9);
+        }
+
+        .btn-back-circle:active i {
+            color: var(--primary) !important;
+        }
+
+        /* --- ADAPTATION RESPONSIVE --- */
+        @media (max-width: 480px) {
+            .btn-back-circle {
+                width: 38px;
+                height: 38px;
+            }
+            
+            .btn-back-circle i {
+                font-size: 0.95rem;
+            }
+            
+            .brand-name {
+                font-size: 1.4rem; /* Réduction légère du nom pour laisser de la place au bouton sur petit écran */
+            }
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .section-grid { grid-template-columns: 1fr; }
+            .hero-about h1 { font-size: 2.5rem; }
+            .stats-bar { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <a href="index.html" style="display: flex; align-items: center; text-decoration: none;">
+                <img src="assets/logo2.png" alt="BL Alliance">
+                <span class="brand-name">BL Alliance</span>
+            </a>
+        </div>
+        <div class="header-actions">
+            <a href="dashboard.html" class="btn-back-link">
+                <button class="btn-back-circle" title="Retour au Dashboard">
+                    <i class="fas fa-angles-left"></i>
+                </button>
+            </a>
+        </div>
+    </header>
+
+    <section class="hero-about">
+        <h1>Notre Mission</h1>
+        <p>Plus qu'une application, BL Alliance est une agence de courtage matrimonial dédiée à créer des unions durables et respectueuses des valeurs en République Démocratique du Congo.</p>
+    </section>
+
+    <div class="container">
+        
+        <div class="section-grid">
+            <div class="section-text">
+                <h2>L'Excellence du Matching</h2>
+                <p>À une époque où les rencontres superficielles se multiplient, BL Alliance se distingue par une approche rigoureuse et personnalisée.</p>
+                <p>Nous croyons que l'amour véritable repose sur une compatibilité profonde : origines, style de vie, aspirations spirituelles et ambitions professionnelles.</p>
+            </div>
+            <div class="section-image">
+                <img src="assets/confiance.png" alt="Confiance" style="width: 100%; border-radius: 15px; border: 1px solid #333;">
+            </div>
+        </div>
+
+        <h2 style="text-align: center; font-family: 'Playfair Display'; margin-bottom: 40px;">Nos Valeurs Fondamentales</h2>
+        
+        <div class="values-grid">
+            <div class="value-card">
+                <i class="fas fa-shield-alt"></i>
+                <h4>Confidentialité</h4>
+                <p>Vos données et vos échanges sont protégés avec la plus haute rigueur. Votre vie privée est notre priorité absolue.</p>
+            </div>
+            <div class="value-card">
+                <i class="fas fa-heart"></i>
+                <h4>Sincérité</h4>
+                <p>Nous encourageons des profils authentiques et vérifiés pour éviter les déceptions et bâtir sur du solide.</p>
+            </div>
+            <div class="value-card">
+                <i class="fas fa-gem"></i>
+                <h4>Prestige</h4>
+                <p>Un service haut de gamme conçu pour une élite exigeante qui n'a pas de temps à perdre avec l'éphémère.</p>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-number">2,500+</span>
+                <span class="stat-label">Profils Vérifiés</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">120</span>
+                <span class="stat-label">Mariages célébrés</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">15</span>
+                <span class="stat-label">Villes en RDC</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">98%</span>
+                <span class="stat-label">Taux de satisfaction</span>
+            </div>
+        </div>
+
+        <div class="section-grid" style="direction: rtl;">
+            <div class="section-text" style="direction: ltr;">
+                <h2>Pourquoi nous choisir ?</h2>
+                <p>Contrairement aux algorithmes classiques, BL Alliance intègre les réalités socioculturelles congolaises dans ses critères de sélection.</p>
+                <p>Que vous soyez à Kinshasa, Lubumbashi ou dans la diaspora, nous vous aidons à trouver la personne qui comprend votre passé et partage votre futur.</p>
+            </div>
+            <div class="section-image">
+                <img src="assets/succes.jpg" alt="Réussite" style="width: 100%; border-radius: 15px; border: 1px solid #333;">
+            </div>
+        </div>
+
+        <div class="about-cta" style="display: none;">
+            <h2>Prêt(e) à écrire votre histoire ?</h2>
+            <p>Rejoignez la plus grande alliance matrimoniale de la RDC dès aujourd'hui.</p>
+            <a href="edit_profil.html" class="btn-start">Compléter mon profil</a>
+        </div>
+
+    </div>
+
+    <footer class="social-footer">
+        <p>© 2026 BL Alliance — Agence de Courtage Matrimonial. Tous droits réservés.</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Politique de Confidentialité | BL Alliance</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #D32F2F;
+            --dark: #0a0a0a;
+            --card-bg: #141414;
+            --text: #ffffff;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding-top: 100px;
+        }
+
+        /* --- HEADER (Strictement identique aux CGU) --- */
+        header {
+            position: fixed;
+            top: 0; width: 100%; z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 5%;
+            background: rgba(0,0,0,0.95);
+            border-bottom: 1px solid rgba(211, 47, 47, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-container img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            color: var(--primary);
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: 'Century Gothic', sans-serif;
+            margin: 0px 0px 0px 10px;
+        }
+
+        .header-tag {
+            font-family: 'Playfair Display', serif;
+            color: var(--text);
+            font-weight: bold;
+            opacity: 0.6;
+            font-size: 0.9rem;
+        }
+
+        /* --- CONTENU --- */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px 120px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            text-align: center;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .last-update {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .intro-text {
+            text-align: center;
+            margin-bottom: 50px;
+            color: #bbb;
+            font-size: 1.1rem;
+        }
+
+        /* --- STYLE ACCORDÉON --- */
+        .cgu-item {
+            background: var(--card-bg);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #222;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .cgu-item:hover {
+            border-color: rgba(211, 47, 47, 0.5);
+        }
+
+        .cgu-header {
+            padding: 22px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            user-select: none;
+            color: #eee;
+        }
+
+        .cgu-header span {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cgu-header i.icon-main {
+            color: var(--primary);
+            width: 20px;
+            text-align: center;
+        }
+
+        .cgu-header i.chevron {
+            color: var(--primary);
+            transition: transform 0.4s;
+            font-size: 0.8rem;
+        }
+
+        .cgu-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1), padding 0.3s;
+            background: #0d0d0d;
+            color: #aaa;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .cgu-item.active .cgu-content {
+            max-height: 2000px;
+            padding: 25px;
+            border-top: 1px solid #222;
+        }
+
+        .cgu-item.active .cgu-header i.chevron {
+            transform: rotate(180deg);
+        }
+
+        .cgu-content ul {
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+
+        .cgu-content li {
+            margin-bottom: 10px;
+        }
+
+        .cgu-content strong {
+            color: var(--text);
+        }
+
+        /* --- FOOTER --- */
+        .social-footer {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            padding: 15px 0%;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(211, 47, 47, 0.2);
+            text-align: center;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            z-index: 999;
+        }
+
+
+        .social-footer p {
+            color: #888;
+            font-size: clamp(10px, 2.5vw, 14px);
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+
+        .social-footer.hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 480px) {
+            body { padding-top: 80px; }
+            .brand-name { font-size: 1.2rem; }
+            .logo-container img { height: 32px; }
+            .header-tag { display: none; }
+            .cgu-header { padding: 18px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <a href="index.html" style="display: flex; align-items: center; text-decoration: none;">
+                <img src="assets/logo2.png" alt="BL Alliance">
+                <span class="brand-name">BL Alliance</span>
+            </a>
+        </div>
+        <div class="header-tag">Confidentialité</div>
+    </header>
+
+    <div class="container">
+        <h1>Politique de Confidentialité</h1>
+        <p class="last-update">Dernière mise à jour : 23 Mars 2026</p>
+        
+        <p class="intro-text">
+            Chez BL Alliance, nous comprenons que la recherche d'un partenaire de vie est une démarche intime qui nécessite une discrétion absolue.
+        </p>
+
+        <div class="cgu-accordion">
+            
+            <div class="cgu-item">
+                <div class="cgu-header">
+                    <span><i class="fas fa-database icon-main"></i> 1. Collecte des Informations</span>
+                    <i class="fas fa-chevron-down chevron"></i>
+                </div>
+                <div class="cgu-content">
+                    Nous collectons uniquement les informations nécessaires pour établir des connexions de qualité :
+                    <ul>
+                        <li><strong>Identité :</strong> Nom complet, sexe, date de naissance.</li>
+                        <li><strong>Contact :</strong> Numéro de téléphone (utilisé pour la connexion et les paiements Mobile Money).</li>
+                        <li><strong>Profil :</strong> Photos de profil et informations personnelles facultatives pour personnaliser votre recherche.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="cgu-item">
+                <div class="cgu-header">
+                    <span><i class="fas fa-eye-slash icon-main"></i> 2. Protection des Photos</span>
+                    <i class="fas fa-chevron-down chevron"></i>
+                </div>
+                <div class="cgu-content">
+                    C'est notre engagement technique majeur :
+                    <ul>
+                        <li><strong>Moteurs de recherche :</strong> Vos photos sont configurées pour ne <strong>jamais</strong> être indexées par Google ou d'autres moteurs publics.</li>
+                        <li><strong>Accès restreint :</strong> Seuls les membres connectés et ayant un compte validé peuvent visualiser les profils.</li>
+                        <li><strong>Hébergement sécurisé :</strong> Nous utilisons des liens d'accès temporaires et signés pour protéger vos médias.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="cgu-item">
+                <div class="cgu-header">
+                    <span><i class="fas fa-tasks icon-main"></i> 3. Utilisation des Données</span>
+                    <i class="fas fa-chevron-down chevron"></i>
+                </div>
+                <div class="cgu-content">
+                    Vos données sont utilisées exclusivement pour :
+                    <ul>
+                        <li>La création et la gestion de votre compte membre.</li>
+                        <li>La mise en relation avec d'autres partenaires compatibles.</li>
+                        <li>Le traitement sécurisé de vos frais d'adhésion via Flutterwave.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="cgu-item">
+                <div class="cgu-header">
+                    <span><i class="fas fa-user-secret icon-main"></i> 4. Partage et Discrétion</span>
+                    <i class="fas fa-chevron-down chevron"></i>
+                </div>
+                <div class="cgu-content">
+                    <ul>
+                        <li><strong>Aucun partage commercial :</strong> BL Alliance ne vend et ne loue jamais vos données personnelles à des tiers.</li>
+                        <li><strong>Discrétion entre membres :</strong> Votre numéro de téléphone ne sera jamais affiché publiquement. Il n'est partagé qu'après un consentement mutuel lors d'une mise en relation.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="cgu-item">
+                <div class="cgu-header">
+                    <span><i class="fas fa-lock icon-main"></i> 5. Sécurité Technique</span>
+                    <i class="fas fa-chevron-down chevron"></i>
+                </div>
+                <div class="cgu-content">
+                    Nous appliquons des mesures de sécurité rigoureuses :
+                    <ul>
+                        <li>Chiffrement systématique des mots de passe.</li>
+                        <li>Protocoles de transfert sécurisés (HTTPS).</li>
+                        <li>Règles de sécurité Cloudinary pour bloquer les accès non autorisés aux fichiers sources.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="cgu-item">
+                <div class="cgu-header">
+                    <span><i class="fas fa-user-edit icon-main"></i> 6. Vos Droits</span>
+                    <i class="fas fa-chevron-down chevron"></i>
+                </div>
+                <div class="cgu-content">
+                    Conformément aux bonnes pratiques numériques, vous disposez d'un droit d'accès, de modification et de suppression de vos données à tout moment depuis votre espace <strong>"Mon Profil"</strong>. Pour toute demande de suppression définitive, contactez notre assistance locale.
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="social-footer" id="dynamicFooter">
+        <p>© 2026 BL Alliance — Votre vie privée est notre priorité absolue en RDC.</p>
+    </footer>
+
+    <script>
+        // Logique Accordéon
+        document.querySelectorAll('.cgu-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const item = header.parentElement;
+                document.querySelectorAll('.cgu-item').forEach(otherItem => {
+                    if (otherItem !== item) otherItem.classList.remove('active');
+                });
+                item.classList.toggle('active');
+            });
+        });
+
+        // Effet Scroll Footer
+        let lastScrollTop = 0;
+        const footer = document.getElementById('dynamicFooter');
+
+        window.addEventListener('scroll', () => {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > lastScrollTop && scrollTop > 50) {
+                footer.classList.add('hidden');
+            } else {
+                footer.classList.remove('hidden');
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        }, { passive: true });
+    </script>
+</body>
+</html>
