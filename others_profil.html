@@ -284,17 +284,19 @@
                 const response = await fetch(`https://bl-alliance-api.onrender.com/get_profile?id=${targetId}`);
                 const data = await response.json();
 
+                // console.log("the data ==>", data)
+
                 if (data.error) { alert("Profil introuvable"); return; }
 
                 // Remplissage En-tête
                 document.getElementById('userAvatar').src = data.url_profil_img || 'assets/default-avatar.png';
                 document.getElementById('userName').innerHTML = `${data.full_name} <i class="fas fa-check-circle" style="color: #1DA1F2; font-size: 1.2rem;"></i>`;
-                document.getElementById('userBasicInfo').innerText = `${data.civil_status || 'Célibataire'} • ${data.age || '??'} ans • ${data.adresse_actuelle || 'Bukavu'}`;
+                document.getElementById('userBasicInfo').innerText = `${data.etat_civil || 'Célibataire'} • ${data.age || '??'} ans • ${data.adresse_actuelle || '--'}`;
                 
                 // Bio et Infos de base
                 document.getElementById('userBio').innerText = data.bio || "Aucune description.";
                 document.getElementById('userGender').innerText = data.gender || '-';
-                document.getElementById('userCivilStatus').innerText = data.civil_status || 'Célibataire';
+                document.getElementById('userCivilStatus').innerText = data.etat_civil || 'Célibataire';
                 document.getElementById('userSize').innerText = data.taille_m ? `${data.taille_m} m` : '-';
                 document.getElementById('userWeight').innerText = data.poids_kg ? `${data.poids_kg} Kilos` : '-';
                 document.getElementById('userSkin').innerText = data.coleur_de_peau || '-';

@@ -266,6 +266,14 @@
     }
 
     document.addEventListener('DOMContentLoaded', loadContacts);
+
+    // Détection du retour arrière forcé (Back/Forward Cache)
+    window.onpageshow = function(event) {
+        if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+            window.location.reload();
+        }
+    };
+    
 </script>
 
 </body>

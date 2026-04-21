@@ -145,16 +145,6 @@
         </div>
     </div>
 
-    <div id="modal-age-error" class="modal-overlay">
-        <div class="modal-content">
-            <h3>Accès Refusé</h3>
-            <p>Désolé, l'inscription sur <strong>BL Alliance</strong> est strictement réservée aux personnes majeures (18 ans et plus).</p>
-            <div class="phone-highlight" id="display-age-detected" style="color: #D32F2F;"></div>
-            <p style="font-size: 12px; color: #888;">Vous ne pouvez pas poursuivre la création de votre compte.</p>
-            <button onclick="location.reload()" style="background:#333; margin-top:10px;">Recommencer</button>
-        </div>
-    </div>
-
 <script>
         // -- DEBUT DU BLOCK À AJOUTER/MODIFIER --
         function togglePass(id) {
@@ -179,31 +169,8 @@
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function checkAge() {
-            const birthInput = document.getElementById('birth_date').value;
-            if (!birthInput) return false;
-
-            const birthDate = new Date(birthInput);
-            const today = new Date();
-            
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-            
-            // Ajustement si l'anniversaire n'est pas encore passé cette année
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-
-            if (age < 18) {
-                document.getElementById('display-age-detected').innerText = age + " ans détectés";
-                openModal('modal-age-error');
-                return false;
-            }
-            return true;
-        }
 
         function preVerifyPhone() {
-            if (!checkAge()) return;
             const phone = document.getElementById('phone').value;
             const pass = document.getElementById('password').value;
             const confirm = document.getElementById('confirm_password').value;
@@ -259,8 +226,8 @@
                 if (response.ok) {
                     closeModal('modal-confirm');
                     localStorage.setItem('user_id', result.user_id);
-                    localStorage.setItem('is_paid', 'true');
-                    window.location.href = "dashboard.html";
+                    localStorage.setItem('is_paid', 'false');
+                    window.location.href = "paiement.html";
                 } else {
                     // Réinitialisation en cas d'erreur
                     btnConfirm.disabled = false;

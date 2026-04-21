@@ -267,13 +267,13 @@
                 avatarImg.onclick = openFullscreen;
                 document.getElementById('userName').innerHTML = `${data.full_name} <i class="fas fa-check-circle" style="color: #1DA1F2; font-size: 1.2rem;"></i>`;
                 document.getElementById('contactFirstName').innerText = data.full_name.split(' ')[0];
-                document.getElementById('userBasicInfo').innerText = `${data.civil_status || 'Célibataire'} • ${data.age || '??'} ans • ${data.adresse_actuelle || 'Bukavu'}`;
+                document.getElementById('userBasicInfo').innerText = `${data.etat_civil || 'Célibataire'} • ${data.age || '??'} ans • ${data.adresse_actuelle || 'Bukavu'}`;
                 
                 // À Propos
                 document.getElementById('userBio').innerText = data.bio || "Aucune description.";
 
                 // Infos de base
-                document.getElementById('userCivilStatus').innerText = data.civil_status || 'Célibataire';
+                document.getElementById('userCivilStatus').innerText = data.etat_civil || 'Célibataire';
                 document.getElementById('userSize').innerText = data.taille_m ? `${data.taille_m} m` : '-';
                 document.getElementById('userWeight').innerText = data.poids_kg ? `${data.poids_kg} Kilos` : '-';
                 document.getElementById('userSkin').innerText = data.coleur_de_peau || '-';
