@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>BL Support - Chat</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #e5ddd5; display: flex; flex-direction: column; height: 100vh; }
+        
+        /* Navbar double ligne */
+        .navbar { background: #075e54; color: white; position: fixed; top: 0; width: 100%; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .nav-line1 { display: flex; justify-content: space-between; padding: 10px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .nav-line1 a, .nav-line1 button { color: white; text-decoration: none; background: none; border: none; cursor: pointer; font-size: 0.9em; }
+        .nav-line2 { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; }
+        
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .user-avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid white; }
+        .user-text { display: flex; flex-direction: column; }
+        .user-name { font-weight: bold; font-size: 1em; }
+        .user-id { font-size: 0.7em; opacity: 0.8; }
+
+        /* Zone de Chat */
+        #chatBox { flex: 1; overflow-y: auto; padding: 20px; margin-top: 120px; margin-bottom: 70px; display: flex; flex-direction: column; gap: 10px; }
+        .bubble { max-width: 70%; padding: 8px 12px; border-radius: 8px; font-size: 0.95em; position: relative; line-height: 1.4; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .msg-user { align-self: flex-start; background: white; }
+        .msg-support { align-self: flex-end; background: #dcf8c6; }
+        .msg-time { font-size: 0.65em; color: #888; display: block; text-align: right; margin-top: 4px; }
+        .status-icon { margin-left: 5px; font-size: 0.8em; }
+
+        /* Input area */
+        .input-area { position: fixed; bottom: 0; width: 100%; background: #f0f0f0; padding: 10px; display: flex; gap: 10px; box-sizing: border-box; }
+        .input-area input { flex: 1; padding: 12px; border-radius: 25px; border: 1px solid #ddd; outline: none; }
+        .input-area button { background: #075e54; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="nav-line1">
+            <button onclick="goBack()">⬅ Retour Listing Correspondant</button>
+            <button onclick="location.reload()">🔄 Rafraîchir la page</button>
+        </div>
+        <div class="nav-line2">
+            <div class="user-info">
+                <img id="navAvatar" src="" class="user-avatar" alt="">
+                <div class="user-text">
+                    <span id="navName" class="user-name">Chargement...</span>
+                    <span id="navID" class="user-id">ID: ...</span>
+                </div>
+            </div>
+            <div style="font-weight: bold; letter-spacing: 1px;">BL SUPPORT</div>
+        </div>
+    </div>
+
+    <div id="chatBox"></div>
+
+    <div class="input-area">
+        <input type="text" id="msgInput" placeholder="Tapez votre message de support..." onkeypress="if(event.key === 'Enter') prepareMessage()">
+        <button onclick="prepareMessage()">Envoyer</button>
+    </div>
+
+    <!-- <script>
+        const SUPPORT_ID = "4a4c3b14-f7cc-435c-9a13-672d4f25be57";
+        const urlParams = new URLSearchParams(window.location.search);
+        const CONTACT_ID = urlParams.get('user_id');
+        
+        let lastMessagesCount = 0;
+
+        window.onload = () => {
+            if (!CONTACT_ID) return alert("ID Utilisateur manquant");
+            fetchUserInfo();
+            startChatLive();
+        };
+
+        // 1. Récupérer les infos de l'utilisateur
+        async function fetchUserInfo() {
+            const res = await fetch(`http://127.0.0.1:5000/get_user_info?user_id=${CONTACT_ID}`);
+            const data = await res.json();
+            document.getElementById('navName').innerText = data.full_name;
+            document.getElementById('navID').innerText = `ID: ${CONTACT_ID}`;
+            document.getElementById('navAvatar').src = data.url_profil_img;
+        }
+
+        // 2. Boucle de rafraîchissement (Temps Réel)
+        function startChatLive() {
+            refreshChat();
+            setInterval(refreshChat, 3000); // Toutes les 3 secondes
+        }
+
+        async function refreshChat() {
+            try {
+                const res = await fetch(`http://127.0.0.1:5000/get_messages?sender_id=${SUPPORT_ID}&receiver_id=${CONTACT_ID}`);
+                const messages = await res.json();
+
+                if (messages.length !== lastMessagesCount) {
+                    renderMessages(messages);
+                    lastMessagesCount = messages.length;
+                    // Marquer comme lu automatiquement pendant le chat
+                    markAsRead();
+                }
+            } catch (e) { console.error("Erreur refresh:", e); }
+        }
+
+        async function markAsRead() {
+            await fetch(`http://127.0.0.1:5000/mark_as_read`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ user_id: SUPPORT_ID, contact_id: CONTACT_ID })
+            });
+        }
+
+        // 3. Affichage des messages
+        function renderMessages(messages) {
+            const container = document.getElementById('chatBox');
+            container.innerHTML = "";
+            
+            messages.forEach(msg => {
+                const isSupport = (msg.sender_id === SUPPORT_ID);
+                const date = new Date(msg.created_at).toLocaleString('fr-FR', { 
+                    day: '2-digit', month: '2-digit', year: 'numeric', 
+                    hour: '2-digit', minute: '2-digit', second: '2-digit' 
+                });
+
+                const bubble = document.createElement('div');
+                bubble.className = `bubble ${isSupport ? 'msg-support' : 'msg-user'}`;
+                bubble.innerHTML = `
+                    ${msg.content}
+                    <span class="msg-time">${date} ${isSupport ? '<span class="status-icon">✓</span>' : ''}</span>
+                `;
+                container.appendChild(bubble);
+            });
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // 4. Envoi de message avec gestion d'état (Attente vs Succès)
+        function prepareMessage() {
+            const input = document.getElementById('msgInput');
+            const content = input.value.trim();
+            if (!content) return;
+
+            const tempId = "temp_" + Date.now();
+            displayTempMessage(content, tempId);
+            input.value = "";
+            sendMessage(content, tempId);
+        }
+
+        function displayTempMessage(content, tempId) {
+            const container = document.getElementById('chatBox');
+            const bubble = document.createElement('div');
+            bubble.id = tempId;
+            bubble.className = `bubble msg-support`;
+            const now = new Date().toLocaleTimeString('fr-FR');
+            bubble.innerHTML = `
+                ${content}
+                <span class="msg-time">${now} <span class="status-icon" id="icon_${tempId}">🕒</span></span>
+            `;
+            container.appendChild(bubble);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendMessage(content, tempId, retryCount = 0) {
+            try {
+                const res = await fetch(`http://127.0.0.1:5000/send_message`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        sender_id: SUPPORT_ID,
+                        receiver_id: CONTACT_ID,
+                        content: content
+                    })
+                });
+
+                if (res.ok) {
+                    document.getElementById(`icon_${tempId}`).innerText = "✓";
+                } else {
+                    throw new Error("Echec envoi");
+                }
+            } catch (e) {
+                if (retryCount < 3) {
+                    setTimeout(() => sendMessage(content, tempId, retryCount + 1), 5000);
+                } else {
+                    document.getElementById(`icon_${tempId}`).innerText = "❌";
+                }
+            }
+        }
+
+        function goBack() {
+            markAsRead().then(() => {
+                window.location.href = 'admin-support.html';
+            });
+        }
+    </script> -->
+</body>
+</html>
