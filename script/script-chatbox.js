@@ -7,6 +7,16 @@ const modalOptions = document.getElementById('modalOptions');
 // --- CONFIGURATION DYNAMIQUE ---
 const urlParams = new URLSearchParams(window.location.search);
 const otherID = urlParams.get('contact_id'); // Récupère l'ID du correspondant
+const menuHautDroite_ = document.querySelector('#menuHautDroite')
+const BL_Support_ID = "4a4c3b14-f7cc-435c-9a13-672d4f25be57";
+// console.log("otherID :", otherID);
+// console.log("menuHautDroite_ :", menuHautDroite_);
+// console.log("menuHautDroite_ style :", menuHautDroite_.style.display);
+
+if (otherID === BL_Support_ID) {
+    menuHautDroite_.style.display = "none";
+}
+
 const myID = localStorage.getItem('user_id'); // Ton ID (doit être dans le localStorage)
 const API_URL = "https://bl-alliance-api.onrender.com"; // Remplace par l'IP de ton PC pour le test mobile
 
