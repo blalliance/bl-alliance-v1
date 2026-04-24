@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>BL Admin - Dashboard</title>
+    <script type="text/javascript" src="admin_guard.js"></script>
+    <style type="text/css">
+        /* --- RESET & VARIABLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+        }
+
+        :root {
+            --bg-dark: #1a1a1a;
+            --bg-card: #000000;
+            --primary-red: #d32f2f;
+            --hover-red: #b71c1c;
+            --text-main: #ffffff;
+            --text-dim: #b0b0b0;
+            --border-color: #333333;
+            --accent-blue: #3b82f6;
+        }
+
+        /* --- SCROLLBAR PERSONNALISÉE --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-red);
+        }
+
+        /* --- BASE --- */
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            background-color: var(--bg-card);
+            border-bottom: 2px solid var(--primary-red) !important; /* Override style inline */
+            padding: 15px 20px !important;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        nav div strong {
+            color: var(--text-main);
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        /* Logo dans la nav */
+        nav::before {
+            content: "";
+            display: inline-block;
+            /*width: 40px;*/
+            /*height: 40px;*/
+            width: 90px;
+            height: 40px;
+            background: url('logo2.png') no-repeat center center;
+            background-size: contain;
+            margin-right: 10px;
+        }
+
+        nav button {
+            background: transparent;
+            border: 1px solid var(--primary-red);
+            color: var(--primary-red);
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        nav button:hover {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        /* --- MAIN CONTENT --- */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px !important;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary-red);
+            padding-left: 15px;
+        }
+
+        main > p {
+            color: var(--text-dim);
+            margin-bottom: 30px;
+        }
+
+        /* --- GRID DE NAVIGATION (Cartes) --- */
+        ul {
+            display: grid;
+            grid-template-columns: 1fr; /* Mobile First: 1 colonne */
+            gap: 15px;
+        }
+
+        li {
+            margin-bottom: 0 !important; /* Nettoyage inline */
+        }
+
+        li a {
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            text-decoration: none;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        li a:hover {
+            border-color: var(--primary-red);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(211, 47, 47, 0.1);
+            background-color: #0a0a0a;
+        }
+
+        /* --- RESPONSIVITÉ --- */
+
+        /* TABLETTE (Min 768px) */
+        @media (min-width: 768px) {
+            ul {
+                grid-template-columns: repeat(2, 1fr); /* 2 colonnes */
+                gap: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            nav div strong {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* PC (Min 1024px) */
+        @media (min-width: 1024px) {
+            ul {
+                grid-template-columns: repeat(3, 1fr); /* 3 colonnes */
+            }
+
+            main {
+                padding-top: 50px !important;
+            }
+            
+            /* Animation subtile à l'entrée */
+            li {
+                animation: fadeInUp 0.5s ease backwards;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Délai d'animation pour les cartes */
+        li:nth-child(1) { animation-delay: 0.1s; }
+        li:nth-child(2) { animation-delay: 0.2s; }
+        li:nth-child(3) { animation-delay: 0.3s; }
+        li:nth-child(4) { animation-delay: 0.4s; }
+        li:nth-child(5) { animation-delay: 0.5s; }
+        li:nth-child(6) { animation-delay: 0.6s; }
+                
+    </style>
+</head>
+<body>
+    <nav style="display: flex; justify-content: space-between; border-bottom: 1px solid #ccc; padding: 10px;">
+        <div><strong>BACKOFFICE</strong></div>
+        <button onclick="logoutAdmin()">Déconnexion</button>
+    </nav>
+
+    <main style="padding: 20px;">
+        <h1>Espace Administrateur</h1>
+        <!-- <p>Sélectionnez une section à gérer :</p> -->
+
+        <ul style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 10px;">
+                <a href="admin-users-list.html">👥 Listing des utilisateurs</a>
+            </li>
+            <li style="margin-bottom: 10px;">
+                <a href="admin-messages-view.html">✉️ Messageries (Audit messages)</a>
+            </li>
+            <li style="margin-bottom: 10px;">
+                <a href="admin-support.html">🎧 BL Support (Chat Direct)</a>
+            </li>
+            <li style="margin-bottom: 10px; display: none;">
+                <a href="admin-feedbacks.html">⭐ Feedbacks des utilisateurs</a>
+            </li>
+            <li style="margin-bottom: 10px;">
+                <a href="admin-reports.html">🚩 Reportings (Signalements)</a>
+            </li>
+            <li style="margin-bottom: 10px;">
+                <a href="admin-view-blocks.html">🚫 Blockings (Blocages)</a>
+            </li>
+        </ul>
+    </main>
+
+</body>
+</html>
+

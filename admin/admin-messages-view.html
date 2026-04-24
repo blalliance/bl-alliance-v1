@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Admin - Audit des Messageries</title>
+    <script type="text/javascript" src="admin_guard.js"></script>
+    <style>
+        /*table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        tr:hover { background-color: #f9f9f9; }
+        .id-text { font-family: monospace; font-size: 0.85em; color: #666; }
+        .search-box { background: #eee; padding: 20px; margin-bottom: 20px; border-radius: 8px; }
+        .loading { text-align: center; padding: 20px; display: none; }*/
+
+
+/* --- CONFIGURATION & DESIGN SYSTEM --- */
+:root {
+    --bg-dark: #1a1a1a;
+    --bg-card: #000000;
+    --primary-red: #d32f2f;
+    --accent-blue: #3b82f6;
+    --text-main: #ffffff;
+    --text-dim: #b0b0b0;
+    --border: #333333;
+}
+
+/* --- RESET & SCROLLBAR --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary-red); }
+
+body {
+    background: var(--bg-dark);
+    color: var(--text-main);
+    line-height: 1.5;
+}
+
+/* --- NAVIGATION & LOGO --- */
+nav {
+    background: var(--bg-card) !important;
+    padding: 12px 20px !important;
+    border-bottom: 2px solid var(--primary-red) !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav a { color: var(--text-main) !important; text-decoration: none; font-weight: bold; font-size: 0.85rem; text-transform: uppercase; }
+
+nav::after {
+    content: "";
+    width: 60px;
+    height: 40px;
+    background: url('logo2.png') no-repeat center;
+    background-size: contain;
+}
+
+nav button {
+    background: #222;
+    color: white;
+    border: 1px solid #444;
+    padding: 7px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* --- TITRE ET RECHERCHE --- */
+h1 {
+    padding: 20px;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-main);
+    text-align: center;
+}
+
+.search-box {
+    background: linear-gradient(180deg, #000 0%, #111 100%) !important;
+    padding: 30px 15px !important;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 0 !important;
+}
+
+.search-box select, .search-box input {
+    background: #000 !important;
+    border: 1px solid var(--border) !important;
+    color: white !important;
+    padding: 12px !important;
+    border-radius: 6px;
+    outline: none;
+    width: 100%;
+}
+
+.search-box button {
+    background: var(--accent-blue) !important;
+    color: white;
+    border: none;
+    padding: 12px !important;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+/* --- TABLEAU RESPONSIVE (MOBILE FIRST) --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Mobile: Cacher l'en-tête, transformer en cartes */
+thead { display: none; }
+
+tbody tr {
+    display: block;
+    background: var(--bg-card);
+    margin: 15px;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #1a1a1a;
+    text-align: right;
+}
+
+tbody td:last-child {
+    border-bottom: none;
+    padding-top: 20px;
+}
+
+/* Libellés pour le mode mobile */
+tbody td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: var(--accent-blue);
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    flex: 1;
+    text-align: left;
+}
+
+/* Style des noms et IDs */
+strong { color: var(--text-main); font-size: 1rem; }
+.id-text { 
+    font-family: 'Roboto Mono', monospace !important; 
+    color: var(--primary-red) !important; 
+    font-size: 0.75rem !important;
+    display: block;
+    margin-top: 4px;
+}
+
+/* Bouton Action */
+tbody td button {
+    width: 50%;
+    background: transparent !important;
+    border: 1px solid var(--primary-red) !important;
+    color: var(--primary-red) !important;
+    padding: 10px !important;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+tbody td button:hover {
+    background: var(--primary-red) !important;
+    color: white !important;
+}
+
+/* --- LOADING --- */
+.loading {
+    color: var(--accent-blue) !important;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* --- RESPONSIVITÉ (TABLETTE & PC) --- */
+@media (min-width: 768px) {
+    .search-box {
+        flex-direction: row !important;
+        padding: 30px 50px !important;
+        justify-content: center;
+    }
+    
+    .search-box select { width: 220px; }
+    .search-box input { width: 400px; }
+    .search-box button { width: auto; padding: 0 30px !important; }
+
+    thead { display: table-header-group; }
+    thead th {
+        background: #080808;
+        color: var(--text-dim);
+        padding: 18px;
+        text-align: left;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        border-bottom: 2px solid var(--border);
+    }
+
+    tbody tr { display: table-row; background: transparent; }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+    tbody td {
+        display: table-cell;
+        padding: 18px !important;
+        border-bottom: 1px solid var(--border);
+        text-align: left;
+    }
+
+    tbody td::before { display: none; } /* On cache les labels mobiles */
+
+    tbody td button { width: auto; padding: 6px 20px !important; }
+}
+
+@media (min-width: 1024px) {
+    table { max-width: 1100px; margin: 20px auto; }
+}        
+
+    </style>
+</head>
+<body>
+
+    <nav style="padding: 10px; border-bottom: 1px solid #ccc;">
+        <a href="bl-admin-landing.html">⬅ Retour</a>
+        <button onclick="location.reload()">🔄 Rafraîchir</button>
+    </nav>
+
+    <h1>Audit des Discussions</h1>
+
+    <div class="search-box">
+        <select id="searchType">
+            <option value="name">Rechercher par Nom</option>
+            <option value="id">Rechercher par ID</option>
+        </select>
+        <input type="text" id="searchInput" placeholder="Nom ou ID de l'utilisateur...">
+        <button onclick="triggerSearch()">Rechercher</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <!-- <th>👩 Femme</th> -->
+                <th>👨 Corresp 1</th>
+                <!-- <th>👨 Homme</th> -->
+                <th>👨 Corresp 2</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="discussionsTable">
+            </tbody>
+    </table>
+
+    <div id="loadingIndicator" class="loading" style="margin-left: 25px;">Chargement...</div>
+
+    <script>
+        let currentPage = 0;
+        let isFetching = false;
+        let hasMore = true;
+        let query = "";
+        let searchType = "name";
+
+        window.onload = () => loadDiscussions();
+
+        async function loadDiscussions(reset = false) {
+            if (isFetching || (!hasMore && !reset)) return;
+            
+            isFetching = true;
+            if (reset) {
+                currentPage = 0;
+                hasMore = true;
+                document.getElementById('discussionsTable').innerHTML = "";
+            }
+
+            document.getElementById('loadingIndicator').style.display = "block";
+
+            try {
+                const url = `https://bl-alliance-api.onrender.com/admin/get_all_discussions?page=${currentPage}&query=${query}&search_type=${searchType}`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.discussions.length === 0 && currentPage === 0) {
+                    document.getElementById('discussionsTable').innerHTML = "<tr><td colspan='3' style='text-align:center;'>Aucune discussion trouvée.</td></tr>";
+                } else {
+                    renderTable(data.discussions);
+                }
+
+                hasMore = data.has_more;
+                currentPage++;
+            } catch (error) {
+                console.error(error);
+                alert("Erreur serveur.");
+            } finally {
+                isFetching = false;
+                document.getElementById('loadingIndicator').style.display = "none";
+            }
+        }
+
+        function renderTable(discussions) {
+            const tbody = document.getElementById('discussionsTable');
+            discussions.forEach(disc => {
+                // const row = `
+                //     <tr>
+                //         <td>
+                //             <strong>${disc.femme_name}</strong><br>
+                //             <span class="id-text">${disc.femme_id}</span>
+                //         </td>
+                //         <td>
+                //             <strong>${disc.homme_name}</strong><br>
+                //             <span class="id-text">${disc.homme_id}</span>
+                //         </td>
+                //         <td>
+                //             <button onclick="viewChat('${disc.femme_id}', '${disc.homme_id}')">Voir discussion</button>
+                //         </td>
+                //     </tr>
+                // `;
+
+                const row = `
+                    <tr>
+                        <td data-label="👨 Corresp 1">
+                            <strong>${disc.femme_name}</strong><br>
+                            <span style="display: none;" class="id-text">${disc.femme_id}</span>
+                        </td>
+                        <td data-label="👨 Corresp 2">
+                            <strong>${disc.homme_name}</strong><br>
+                            <span style="display: none;" class="id-text">${disc.homme_id}</span>
+                        </td>
+                        <td data-label="Action">
+                            <button onclick="viewChat('${disc.femme_id}', '${disc.homme_id}')">Voir discussion</button>
+                        </td>
+                    </tr>
+                `;
+
+                tbody.innerHTML += row;
+            });
+        }
+
+        function triggerSearch() {
+            query = document.getElementById('searchInput').value;
+            searchType = document.getElementById('searchType').value;
+            loadDiscussions(true);
+        }
+
+        function viewChat(id1, id2) {
+            // On envoie les deux IDs à la page de chat audit
+            window.location.href = `admin-chat-view.html?user1=${id1}&user2=${id2}`;
+        }
+
+        // Infinite scroll logic
+        window.onscroll = function() {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+                if (hasMore && !isFetching) loadDiscussions();
+            }
+        };
+    </script>
+</body>
+</html>
+

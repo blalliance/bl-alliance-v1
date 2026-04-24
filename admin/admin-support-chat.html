@@ -4,13 +4,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <title>BL Support - Chat</title>
+    <script type="text/javascript" src="admin_guard.js"></script>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #e5ddd5; display: flex; flex-direction: column; height: 100vh; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #111111; display: flex; flex-direction: column; height: 100vh; }
         
         /* Navbar double ligne */
-        .navbar { background: #075e54; color: white; position: fixed; top: 0; width: 100%; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .navbar { background: #000000; border-bottom: 2px solid #d32f2f; color: white; position: fixed; top: 0; width: 100%; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .nav-line1 { display: flex; justify-content: space-between; padding: 10px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .nav-line1 a, .nav-line1 button { color: white; text-decoration: none; background: none; border: none; cursor: pointer; font-size: 0.9em; }
+        #bouton-back { color: white; text-decoration: none; background: none; border: none; cursor: pointer; font-size: 0.9em; }
         .nav-line2 { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; }
         
         .user-info { display: flex; align-items: center; gap: 12px; }
@@ -20,35 +22,56 @@
         .user-id { font-size: 0.7em; opacity: 0.8; }
 
         /* Zone de Chat */
-        #chatBox { flex: 1; overflow-y: auto; padding: 20px; margin-top: 120px; margin-bottom: 70px; display: flex; flex-direction: column; gap: 10px; }
+        #chatBox { flex: 1; overflow-y: auto; padding: 20px; margin-top: 60px; margin-bottom: 70px; display: flex; flex-direction: column; gap: 10px; }
         .bubble { max-width: 70%; padding: 8px 12px; border-radius: 8px; font-size: 0.95em; position: relative; line-height: 1.4; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        .msg-user { align-self: flex-start; background: white; }
-        .msg-support { align-self: flex-end; background: #dcf8c6; }
+        /*.msg-user { align-self: flex-start; background: white; }*/
+        .msg-user { align-self: flex-start; background: #222; color: #fff; border: 1px solid #333; }
+        /*.msg-support { align-self: flex-end; background: #dcf8c6; }*/
+        .msg-support { align-self: flex-end; background: #1a2a3a; color: #fff; border-right: 3px solid #3b82f6; }
         .msg-time { font-size: 0.65em; color: #888; display: block; text-align: right; margin-top: 4px; }
         .status-icon { margin-left: 5px; font-size: 0.8em; }
 
         /* Input area */
-        .input-area { position: fixed; bottom: 0; width: 100%; background: #f0f0f0; padding: 10px; display: flex; gap: 10px; box-sizing: border-box; }
-        .input-area input { flex: 1; padding: 12px; border-radius: 25px; border: 1px solid #ddd; outline: none; }
-        .input-area button { background: #075e54; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; }
+        .input-area { position: fixed; bottom: 0; width: 100%; background: #000; border-top: 1px solid #333; padding: 10px; display: flex; gap: 10px; box-sizing: border-box; }
+        /*.input-area input { flex: 1; padding: 12px; border-radius: 25px; border: 1px solid #ddd; outline: none; }*/
+        .input-area input { flex: 1; padding: 12px; border-radius: 25px; border: 1px solid #333; outline: none; background: #111; color: #fff; }
+        .input-area button { background: #d32f2f; border-bottom: 2px solid #d32f2f; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; }
+
+        #navName{
+                  /* 1. On définit la largeur (X) */
+                  max-width: 20ch;             /* Remplacez 20 par votre valeur X */
+                  /* 2. On force le texte sur une seule ligne */
+                  white-space: nowrap;
+                  /* 3. On cache ce qui dépasse */
+                  overflow: hidden;
+                  /* 4. On ajoute les points de suspension */
+                  text-overflow: ellipsis;
+                  display: block;              /* Nécessaire si l'élément est un <span> */
+                }
+
+
+
     </style>
 </head>
 <body>
 
     <div class="navbar">
-        <div class="nav-line1">
-            <button onclick="goBack()">⬅ Retour Listing Correspondant</button>
-            <button onclick="location.reload()">🔄 Rafraîchir la page</button>
+        <div class="nav-line1" style="display: none;">
+            <!-- <button onclick="goBack()">⬅ Retour</button> -->
+            <!-- <button onclick="goBack()">⬅ Retour Listing Correspondant</button> -->
+            <!-- <button onclick="location.reload()">🔄 Rafraîchir</button> -->
+            <!-- <button onclick="location.reload()">🔄 Rafraîchir la page</button> -->
         </div>
         <div class="nav-line2">
             <div class="user-info">
                 <img id="navAvatar" src="" class="user-avatar" alt="">
                 <div class="user-text">
                     <span id="navName" class="user-name">Chargement...</span>
-                    <span id="navID" class="user-id">ID: ...</span>
+                    <span id="navID" class="user-id" style="display: none;">ID: ...</span>
                 </div>
             </div>
-            <div style="font-weight: bold; letter-spacing: 1px;">BL SUPPORT</div>
+            <button id="bouton-back" onclick="goBack()">⬅ Retour</button>
+            <!-- <div style="font-weight: bold; letter-spacing: 1px;">SUPPORT</div> -->
         </div>
     </div>
 
@@ -59,7 +82,7 @@
         <button onclick="prepareMessage()">Envoyer</button>
     </div>
 
-    <!-- <script>
+    <script>
         const SUPPORT_ID = "4a4c3b14-f7cc-435c-9a13-672d4f25be57";
         const urlParams = new URLSearchParams(window.location.search);
         const CONTACT_ID = urlParams.get('user_id');
@@ -189,6 +212,6 @@
                 window.location.href = 'admin-support.html';
             });
         }
-    </script> -->
+    </script>
 </body>
 </html>

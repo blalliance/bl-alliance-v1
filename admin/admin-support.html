@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>BL Admin - Support Client</title>
+    <script type="text/javascript" src="admin_guard.js"></script>
+    <style>
+        /*.contact-item { 
+            display: flex; align-items: center; padding: 15px; 
+            border-bottom: 1px solid #eee; background: white; margin-bottom: 5px;
+        }
+        .avatar { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
+        .info { flex-grow: 1; }
+        .name { font-weight: bold; font-size: 1.1em; display: block; }
+        .uid { font-family: monospace; font-size: 0.8em; color: #888; }
+        .unread-badge { 
+            background: #e74c3c; color: white; padding: 2px 8px; 
+            border-radius: 10px; font-size: 0.8em; font-weight: bold; margin-left: 10px;
+        }
+        .search-area { background: #2c3e50; padding: 20px; color: white; margin-bottom: 20px; }
+        .btn-reply { 
+            background: #3498db; color: white; border: none; padding: 10px 15px; 
+            border-radius: 5px; cursor: pointer; font-weight: bold;
+        }
+        .btn-reply:hover { background: #2980b9; }
+        .loading { text-align: center; padding: 20px; font-style: italic; color: #666; }*/
+
+
+
+/* --- CONFIGURATION GLOBALE --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+:root {
+    --bg-dark: #1a1a1a;
+    --bg-card: #000000;
+    --primary-red: #d32f2f;
+    --accent-blue: #3b82f6;
+    --text-main: #ffffff;
+    --text-dim: #b0b0b0;
+    --border: #333333;
+}
+
+/* --- SCROLLBAR PERSONNALISÉE --- */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; border: 2px solid var(--bg-dark); }
+::-webkit-scrollbar-thumb:hover { background: var(--primary-red); }
+
+body {
+    background-color: var(--bg-dark) !important;
+    color: var(--text-main);
+    line-height: 1.6;
+}
+
+/* --- NAVIGATION & LOGO --- */
+nav {
+    background: var(--bg-card) !important;
+    padding: 15px 20px !important;
+    border-bottom: 2px solid var(--primary-red) !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav a {
+    color: var(--text-main) !important;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Logo signature */
+nav::after {
+    content: "";
+    width: 45px;
+    height: 30px;
+    background: url('logo2.png') no-repeat center right;
+    background-size: contain;
+}
+
+nav button {
+    background: #222;
+    color: #fff;
+    border: 1px solid #444;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* --- ZONE DE RECHERCHE (STRECHED ON MOBILE) --- */
+.search-area {
+    background: linear-gradient(135deg, #000 0%, #1a1a1a 100%) !important;
+    padding: 30px 20px !important;
+    margin-bottom: 0 !important;
+    border-bottom: 1px solid var(--border);
+}
+
+.search-area h2 {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.search-area div {
+    flex-direction: column; /* Mobile First */
+}
+
+.search-area select, 
+.search-area input {
+    width: 100%;
+    padding: 12px !important;
+    background: #000 !important;
+    border: 1px solid var(--border) !important;
+    color: white !important;
+    border-radius: 6px !important;
+    font-size: 1rem;
+}
+
+.search-area button {
+    background: var(--accent-blue) !important;
+    color: white !important;
+    border: none !important;
+    font-weight: bold;
+    border-radius: 6px !important;
+    transition: transform 0.2s;
+}
+
+/* --- LISTE DES CONTACTS --- */
+#contactsContainer {
+    max-width: 900px !important;
+    padding: 20px 15px !important;
+}
+
+.contact-item {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border) !important;
+    padding: 15px !important;
+    margin-bottom: 12px !important;
+    border-radius: 10px !important;
+    flex-direction: column; /* Mobile First */
+    gap: 15px;
+    transition: border-color 0.3s;
+}
+
+.contact-item:hover {
+    border-color: var(--accent-blue) !important;
+}
+
+/* Image de profil calibrée */
+.avatar {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important; /* No stretch */
+    border: 2px solid var(--border);
+    background: #111;
+}
+
+.info {
+    text-align: center; /* Mobile First */
+}
+
+.name {
+    color: var(--text-main) !important;
+    font-size: 1.1rem !important;
+}
+
+.uid {
+    color: var(--text-dim) !important;
+    font-size: 0.75rem !important;
+    display: block;
+    margin-top: 5px;
+}
+
+/* Badge non-lu (Rouge) */
+.unread-badge {
+    background: var(--primary-red) !important;
+    box-shadow: 0 0 10px rgba(211, 47, 47, 0.4);
+    font-size: 0.7rem !important;
+    padding: 3px 10px !important;
+}
+
+/* Bouton répondre */
+.btn-reply {
+    width: 100%; /* Mobile First */
+    padding: 12px !important;
+    background: transparent !important;
+    border: 1px solid var(--accent-blue) !important;
+    color: var(--accent-blue) !important;
+    border-radius: 6px !important;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-reply:hover {
+    background: var(--accent-blue) !important;
+    color: white !important;
+}
+
+/* --- RESPONSIVITÉ --- */
+
+/* TABLETTE (Min 768px) */
+@media (min-width: 768px) {
+    .search-area div {
+        flex-direction: row; /* Aligné sur tablette/PC */
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .search-area select { width: 150px; }
+
+    .contact-item {
+        flex-direction: row; /* Aligné sur tablette/PC */
+        padding: 20px !important;
+    }
+
+    .info {
+        text-align: left;
+    }
+
+    .btn-reply {
+        width: auto !important;
+        padding: 10px 25px !important;
+    }
+}
+
+/* PC (Min 1024px) */
+@media (min-width: 1024px) {
+    #contactsContainer {
+        padding: 40px 0 !important;
+    }
+    
+    .contact-item {
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+}
+
+/* --- ÉTATS --- */
+.loading {
+    color: var(--accent-blue) !important;
+    font-weight: bold;
+    letter-spacing: 2px;
+}        
+
+    </style>
+</head>
+<body style="background: #f4f7f6; margin: 0; font-family: sans-serif;">
+
+    <nav style="padding: 15px; background: white; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between;">
+        <div>
+            <a href="bl-admin-landing.html" style="text-decoration: none; color: #3498db; font-weight: bold;">⬅ Retour</a>
+        </div>
+        <button onclick="location.reload()">🔄 Rafraîchir la page</button>
+    </nav>
+
+    <div class="search-area">
+        <h2>Support Utilisateur</h2>
+        <div style="display: flex; gap: 10px;">
+            <select id="searchType" style="padding: 10px;">
+                <option value="name">Nom</option>
+                <option value="id">ID</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="Chercher un utilisateur..." style="flex-grow: 1; padding: 10px; border-radius: 4px; border: none;">
+            <button onclick="performSearch()" style="padding: 10px 20px; cursor: pointer;">🔍 Chercher</button>
+        </div>
+    </div>
+
+    <div id="contactsContainer" style="max-width: 900px; margin: auto; padding: 10px;">
+        </div>
+
+    <div id="loadingIndicator" class="loading">Chargement ...</div>
+
+    <script>
+        let currentPage = 0;
+        let isFetching = false;
+        let hasMore = true;
+        let currentQuery = "";
+        let currentSearchType = "name";
+
+        window.onload = () => {
+            fetchContacts();
+        };
+
+        async function fetchContacts(reset = false) {
+            if (isFetching || (!hasMore && !reset)) return;
+
+            isFetching = true;
+            if (reset) {
+                currentPage = 0;
+                hasMore = true;
+                document.getElementById('contactsContainer').innerHTML = "";
+            }
+
+            document.getElementById('loadingIndicator').style.display = 'block';
+
+            try {
+                const url = `https://bl-alliance-api.onrender.com/admin/get_support_correspondents?page=${currentPage}&query=${currentQuery}&search_type=${currentSearchType}`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.contacts.length === 0 && currentPage === 0) {
+                    document.getElementById('contactsContainer').innerHTML = "<p style='text-align:center;'>Aucun correspondant trouvé.</p>";
+                } else {
+                    renderContacts(data.contacts);
+                }
+
+                hasMore = data.has_more;
+                currentPage++;
+
+            } catch (error) {
+                console.error("Erreur contacts:", error);
+            } finally {
+                isFetching = false;
+                document.getElementById('loadingIndicator').style.display = 'none';
+            }
+        }
+
+        function renderContacts(list) {
+            const container = document.getElementById('contactsContainer');
+            
+            list.forEach(c => {
+                const unread = c.unread_count > 0 ? `<span style="border-radius:50%" class="unread-badge">${c.unread_count}</span>` : "";
+                const avatar = c.url_profil_img || 'https://res.cloudinary.com/dljaip15q/image/upload/v1774942117/default-avatar_xgspk7.png';
+
+                const html = `
+                    <div class="contact-item">
+                        <img src="${avatar}" class="avatar">
+                        <div class="info">
+                            <span class="name">${c.full_name} ${unread}</span>
+                            <span class="uid">ID: ${c.id}</span>
+                        </div>
+                        <button class="btn-reply" onclick="goToChat('${c.id}')">Répondre à l'utilisateur</button>
+                    </div>
+                `;
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+                container.appendChild(tempDiv.firstElementChild);
+            });
+        }
+
+        function performSearch() {
+            currentQuery = document.getElementById('searchInput').value.trim();
+            currentSearchType = document.getElementById('searchType').value;
+            fetchContacts(true); // Reset la liste pour une nouvelle recherche
+        }
+
+        function goToChat(userId) {
+            window.location.href = `admin-support-chat.html?user_id=${userId}`;
+        }
+
+        // --- LOGIQUE SCROLL INFINI ---
+        window.onscroll = function() {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+                if (hasMore && !isFetching) {
+                    fetchContacts();
+                }
+            }
+        };
+
+        // Gestion du cache/retour arrière
+        window.onpageshow = function(event) {
+            if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+                window.location.reload();
+            }
+        };
+    </script>
+</body>
+</html>
+

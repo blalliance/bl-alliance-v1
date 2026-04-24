@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>BL Alliance - Admin Login</title>
+    <style type="text/css">
+        /* RESET & BASE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #1a1a1a; /* Noir tirant vers le gris */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* CONTAINER PRINCIPAL (MOBILE FIRST) */
+        #login-container {
+            background-color: #000000; /* Noir parfait */
+            width: 100%;
+            max-width: 400px;
+            padding: 40px 30px;
+            border-radius: 8px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            border-top: 4px solid #d32f2f; /* Rappel rouge discret */
+        }
+
+        /* LOGO */
+        #login-container::before {
+            content: "";
+            display: block;
+            width: 120px;
+            height: 80px;
+            margin: 0 auto 20px auto;
+            background: url('logo2.png') no-repeat center center;
+            background-size: contain;
+        }
+
+        /* TYPOGRAPHIE */
+        h1 {
+            color: #ffffff;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        p {
+            color: #b0b0b0; /* Gris clair */
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+
+        /* FORMULAIRE */
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        input[type="password"], 
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 45px 12px 15px; /* Espace à droite pour l'icône */
+            background-color: #262626;
+            border: 1px solid #333;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #b0b0b0;
+            font-size: 1.2rem;
+            user-select: none;
+        }
+
+        .toggle-password:hover {
+            color: #fff;
+        }
+
+
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #d32f2f; /* Rouge */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #b71c1c;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+
+        /* MESSAGES */
+        #errorMessage {
+            margin-top: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            /* La couleur red est déjà gérée en ligne dans votre HTML, 
+               mais ce style renforce la visibilité */
+        }
+
+        /* --- RESPONSIVITÉ --- */
+
+        /* TABLETTE (Min 768px) */
+        @media (min-width: 768px) {
+            #login-container {
+                max-width: 450px;
+                padding: 50px 40px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* PC (Min 1024px) */
+        @media (min-width: 1024px) {
+            body {
+                background: radial-gradient(circle at center, #2c2c2c 0%, #1a1a1a 100%);
+            }
+            
+            #login-container {
+                max-width: 480px;
+                /* Ajout d'un léger lueur bleue pour le côté "Tech/Admin" */
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 15px rgba(59, 130, 246, 0.05);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-container">
+        <h1>Accès Administration</h1>
+        <p>Veuillez entrer votre jeton d'accès</p>
+        
+        <!-- <input type="password" id="adminToken" placeholder="Jeton (Token)"> -->
+        <div class="input-wrapper">
+            <input type="password" id="adminToken" placeholder="Jeton (Token)" oninput="document.getElementById('errorMessage').style.display='none'">
+            <span class="toggle-password" onclick="toggleVisibility()">Show</span>
+        </div>
+
+        <button onclick="handleLogin()">Se connecter</button>
+        
+        <p id="errorMessage" style="color: red; display: none;">Jeton invalide</p>
+    </div>
+
+    <script>
+        async function handleLogin() {
+            const tokenValue = document.getElementById('adminToken').value;
+            const errorMsg = document.getElementById('errorMessage');
+
+            try {
+                const response = await fetch('https://bl-alliance-api.onrender.com/admin/verify_token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: tokenValue })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Stockage des infos de session
+                    sessionStorage.setItem('admin_auth', tokenValue);
+                    sessionStorage.setItem('admin_auth_time', Date.now());
+                    
+                    // Redirection vers la landing admin
+                    window.location.href = 'bl-admin-landing.html';
+                } else {
+                    errorMsg.style.display = 'block';
+                }
+            } catch (error) {
+                console.error("Erreur login:", error);
+                alert("Erreur de connexion au serveur.");
+            }
+        }
+
+        function toggleVisibility() {
+            const input = document.getElementById('adminToken');
+            const toggle = document.querySelector('.toggle-password');
+            
+            if (input.type === "password") {
+                input.type = "text";
+                toggle.textContent = "Hide"; // Change l'icône quand c'est visible
+            } else {
+                input.type = "password";
+                toggle.textContent = "Show"; // Remet l'oeil
+            }
+        }
+
+    </script>
+</body>
+</html>
+

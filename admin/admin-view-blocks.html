@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Admin - Journal des Blocages</title>
+    <script type="text/javascript" src="admin_guard.js"></script>
+    <style>
+        /*body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #f0f2f5; color: #333; }
+        nav { padding: 15px 25px; background: white; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .search-area { background: #34495e; padding: 30px; color: white; }
+        .container { max-width: 1000px; margin: auto; }
+        
+        .block-card { 
+            background: white; border-radius: 12px; padding: 20px; margin-top: 15px; 
+            display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #eee;
+        }
+        .user-box { display: flex; align-items: center; gap: 15px; }
+        .avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: #eee; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .user-info { display: flex; flex-direction: column; }
+        .user-name { font-weight: bold; color: #2c3e50; }
+        .action-arrow { padding: 0 30px; text-align: center; color: #e74c3c; font-size: 1.5em; font-weight: bold; }
+        
+        .reason-tag { grid-column: 1 / span 3; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #eee; font-size: 0.9em; color: #666; }
+        .date-info { font-size: 0.75em; color: #95a5a6; margin-bottom: 4px; display: block; }
+        
+        input, select, button { padding: 12px; border-radius: 6px; border: none; }
+        button { cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-search { background: #e74c3c; color: white; }
+        .btn-search:hover { background: #c0392b; }
+        .loading { text-align: center; padding: 30px; color: #7f8c8d; font-style: italic; }*/
+
+/* --- CONFIGURATION & DESIGN SYSTEM --- */
+:root {
+    --bg-dark: #1a1a1a;
+    --bg-card: #000000;
+    --primary-red: #d32f2f;
+    --accent-blue: #3b82f6;
+    --text-main: #ffffff;
+    --text-dim: #b0b0b0;
+    --border: #333333;
+}
+
+/* --- RESET & SCROLLBAR --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary-red); }
+
+body {
+    background: var(--bg-dark);
+    color: var(--text-main);
+    line-height: 1.5;
+}
+
+/* --- NAVIGATION & LOGO --- */
+nav {
+    background: var(--bg-card) !important;
+    padding: 12px 20px !important;
+    border-bottom: 2px solid var(--primary-red) !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav a { color: var(--text-main) !important; text-decoration: none; font-weight: bold; font-size: 0.9rem; }
+
+/* Placement du logo */
+nav::after {
+    content: "";
+    width: 60px;
+    height: 40px;
+    background: url('logo2.png') no-repeat center;
+    background-size: contain;
+}
+
+nav button {
+    background: #222;
+    color: white;
+    border: 1px solid #444;
+    padding: 7px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* --- SECTION RECHERCHE --- */
+.search-area {
+    background: linear-gradient(180deg, #000 0%, #111 100%) !important;
+    padding: 30px 15px !important;
+    border-bottom: 1px solid var(--border);
+}
+
+.search-area h2 {
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    color: var(--primary-red);
+}
+
+.search-area .container > div {
+    display: flex;
+    flex-direction: column; /* Mobile First */
+    gap: 12px;
+}
+
+.search-area select, .search-area input {
+    background: #000 !important;
+    border: 1px solid var(--border) !important;
+    color: white !important;
+    padding: 12px !important;
+    border-radius: 6px;
+    outline: none;
+}
+
+.btn-search {
+    background: var(--accent-blue) !important;
+    color: white;
+    border-radius: 6px;
+    padding: 12px !important;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+/* --- LISTE DES BLOCAGES (CARDS) --- */
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 10px;
+}
+
+.block-card {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px !important;
+    padding: 20px !important;
+    margin: 0px 15px;
+    margin-top: 15px !important;
+    display: flex; /* Mobile First: Vertical Stack */
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4) !important;
+}
+
+.user-box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #0a0a0a;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+/* --- CALIBRATION IMAGES (NO STRETCH) --- */
+.avatar {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important; /* Empeche le stretch */
+    border: 2px solid var(--border) !important;
+    background: #222;
+}
+
+.user-name {
+    font-weight: bold;
+    color: var(--text-main) !important;
+    font-size: 1rem;
+}
+
+.date-info {
+    font-size: 0.65rem !important;
+    letter-spacing: 1px;
+    color: var(--accent-blue) !important;
+}
+
+.action-arrow {
+    text-align: center;
+    color: var(--primary-red) !important;
+    font-size: 1.2rem !important;
+    padding: 5px 0 !important;
+}
+
+.reason-tag {
+    grid-column: unset !important; /* Reset grid pour mobile */
+    border-top: 1px solid var(--border) !important;
+    padding-top: 15px !important;
+    margin-top: 5px !important;
+    font-size: 0.85rem !important;
+    color: var(--text-dim) !important;
+}
+
+.reason-tag strong {
+    color: var(--accent-blue);
+}
+
+/* --- LOADING STATE --- */
+.loading {
+    color: var(--accent-blue) !important;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+}
+
+/* --- RESPONSIVITÉ (TABLETTE & PC) --- */
+@media (min-width: 768px) {
+    .search-area .container > div {
+        flex-direction: row; /* Aligné sur une ligne */
+    }
+    
+    .search-area select { width: 220px; }
+
+    .block-card {
+        display: grid !important;
+        grid-template-columns: 1fr auto 1fr !important;
+        align-items: center;
+        gap: 0;
+    }
+
+    .action-arrow {
+        padding: 0 40px !important;
+    }
+
+    .reason-tag {
+        grid-column: 1 / span 3 !important;
+    }
+    
+    .user-box { background: transparent; padding: 0; }
+}
+
+@media (min-width: 1024px) {
+    .block-card:hover {
+        border-color: var(--accent-blue) !important;
+        transition: 0.3s ease;
+    }
+}        
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="bl-admin-landing.html" style="text-decoration:none; color:#3498db; font-weight:bold;">⬅ Retour</a>
+        <button onclick="location.reload()">🔄 Rafraîchir</button>
+    </nav>
+
+    <div class="search-area">
+        <div class="container">
+            <h2 style="margin-top:0;">Journal des Blocages</h2>
+            <div style="display:flex; gap:10px;">
+                <select id="searchType">
+                    <option value="name">Nom d'un utilisateur</option>
+                    <option value="id">ID (UUID)</option>
+                </select>
+                <input type="text" id="searchInput" placeholder="Chercher un utilisateur impliqué..." style="flex:1;">
+                <button onclick="performSearch()" class="btn-search">🔍 Rechercher</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="blocksList" style="padding: 10px 0 50px 0;">
+        </div>
+
+    <div id="loadingIndicator" class="loading">Chargement des données ...</div>
+
+    <script>
+        let currentPage = 0;
+        let isFetching = false;
+        let hasMore = true;
+
+        window.onload = () => fetchBlocks();
+
+        async function fetchBlocks(reset = false) {
+            if (isFetching || (!hasMore && !reset)) return;
+            isFetching = true;
+            if (reset) {
+                currentPage = 0;
+                hasMore = true;
+                document.getElementById('blocksList').innerHTML = "";
+            }
+
+            document.getElementById('loadingIndicator').style.display = 'block';
+            const q = document.getElementById('searchInput').value;
+            const type = document.getElementById('searchType').value;
+
+            try {
+                const res = await fetch(`https://bl-alliance-api.onrender.com/admin/get_all_blocks?page=${currentPage}&query=${q}&search_type=${type}`);
+                const data = await res.json();
+                
+                renderBlocks(data.blocks);
+                hasMore = data.has_more;
+                currentPage++;
+            } catch (e) {
+                console.error("Erreur de chargement:", e);
+            } finally {
+                isFetching = false;
+                document.getElementById('loadingIndicator').style.display = 'none';
+            }
+        }
+
+        function renderBlocks(blocks) {
+            const list = document.getElementById('blocksList');
+            if (blocks.length === 0 && currentPage === 0) {
+                list.innerHTML = "<p style='text-align:center; margin-top:50px; color:#7f8c8d;'>Aucun blocage trouvé.</p>";
+                return;
+            }
+
+            blocks.forEach(b => {
+                const dateStr = new Date(b.created_at).toLocaleString('fr-FR', {
+                    day: '2-digit', month: '2-digit', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+
+                const html = `
+                    <div class="block-card">
+                        <div class="user-box">
+                            <img src="${b.blocker_img}" class="avatar">
+                            <div class="user-info">
+                                <span class="date-info">L'AUTEUR</span>
+                                <span class="user-name">${b.blocker_name}</span>
+                            </div>
+                        </div>
+
+                        <div class="action-arrow">
+                            <div style="font-size:0.5em; color:#95a5a6; margin-bottom:5px;">A BLOQUÉ</div>
+                        </div>
+
+                        <div class="user-box">
+                            <img src="${b.blocked_img}" class="avatar">
+                            <div class="user-info">
+                                <span class="date-info">LA CIBLE</span>
+                                <span class="user-name">${b.blocked_name}</span>
+                            </div>
+                        </div>
+
+                        <div class="reason-tag">
+                            <strong>Date :</strong> ${dateStr}
+                        </div>
+                    </div>
+                `;
+                list.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        function performSearch() {
+            fetchBlocks(true);
+        }
+
+        // Infinite Scroll Logic
+        window.onscroll = () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 150) {
+                fetchBlocks();
+            }
+        };
+    </script>
+</body>
+</html>
