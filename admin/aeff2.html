@@ -1,0 +1,497 @@
+<html lang="fr"><head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Admin - Vue Discussion</title>
+    <script type="text/javascript" src="admin_guard.js"></script>
+    <style>
+        /*body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #e5ddd5; }        
+        .admin-nav {
+            position: fixed; top: 0; width: 100%; background: #075e54; color: white;
+            display: flex; justify-content: space-around; align-items: center;
+            padding: 10px 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .profile-box { text-align: center; width: 45%; }
+        .nav-avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; object-fit: cover; }
+        .nav-name { display: block; font-size: 0.9em; font-weight: bold; margin-top: 5px; }
+        .chat-container {
+            margin-top: 120px;
+            padding: 20px;
+            display: flex; flex-direction: column; gap: 10px;
+            max-width: 800px; margin-left: auto; margin-right: auto;
+        }
+        .bubble {
+            max-width: 70%; padding: 10px 15px; border-radius: 10px;
+            position: relative; font-size: 0.95em; line-height: 1.4;
+        }
+        .bubble .time { font-size: 0.7em; display: block; margin-top: 5px; opacity: 0.7; }
+        .msg-left { align-self: flex-start; background: white; border-bottom-left-radius: 2px; }
+        .msg-right { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
+
+        .back-btn { position: fixed; bottom: 20px; left: 20px; background: #25d366; color: white; 
+                    border: none; padding: 10px 20px; border-radius: 30px; cursor: pointer; z-index: 1001; }*/
+
+
+/* --- CONFIGURATION & DESIGN SYSTEM --- */
+:root {
+    --bg-dark: #121212;
+    --bg-chat: #0f0f0f;
+    --primary-red: #d32f2f;
+    --accent-blue: #3b82f6;
+    --msg-left: #1e1e1e;
+    --msg-right: #004d40;
+    --text-main: #ffffff;
+    --text-dim: #b0b0b0;
+    --border: #333333;
+}
+
+/* --- RESET & SCROLLBAR --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary-red); }
+
+body {
+    background: var(--bg-chat);
+    color: var(--text-main);
+    overflow-x: hidden;
+}
+
+/* --- BARRE DE NAVIGATION ADMIN (FIXE) --- */
+.admin-nav {
+    position: fixed !important;
+    top: 0;
+    width: 100%;
+    background: var(--bg-card, #000) !important;
+    border-bottom: 2px solid var(--primary-red) !important;
+    display: flex !important;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0 !important;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6) !important;
+}
+
+/* Injection du logo2.png au centre */
+.admin-nav::before {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    width: 35px;
+    height: 35px;
+    background: url('logo2.png') no-repeat center;
+    background-size: contain;
+    opacity: 0.8;
+}
+
+.profile-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+/* --- CALIBRATION IMAGES (NO STRETCH) --- */
+.nav-avatar {
+    width: 45px !important;
+    height: 45px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important; /* Pas de déformation */
+    border: 2px solid var(--border) !important;
+    background: #222;
+}
+
+.nav-name {
+    font-size: 0.75rem !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --- ZONE DE CHAT --- */
+.chat-container {
+    margin-top: 130px !important; /* Espace pour la navbar */
+    margin-bottom: 80px !important;
+    padding: 15px !important;
+    display: flex !important;
+    flex-direction: column;
+    gap: 12px !important;
+    width: 100%;
+    max-width: 900px !important;
+}
+
+/* Bulles de messages */
+.bubble {
+    max-width: 85% !important;
+    padding: 12px 16px !important;
+    border-radius: 12px !important;
+    font-size: 0.92rem !important;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    word-wrap: break-word;
+}
+
+.msg-left {
+    align-self: flex-start !important;
+    background: var(--msg-left) !important;
+    color: #eee !important;
+    border-bottom-left-radius: 2px !important;
+    border: 1px solid var(--border);
+}
+
+.msg-right {
+    align-self: flex-end !important;
+    background: var(--msg-right) !important;
+    color: #fff !important;
+    border-bottom-right-radius: 2px !important;
+}
+
+/* Horodatage complet */
+.time {
+    font-size: 0.65rem !important;
+    display: block;
+    margin-top: 8px;
+    opacity: 0.5;
+    font-family: 'Roboto Mono', monospace;
+    text-align: right;
+}
+
+/* --- BOUTON RETOUR --- */
+.back-btn {
+    position: fixed !important;
+    bottom: 20px !important;
+    left: 20px !important;
+    background: var(--primary-red) !important;
+    color: white !important;
+    border: none !important;
+    padding: 12px 20px !important;
+    border-radius: 50px !important;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    cursor: pointer;
+    z-index: 1001;
+    box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4) !important;
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+}
+
+/* --- RESPONSIVITÉ (TABLETTE & PC) --- */
+
+/* Tablette (768px+) */
+@media (min-width: 768px) {
+    .nav-avatar {
+        width: 60px !important;
+        height: 60px !important;
+    }
+    
+    .nav-name {
+        font-size: 0.85rem !important;
+        max-width: 200px;
+    }
+
+    .bubble {
+        max-width: 70% !important;
+    }
+
+    .admin-nav::before {
+        width: 50px;
+        height: 50px;
+        left: 30px;
+    }
+}
+
+/* PC (1024px+) */
+@media (min-width: 1024px) {
+    .chat-container {
+        margin: 0px auto; 
+        margin-top: 150px !important;
+    }
+
+    .msg-left:hover, .msg-right:hover {
+        filter: brightness(1.1);
+        transition: 0.2s;
+    }
+}
+
+/* --- ESTHÉTIQUE DES ÉLÉMENTS SPÉCIFIQUES --- */
+#adminNav div[style*="font-size: 1.5em"] {
+    color: var(--primary-red);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="admin-nav" id="adminNav">
+        <div class="profile-box" id="profileLeft">
+                <img src="https://res.cloudinary.com/dljaip15q/image/upload/v1776770955/profils_utilisateurs/user_cd61e474-48dc-4873-8b83-87633bd0416a.jpg" class="nav-avatar">
+                <span class="nav-name">Da Justine Busimike K.</span>
+            </div>
+        <div style="font-size: 1.5em;">⚡</div>
+        <div class="profile-box" id="profileRight">
+                <img src="https://res.cloudinary.com/dljaip15q/image/upload/v1775741385/profils_utilisateurs/user_e9af4426-70f6-4050-a10a-0cb457ace379.jpg" class="nav-avatar">
+                <span class="nav-name">Alfred Munganga</span>
+            </div>
+    </div>
+
+    <button class="back-btn" onclick="history.back()">⬅ Retour</button>
+
+    <div class="chat-container" id="chatContainer"><div class="bubble msg-left">
+                    Bonjour ! Je viens de voir votre profil sur BL Alliance et j'aimerais faire votre connaissance. Comment allez-vous ?
+                    <span class="time">10/04/2026 09:27:45</span>
+                </div><div class="bubble msg-right">
+                    bonjour comment allez-vous ?
+                    <span class="time">10/04/2026 09:40:45</span>
+                </div><div class="bubble msg-left">
+                    je vais bien, et toi ?
+                    <span class="time">10/04/2026 09:43:02</span>
+                </div><div class="bubble msg-left">
+                    salut tres cher alfred.
+                    <span class="time">10/04/2026 09:55:04</span>
+                </div><div class="bubble msg-left">
+                    tu vas bien ?
+                    <span class="time">10/04/2026 09:55:13</span>
+                </div><div class="bubble msg-right">
+                    oui je vais bien. et toi ?
+                    <span class="time">10/04/2026 09:58:26</span>
+                </div><div class="bubble msg-left">
+                    gggggggg
+                    <span class="time">10/04/2026 12:05:30</span>
+                </div><div class="bubble msg-left">
+                    cff
+                    <span class="time">10/04/2026 12:06:51</span>
+                </div><div class="bubble msg-left">
+                    ffffrf
+                    <span class="time">10/04/2026 12:06:54</span>
+                </div><div class="bubble msg-left">
+                    ffff
+                    <span class="time">10/04/2026 12:07:00</span>
+                </div><div class="bubble msg-right">
+                    GGGG
+                    <span class="time">11/04/2026 09:40:41</span>
+                </div><div class="bubble msg-left">
+                    DDD
+                    <span class="time">11/04/2026 10:09:01</span>
+                </div><div class="bubble msg-right">
+                    ddd
+                    <span class="time">11/04/2026 10:12:57</span>
+                </div><div class="bubble msg-right">
+                    salut
+                    <span class="time">13/04/2026 12:30:05</span>
+                </div><div class="bubble msg-right">
+                    salut
+                    <span class="time">13/04/2026 12:30:16</span>
+                </div><div class="bubble msg-left">
+                    oui, ca va ?
+                    <span class="time">13/04/2026 12:32:45</span>
+                </div><div class="bubble msg-right">
+                    oui et toi
+                    <span class="time">13/04/2026 12:33:11</span>
+                </div><div class="bubble msg-right">
+                    comment tu vas ?
+                    <span class="time">13/04/2026 12:34:36</span>
+                </div><div class="bubble msg-right">
+                    ds
+                    <span class="time">14/04/2026 09:17:21</span>
+                </div><div class="bubble msg-right">
+                    salut ca va ?
+                    <span class="time">14/04/2026 09:17:22</span>
+                </div><div class="bubble msg-left">
+                    salut voic mon num +243894663882 okay
+                    <span class="time">14/04/2026 16:34:33</span>
+                </div><div class="bubble msg-left">
+                    salut voic mon num okay
+                    <span class="time">14/04/2026 16:49:15</span>
+                </div><div class="bubble msg-right">
+                    fff
+                    <span class="time">15/04/2026 14:59:12</span>
+                </div><div class="bubble msg-left">
+                    ddd
+                    <span class="time">15/04/2026 15:01:00</span>
+                </div><div class="bubble msg-right">
+                    fff
+                    <span class="time">15/04/2026 15:01:06</span>
+                </div><div class="bubble msg-right">
+                    dc
+                    <span class="time">15/04/2026 15:01:14</span>
+                </div><div class="bubble msg-left">
+                    ffd
+                    <span class="time">15/04/2026 15:01:20</span>
+                </div><div class="bubble msg-left">
+                    dff
+                    <span class="time">15/04/2026 15:01:29</span>
+                </div><div class="bubble msg-right">
+                    DGRFFF
+                    <span class="time">15/04/2026 16:02:44</span>
+                </div><div class="bubble msg-left">
+                    fff
+                    <span class="time">15/04/2026 16:14:08</span>
+                </div><div class="bubble msg-right">
+                    dfff
+                    <span class="time">15/04/2026 16:20:32</span>
+                </div><div class="bubble msg-right">
+                    fff
+                    <span class="time">15/04/2026 16:20:46</span>
+                </div><div class="bubble msg-right">
+                    fff
+                    <span class="time">15/04/2026 16:20:49</span>
+                </div><div class="bubble msg-right">
+                    eddd
+                    <span class="time">15/04/2026 16:20:53</span>
+                </div><div class="bubble msg-right">
+                    FDD
+                    <span class="time">16/04/2026 11:26:21</span>
+                </div><div class="bubble msg-left">
+                    FFF
+                    <span class="time">16/04/2026 11:28:26</span>
+                </div><div class="bubble msg-left">
+                    DDD
+                    <span class="time">16/04/2026 11:28:29</span>
+                </div><div class="bubble msg-right">
+                    ffd
+                    <span class="time">16/04/2026 11:42:19</span>
+                </div><div class="bubble msg-left">
+                    dd
+                    <span class="time">16/04/2026 11:42:34</span>
+                </div><div class="bubble msg-right">
+                    ddd
+                    <span class="time">16/04/2026 11:42:39</span>
+                </div><div class="bubble msg-left">
+                    dddse
+                    <span class="time">16/04/2026 11:42:46</span>
+                </div><div class="bubble msg-right">
+                    fdrfrree
+                    <span class="time">16/04/2026 11:42:53</span>
+                </div><div class="bubble msg-right">
+                    dderrrd
+                    <span class="time">16/04/2026 11:42:57</span>
+                </div><div class="bubble msg-left">
+                    ok
+                    <span class="time">16/04/2026 11:43:04</span>
+                </div><div class="bubble msg-right">
+                    👍👍👍
+                    <span class="time">16/04/2026 11:43:15</span>
+                </div><div class="bubble msg-left">
+                    salut ca va ?
+                    <span class="time">17/04/2026 12:29:46</span>
+                </div><div class="bubble msg-right">
+                    oui ca va !! et toi ?
+                    <span class="time">17/04/2026 12:30:02</span>
+                </div><div class="bubble msg-right">
+                    salut
+                    <span class="time">17/04/2026 12:32:38</span>
+                </div><div class="bubble msg-right">
+                    ca va ?
+                    <span class="time">17/04/2026 12:32:43</span>
+                </div><div class="bubble msg-right">
+                    hshs
+                    <span class="time">17/04/2026 12:33:14</span>
+                </div><div class="bubble msg-right">
+                    ssd
+                    <span class="time">17/04/2026 12:33:17</span>
+                </div><div class="bubble msg-left">
+                    Salut
+                    <span class="time">17/04/2026 14:55:48</span>
+                </div></div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const u1 = urlParams.get('user1');
+        const u2 = urlParams.get('user2');
+
+        window.onload = () => {
+            if (u1 && u2) fetchChat();
+        };
+
+        async function fetchChat() {
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/admin/get_chat_history?user1=${u1}&user2=${u2}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    displayProfiles(data.profiles);
+                    displayMessages(data.messages, data.profiles);
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        function displayProfiles(profiles) {
+            // On essaie de mettre la femme à gauche et l'homme à droite pour la cohérence
+            let pLeft = profiles.find(p => p.gender === 'Femme') || profiles[0];
+            let pRight = profiles.find(p => p.id !== pLeft.id) || profiles[1];
+
+            const render = (p) => `
+                <img src="${p.url_profil_img}" class="nav-avatar">
+                <span class="nav-name">${p.full_name}</span>
+            `;
+
+            document.getElementById('profileLeft').innerHTML = render(pLeft);
+            document.getElementById('profileRight').innerHTML = render(pRight);
+            
+            // Stocker l'ID de gauche pour la logique des bulles
+            window.leftUserId = pLeft.id;
+        }
+
+        function displayMessages(messages, profiles) {
+            const container = document.getElementById('chatContainer');
+            container.innerHTML = "";
+
+            if (messages.length === 0) {
+                container.innerHTML = "<p style='text-align:center; color: #666;'>Aucun message échangé.</p>";
+                return;
+            }
+
+            messages.forEach(msg => {
+                const isLeft = (msg.sender_id === window.leftUserId);
+                // const date = new Date(msg.created_at).toLocaleString('fr-FR', { 
+                //     day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' 
+                // });
+                const date = new Date(msg.created_at).toLocaleString('fr-FR', { 
+                    day: '2-digit', 
+                    month: '2-digit', 
+                    year: 'numeric',
+                    hour: '2-digit', 
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+
+                const bubble = document.createElement('div');
+                bubble.className = `bubble ${isLeft ? 'msg-left' : 'msg-right'}`;
+                bubble.innerHTML = `
+                    ${msg.content}
+                    <span class="time">${date}</span>
+                `;
+                container.appendChild(bubble);
+            });
+
+            // Scroller vers le bas pour voir les derniers messages
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+    </script>
+
+
+</body></html>
+
