@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BL Alliance - Comptes Fictifs</title>
+    <script type="text/javascript" src="admin_guard.js"></script>
+    <style>
+        :root {
+            --bg-darker: #1a1a1a;
+            --bg-black: #000000;
+            --accent-red: #d32f2f;
+            --text-main: #ffffff;
+            --text-muted: #b0b0b0;
+            --card-bg: #262626;
+            --border-color: #333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-darker); color: var(--text-main); min-height: 100vh; padding-bottom: 50px; }
+
+        /* HEADER */
+        header {
+            background-color: var(--bg-black);
+            padding: 15px;
+            border-bottom: 2px solid var(--accent-red);
+            position: sticky; top: 0; z-index: 1000;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto 15px auto;
+        }
+
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            background: #333;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        header h1 { font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; flex-grow: 1; text-align: center; }
+
+        .search-container { width: 100%; max-width: 500px; margin: 0 auto; }
+        #searchInput {
+            width: 100%; padding: 12px 20px;
+            background: #262626; border: 1px solid #444;
+            border-radius: 25px; color: white; outline: none;
+        }
+
+        /* GRID */
+        .container { padding: 15px; max-width: 1200px; margin: 0 auto; }
+        .users-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+
+        @media (min-width: 768px) { .users-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .users-grid { grid-template-columns: repeat(3, 1fr); } }
+
+        /* USER CARD */
+        .user-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .user-card:hover { border-color: var(--accent-red); }
+
+        .avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-red); margin-bottom: 15px; }
+        .user-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 15px; color: #fff; }
+
+        /* DATA INFO */
+        .data-box {
+            width: 100%;
+            background: #1a1a1a;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .label { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; }
+        .value { color: var(--text-main); font-weight: 500; }
+
+        .copy-btn {
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .copy-btn:active { transform: scale(0.95); }
+
+        #loader { text-align: center; padding: 30px; color: var(--text-muted); }
+
+
+        /* État du bouton après le clic */
+        .copy-btn.copied {
+            background-color: #2196f3 !important; /* Joli bleu */
+            transform: scale(1.05);
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <a href="bl-admin-landing.html" class="back-btn">Retour</a> <!-- Complète le lien ici -->
+        <h1>Monitoring Des Comptes Fictifs</h1>
+        <div style="width: 60px;"></div> <!-- Équilibre visuel -->
+    </div>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Rechercher par nom..." oninput="handleSearch()">
+    </div>
+</header>
+
+<div class="container">
+    <div id="usersGrid" class="users-grid"></div>
+    <div id="loader" style="display: none;">Chargement des comptes...</div>
+</div>
+
+<script>
+    let currentPage = 0;
+    let isLoading = false;
+    let hasMore = true;
+    let searchQuery = "";
+    let searchTimeout;
+    const API_BASE = "https://bl-alliance-api.onrender.com";
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadUsers();
+        window.addEventListener('scroll', () => {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+                if (!isLoading && hasMore) loadUsers();
+            }
+        });
+    });
+
+    function handleSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            searchQuery = document.getElementById('searchInput').value;
+            currentPage = 0;
+            document.getElementById('usersGrid').innerHTML = "";
+            hasMore = true;
+            loadUsers();
+        }, 500);
+    }
+
+    async function loadUsers() {
+        if (isLoading) return;
+        isLoading = true;
+        document.getElementById('loader').style.display = 'block';
+
+        try {
+            const url = `${API_BASE}/admin/multi_users_overview?page=${currentPage}&search=${encodeURIComponent(searchQuery)}`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (data.users) {
+                renderUsers(data.users);
+                hasMore = data.has_more;
+                currentPage++;
+            }
+        } catch (error) {
+            console.error("Erreur:", error);
+        } finally {
+            isLoading = false;
+            document.getElementById('loader').style.display = 'none';
+        }
+    }
+
+    // function copyToClipboard(text) {
+    //     navigator.clipboard.writeText(text).then(() => {
+    //         alert("Copié : " + text);
+    //     });
+    // }
+
+    function copyToClipboard(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+        // Sauvegarder le texte d'origine (COPIER)
+        const originalText = btn.innerText;
+        
+        // Appliquer les changements visuels
+        btn.innerText = "✓"; // Coche élégante
+        btn.classList.add('copied');
+        
+        // Revenir à l'état initial après 2 secondes
+        setTimeout(() => {
+            btn.innerText = originalText;
+            btn.classList.remove('copied');
+        }, 2000);
+        });
+    }
+
+    function renderUsers(users) {
+        const grid = document.getElementById('usersGrid');
+        users.forEach(user => {
+            const card = document.createElement('div');
+            card.className = 'user-card';
+            card.innerHTML = `
+                <img src="${user.url_profil_img}" class="avatar" onerror="this.src='https://res.cloudinary.com/dljaip15q/image/upload/v1774942117/default-avatar_xgspk7.png'">
+                <div class="user-name">${user.full_name}</div>
+                
+                <div class="data-box">
+                    <div>
+                        <span class="label">Tél</span><br>
+                        <span class="value">${user.phone}</span>
+                    </div>
+                    <button class="copy-btn" onclick="copyToClipboard('${user.phone}', this)">COPIER</button>
+                </div>
+
+                <div class="data-box">
+                    <div>
+                        <span class="label">Pass</span><br>
+                        <span class="value">${user.password}</span>
+                    </div>
+                    <span style="color:#4caf50; font-size: 0.8rem;">FIXE</span>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+</script>
+</body>
+</html>
+
