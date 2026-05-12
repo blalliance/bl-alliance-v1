@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BL Alliance - Activités</title>
+    <script type="text/javascript" src="admin_guard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --bg-dark: #1a1a1a; --bg-black: #000; --accent-red: #d32f2f; --card-bg: #262626; --text-main: #fff; --border: #333; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg-dark); color: var(--text-main); padding-bottom: 30px; }
+        
+        header { background: var(--bg-black); padding: 15px; border-bottom: 2px solid var(--accent-red); display: flex; align-items: center; justify-content: space-between; sticky; top: 0; z-index: 100; }
+        .back-link { color: #fff; text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
+        .logo { height: 30px; }
+
+        .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+        h2 { margin-bottom: 20px; font-size: 1.2rem; letter-spacing: 1px; color: var(--accent-red); }
+
+        /* Filtres */
+        .filters { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+        .filter-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px; }
+        .filter-group label { font-size: 0.7rem; color: #888; text-transform: uppercase; }
+        input[type="date"] { background: #1a1a1a; border: 1px solid #444; color: #fff; padding: 8px; border-radius: 6px; }
+        .btn-search { background: var(--accent-red); border: none; color: #fff; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+
+        /* Stats Cards */
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 25px; }
+        @media (min-width: 768px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
+        .stat-card { background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
+        .stat-icon { font-size: 1.5rem; margin-bottom: 10px; display: block; }
+        .stat-value { font-size: 1.4rem; font-weight: 800; display: block; }
+        .stat-label { font-size: 0.7rem; color: #aaa; text-transform: uppercase; }
+        .view-btn { margin-top: 10px; font-size: 0.7rem; color: var(--accent-red); background: none; border: 1px solid var(--accent-red); padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+
+        /* Graphiques */
+        .chart-container { background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; padding: 20px; }
+        .modal-content { background: var(--bg-dark); max-width: 500px; margin: 40px auto; border-radius: 15px; max-height: 80vh; display: flex; flex-direction: column; border: 1px solid var(--accent-red); }
+        .modal-header { padding: 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
+        .modal-body { overflow-y: auto; padding: 10px; flex-grow: 1; }
+        /* Scrollbar personnalisée */
+        .modal-body::-webkit-scrollbar { width: 5px; }
+        .modal-body::-webkit-scrollbar-thumb { background: var(--accent-red); border-radius: 10px; }
+        
+        .user-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-bottom: 1px solid #333; }
+        .user-item img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; }
+        .user-info { flex-grow: 1; }
+        .user-info .name { font-size: 0.9rem; font-weight: bold; display: block; }
+        .user-info .date { font-size: 0.7rem; color: #777; }
+        .btn-view-user { background: #333; color: #fff; text-decoration: none; font-size: 0.7rem; padding: 5px 10px; border-radius: 4px; }
+
+        /*input[type="date"]::-webkit-datetime-edit-text {
+            padding: 0 2px;
+        }*/
+
+        /*input[type="date"]::-webkit-datetime-edit {
+            display: flex;
+            flex-direction: row;
+        }
+
+        input[type="date"]::-webkit-datetime-edit-day-field { order: 1; }
+        input[type="date"]::-webkit-datetime-edit-text:nth-of-type(1) { order: 2; }
+        input[type="date"]::-webkit-datetime-edit-month-field { order: 3; }
+        input[type="date"]::-webkit-datetime-edit-text:nth-of-type(2) { order: 4; }
+        input[type="date"]::-webkit-datetime-edit-year-field { order: 5; }*/
+
+    </style>
+</head>
+<body>
+
+<div id="pageLoader" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; display: flex; justify-content: center; align-items: center; color: white; flex-direction: column;">
+    <div style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #d32f2f; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    <p style="margin-top: 10px; font-size: 0.8rem;">Chargement des statistiques...</p>
+</div>
+
+<style> @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } </style>
+
+<header>
+    <a href="bl-admin-landing.html" class="back-link">⬅ Retour</a>
+    <img src="logo2.png" class="logo" alt="Logo">
+</header>
+
+<div class="container">
+    <h2>LES ACTIVITÉS</h2>
+
+    <div class="filters">
+        <!-- <div class="filter-group">
+            <label>Début</label>
+            <input type="date" id="startDate">
+        </div>
+        <div class="filter-group">
+            <label>Fin</label>
+            <input type="date" id="endDate">
+        </div> -->
+
+        <div class="filter-group">
+            <label>Début</label>
+            <input type="date" id="startDate" class="french-date">
+        </div>
+        <div class="filter-group">
+            <label>Fin</label>
+            <input type="date" id="endDate" class="french-date">
+        </div>        
+
+        <!-- <button class="btn-search" onclick="fetchData()">Filtrer</button> -->
+        <button class="btn-search" id="btnFilter" onclick="fetchData()">
+            <span id="btnText">Filtrer</span>
+            <span id="btnBtnLoader" style="display: none; width: 15px; height: 15px; border: 2px solid #fff; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-left: 5px;"></span>
+        </button>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span class="stat-icon">👤</span>
+            <span class="stat-value" id="val-inscriptions">0</span>
+            <span class="stat-label">Inscriptions</span>
+            <button class="view-btn" onclick="openModal()">Voir détails</button>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon">🤝</span>
+            <span class="stat-value" id="val-matches">0</span>
+            <span class="stat-label">Matches</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon">💬</span>
+            <span class="stat-value" id="val-messages">0</span>
+            <span class="stat-label">Messages</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon">⚠️</span>
+            <span class="stat-value" id="val-reports">0</span>
+            <span class="stat-label">Signalements</span>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="mainChart"></canvas>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="userModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Nouveaux Inscrits</h3>
+            <button onclick="closeModal()" style="background:none; border:none; color:white; font-size:1.5rem;">&times;</button>
+        </div>
+        <div id="modalBody" class="modal-body">
+            <!-- Injecté par JS -->
+        </div>
+    </div>
+</div>
+
+<script>
+    let userData = [];
+    let myChart = null;
+
+    async function fetchData() {
+        document.getElementById('btnText').innerText = "Chargement...";
+        document.getElementById('btnBtnLoader').style.display = "inline-block";
+
+        const s = document.getElementById('startDate').value;
+        const e = document.getElementById('endDate').value;
+        const url = `https://bl-alliance-api.onrender.com/admin/activity_stats?start_date=${s}&end_date=${e}`;
+        
+        try {
+            const resp = await fetch(url);
+            const d = await resp.json();
+            
+            document.getElementById('val-inscriptions').innerText = d.stats.inscriptions;
+            document.getElementById('val-matches').innerText = d.stats.matches;
+            document.getElementById('val-messages').innerText = d.stats.messages;
+            document.getElementById('val-reports').innerText = d.stats.reports;
+            
+            userData = d.new_users_list;
+            updateChart(d.stats);
+        } catch (err) { console.error(err); }
+        document.getElementById('pageLoader').style.display = 'none';
+        document.getElementById('btnText').innerText = "Filtrer";
+        document.getElementById('btnBtnLoader').style.display = "none";
+    }
+
+    function updateChart(stats) {
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        if (myChart) myChart.destroy();
+        
+        myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Inscriptions', 'Matches', 'Messages', 'Signalements'],
+                datasets: [{
+                    label: 'Volume d\'activité',
+                    data: [stats.inscriptions, stats.matches, stats.messages, stats.reports],
+                    backgroundColor: ['#d32f2f', '#4caf50', '#2196f3', '#ff9800']
+                }]
+            },
+            options: { 
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true, grid: { color: '#333' } } }
+            }
+        });
+    }
+
+    function openModal() {
+        const body = document.getElementById('modalBody');
+        body.innerHTML = userData.map(u => `
+            <div class="user-item">
+                <img src="${u.url_profil_img || 'https://res.cloudinary.com/dljaip15q/image/upload/v1774942117/default-avatar_xgspk7.png'}">
+                <div class="user-info">
+                    <span class="name">${u.full_name}</span>
+                    <span class="date">${new Date(u.created_at).toLocaleDateString('fr-FR', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'})}</span>
+                </div>
+                <a href="user-details.html?id=${u.id}" class="btn-view-user">VOIR</a>
+            </div>
+        `).join('') || '<p style="text-align:center; padding:20px;">Aucun compte sur cette période.</p>';
+        document.getElementById('userModal').style.display = 'block';
+    }
+
+    function closeModal() { document.getElementById('userModal').style.display = 'none'; }
+
+    // Init dates
+    const now = new Date();
+    document.getElementById('endDate').value = now.toISOString().split('T')[0];
+    now.setDate(now.getDate() - 7);
+    document.getElementById('startDate').value = now.toISOString().split('T')[0];
+    
+    fetchData();
+
+    // document.querySelectorAll('.french-date').forEach(input => {
+    //     input.addEventListener('change', function() {
+    //         // On ne change pas la valeur (indispensable pour Flask), 
+    //         // on s'assure juste que l'UI réagit.
+    //         console.log("Date sélectionnée : ", this.value); 
+    //     });
+    // });
+
+</script>
+</body>
+</html>
+
