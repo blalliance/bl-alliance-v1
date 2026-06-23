@@ -1,154 +1,351 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erreur 403 - Page Bloquée</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
+    <meta charset="UTF-8">
+    <title>Admin - Liste des utilisateurs</title>
+    <script type="text/javascript" src="admin_guard.js"></script>
     <style>
-        /* Réinitialisation de base */
+        /*.user-card { border: 1px solid #ddd; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .loading-text { text-align: center; font-style: italic; padding: 10px; display: none; }
+        .search-box { background: #f4f4f4; padding: 15px; margin-bottom: 20px; }*/
+
+        /* --- CONFIGURATION GLOBALE & DARK THEME --- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
         }
+
+        :root {
+            --bg-dark: #1a1a1a;
+            --bg-card: #000000;
+            --primary-red: #d32f2f;
+            --text-main: #ffffff;
+            --text-dim: #b0b0b0;
+            --border-color: #333333;
+            --accent-blue: #3b82f6;
+        }
+
+        /* --- SCROLLBAR PRO --- */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; border: 2px solid var(--bg-dark); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-red); }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0d0d0d; /* Fond noir profond */
-            color: #ffffff;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding-bottom: 50px;
+        }
+
+        /* --- NAVIGATION & LOGO --- */
+        nav {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            perspective: 1000px; /* Nécessaire pour l'effet 3D */
+            background: var(--bg-card);
+            padding: 15px 20px !important;
+            border-bottom: 2px solid var(--primary-red) !important;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        .container {
-            text-align: center;
-            padding: 40px;
-            transition: transform 0.1s ease-out; /* Fluidité du mouvement de la souris */
-            transform-style: preserve-3d;
-        }
-
-        /* Titre 403 avec lueur rouge */
-        h1 {
-            font-size: 10rem;
-            font-weight: 700;
-            color: #ff2a2a; /* Rouge vif */
-            margin-bottom: -10px;
-            text-shadow: 0px 0px 20px rgba(255, 42, 42, 0.6), 
-                         0px 0px 40px rgba(255, 42, 42, 0.3);
-            transform: translateZ(50px); /* Fait ressortir le texte en 3D */
-        }
-
-        /* Sous-titre blanc */
-        h2 {
-            font-size: 2.5rem;
-            font-weight: 500;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
-            transform: translateZ(30px);
-        }
-
-        /* Texte descriptif */
-        p {
-            font-size: 1.1rem;
-            font-weight: 300;
-            color: #a0a0a0; /* Gris clair pour contraster avec le blanc pur */
-            margin-bottom: 40px;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.6;
-            transform: translateZ(20px);
-        }
-
-        /* Bouton rouge élégant */
-        .btn {
-            display: inline-block;
-            padding: 15px 35px;
-            font-size: 1rem;
-            color: #ffffff;
+        nav a {
+            color: var(--text-main);
             text-decoration: none;
-            border: 2px solid #ff2a2a;
-            border-radius: 50px;
-            background: transparent;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        nav a:hover { color: var(--primary-red); }
+
+        nav button {
+            background: #222;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Logo placement */
+        h1 {
+            text-align: center;
+            padding: 20px 10px;
+            font-size: 1.4rem;
             text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h1::before {
+            content: "";
+            display: block;
+            width: 60px;
+            height: 40px;
+            margin: 0 auto 10px;
+            background: url('logo2.png') no-repeat center center;
+            background-size: contain;
+        }
+
+        /* --- MOTEUR DE RECHERCHE --- */
+        .search-box {
+            background: #262626 !important;
+            margin: 10px !important;
+            padding: 20px !important;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .search-box select, 
+        .search-box input {
+            padding: 12px;
+            background: #000;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .search-box button {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .search-box button:hover { opacity: 0.8; }
+
+        /* --- GRILLE DES UTILISATEURS --- */
+        #usersContainer {
+            padding: 10px;
+            display: grid;
+            grid-template-columns: 1fr; /* Mobile first */
+            gap: 15px;
+        }
+
+        .user-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color) !important;
+            padding: 20px !important;
+            margin: 0 !important;
+            border-radius: 10px !important;
+            position: relative;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .user-card:hover {
+            border-color: var(--primary-red) !important;
+            transform: translateY(-2px);
+        }
+
+        /* Images de profil calibrÃ©es */
+        .user-card img {
+            width: 70px !important;
+            height: 70px !important;
+            object-fit: cover; /* EmpÃªche le stretch */
+            border-radius: 50%;
+            border: 2px solid var(--primary-red);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .user-card p {
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            color: var(--text-dim);
+        }
+
+        .user-card p strong {
+            color: var(--text-main);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-right: 5px;
+        }
+
+        .user-card button {
+            width: 100%;
+            margin-top: 15px;
+            padding: 10px;
+            background: transparent;
+            border: 1px solid var(--primary-red);
+            color: var(--primary-red);
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .user-card button:hover {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        /* --- INDICATEUR CHARGEMENT --- */
+        .loading-text {
+            color: var(--accent-blue);
+            font-weight: bold;
+            padding: 20px;
             letter-spacing: 2px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            transform: translateZ(40px);
         }
 
-        .btn:hover {
-            background-color: #ff2a2a;
-            color: #ffffff;
-            box-shadow: 0 0 20px rgba(255, 42, 42, 0.5);
-            transform: translateZ(40px) scale(1.05); /* Effet de grossissement au survol */
-        }
-        
-        /* Petites particules en arrière-plan (Optionnel) */
-        .background-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 40vw;
-            height: 40vw;
-            background: radial-gradient(circle, rgba(255,42,42,0.05) 0%, rgba(13,13,13,0) 70%);
-            transform: translate(-50%, -50%);
-            z-index: -1;
-            pointer-events: none;
+        /* --- RESPONSIVITÃ‰ --- */
+
+        /* TABLETTE (Min 768px) */
+        @media (min-width: 768px) {
+            .search-box {
+                flex-direction: row;
+                margin: 20px 40px !important;
+            }
+            
+            .search-box input { flex-grow: 2; }
+            .search-box select, .search-box button { flex-grow: 1; }
+
+            #usersContainer {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 20px 40px;
+                gap: 20px;
+            }
+
+            h1 { font-size: 2rem; }
         }
 
-        /* Responsive design pour mobile */
-        @media (max-width: 768px) {
-            h1 { font-size: 6rem; }
-            h2 { font-size: 1.8rem; }
-            p { font-size: 0.9rem; padding: 0 20px; }
+        /* PC (Min 1024px) */
+        @media (min-width: 1024px) {
+            #usersContainer {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .user-card {
+                padding: 25px !important;
+            }
+
+            .user-card p { font-size: 0.9rem; }
+        }
+
+        /* PC LARGE (Min 1440px) */
+        @media (min-width: 1440px) {
+            #usersContainer {
+                grid-template-columns: repeat(4, 1fr);
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="background-glow"></div>
+    <nav style="padding: 10px; border-bottom: 1px solid #ccc;">
+        <a href="bl-admin-landing.html">â¬… Retour Dashboard</a> | 
+        <button onclick="location.reload()">ðŸ”„ RafraÃ®chir la page</button>
+    </nav>
 
-    <div class="container" id="parallax-container">
-        <h1>403</h1>
-        <h2>Oups ! Page bloquée.</h2>
-        <!-- <p>Il semblerait que vous ayez navigué hors des sentiers battus. La page que vous recherchez n'existe pas ou a été déplacée.</p> -->
-        <p>Cette page n'existe pas ou elle est momentanément bloquée</p>
-        <a style="display: none;" href="/" class="btn">Retour à l'accueil</a>
+    <h1>Listing des Utilisateurs</h1>
+
+    <div class="search-box">
+        <select id="searchType">
+            <option value="name">Rechercher par Nom</option>
+            <option value="id">Rechercher par ID (UUID)</option>
+        </select>
+        <input type="text" id="searchInput" placeholder="Entrez votre recherche...">
+        <button onclick="triggerSearch()">Rechercher</button>
     </div>
-
+    <div id="usersContainer"></div>
+    <div id="loadingIndicator" class="loading-text">Chargement ...</div>
     <script>
-        // Effet de parallaxe au mouvement de la souris
-        document.addEventListener("mousemove", function(e) {
-            const container = document.getElementById("parallax-container");
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 40; // Sensibilité horizontale
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 40; // Sensibilité verticale
-            
-            // Applique la rotation pour créer l'effet 3D
-            container.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-        });
+        let currentPage = 0;
+        let isFetching = false;
+        let hasMore = true;
+        let currentSearchQuery = "";
+        let currentSearchType = "name";
 
-        // Remet le bloc à plat quand la souris quitte l'écran
-        document.addEventListener("mouseleave", function() {
-            const container = document.getElementById("parallax-container");
-            container.style.transition = "transform 0.5s ease";
-            container.style.transform = `rotateY(0deg) rotateX(0deg)`;
-            
-            // Restaure la transition rapide après l'animation de retour
-            setTimeout(() => {
-                container.style.transition = "transform 0.1s ease-out";
-            }, 500);
-        });
+        // Chargement initial
+        window.onload = () => {
+            loadUsers();
+        };
+
+        async function loadUsers(reset = false) {
+            if (isFetching || (!hasMore && !reset)) return;
+
+            isFetching = true;
+            if (reset) {
+                currentPage = 0;
+                document.getElementById('usersContainer').innerHTML = "";
+                hasMore = true;
+            }
+
+            document.getElementById('loadingIndicator').style.display = "block";
+
+            try {
+                const url = `https://bl-alliance-api.onrender.com/admin/users_list?page=${currentPage}&query=${currentSearchQuery}&search_type=${currentSearchType}`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.users.length === 0 && currentPage === 0) {
+                    document.getElementById('usersContainer').innerHTML = "<p>Aucun utilisateur trouvÃ©.</p>";
+                } else {
+                    renderUsers(data.users);
+                }
+
+                hasMore = data.has_more;
+                currentPage++;
+
+            } catch (error) {
+                console.error("Erreur:", error);
+                alert("Erreur lors du chargement des donnÃ©es.");
+            } finally {
+                isFetching = false;
+                document.getElementById('loadingIndicator').style.display = "none";
+            }
+        }
+
+        function renderUsers(users) {
+            const container = document.getElementById('usersContainer');
+            users.forEach(user => {
+                const date = new Date(user.created_at).toLocaleString('fr-FR');
+                // console.log("user :", user)
+                const html = `
+                    <div class="user-card">
+                        <img src="${user.url_profil_img}" style="max-with:50%; max-height: 50%;"></img>
+                        <p><strong>NOM :</strong> ${user.full_name || 'N/A'}</p>
+                        <p><strong>USER ID :</strong> ${user.id}</p>
+                        <p><strong>SEXE :</strong> ${user.gender || 'Non dÃ©fini'}</p>
+                        <p><strong>TEL :</strong> ${user.phone_number}</p>
+                        <p><strong>CRÃ‰Ã‰ LE :</strong> ${date}</p>
+                        <button onclick="goToDetails('${user.id}')">VOIR DETAILS</button>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        }
+
+        function triggerSearch() {
+            currentSearchQuery = document.getElementById('searchInput').value;
+            currentSearchType = document.getElementById('searchType').value;
+            loadUsers(true); // Reset la liste pour la recherche
+        }
+
+        function goToDetails(userId) {
+            window.location.href = `user-details.html?id=${userId}`;
+        }
+
+        // --- Logique Infinite Scroll ---
+        window.onscroll = function() {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+                if (hasMore && !isFetching) {
+                    loadUsers();
+                }
+            }
+        };
     </script>
-
 </body>
 </html>
-

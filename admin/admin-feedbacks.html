@@ -1,154 +1,311 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erreur 403 - Page Bloquée</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
+    <meta charset="UTF-8">
+    <title>Admin - Feedbacks</title>
+    <script type="text/javascript" src="admin_guard.js"></script>
     <style>
-        /* Réinitialisation de base */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /*body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f8f9fa; }
+        nav { padding: 15px; background: white; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
+        .search-section { padding: 25px; background: #16a085; color: white; }
+        .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+        .fb-card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .rating { color: #f1c40f; font-weight: bold; font-size: 1.2em; }
+        .btn-details { background: #16a085; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+        .loading { text-align: center; padding: 20px; color: #666; display: none; }*/
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0d0d0d; /* Fond noir profond */
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            perspective: 1000px; /* Nécessaire pour l'effet 3D */
-        }
 
-        .container {
-            text-align: center;
-            padding: 40px;
-            transition: transform 0.1s ease-out; /* Fluidité du mouvement de la souris */
-            transform-style: preserve-3d;
-        }
 
-        /* Titre 403 avec lueur rouge */
-        h1 {
-            font-size: 10rem;
-            font-weight: 700;
-            color: #ff2a2a; /* Rouge vif */
-            margin-bottom: -10px;
-            text-shadow: 0px 0px 20px rgba(255, 42, 42, 0.6), 
-                         0px 0px 40px rgba(255, 42, 42, 0.3);
-            transform: translateZ(50px); /* Fait ressortir le texte en 3D */
-        }
+/* --- CONFIGURATION GLOBALE & RESET --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+}
 
-        /* Sous-titre blanc */
-        h2 {
-            font-size: 2.5rem;
-            font-weight: 500;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
-            transform: translateZ(30px);
-        }
+:root {
+    --bg-dark: #1a1a1a;
+    --bg-card: #000000;
+    --primary-red: #d32f2f;
+    --accent-blue: #3b82f6;
+    --text-main: #ffffff;
+    --text-dim: #b0b0b0;
+    --border: #333333;
+}
 
-        /* Texte descriptif */
-        p {
-            font-size: 1.1rem;
-            font-weight: 300;
-            color: #a0a0a0; /* Gris clair pour contraster avec le blanc pur */
-            margin-bottom: 40px;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.6;
-            transform: translateZ(20px);
-        }
+/* --- SCROLLBAR PROFESSIONNELLE --- */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; border: 2px solid var(--bg-dark); }
+::-webkit-scrollbar-thumb:hover { background: var(--primary-red); }
 
-        /* Bouton rouge élégant */
-        .btn {
-            display: inline-block;
-            padding: 15px 35px;
-            font-size: 1rem;
-            color: #ffffff;
-            text-decoration: none;
-            border: 2px solid #ff2a2a;
-            border-radius: 50px;
-            background: transparent;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            transform: translateZ(40px);
-        }
+body {
+    background-color: var(--bg-dark) !important;
+    color: var(--text-main);
+    line-height: 1.6;
+}
 
-        .btn:hover {
-            background-color: #ff2a2a;
-            color: #ffffff;
-            box-shadow: 0 0 20px rgba(255, 42, 42, 0.5);
-            transform: translateZ(40px) scale(1.05); /* Effet de grossissement au survol */
-        }
-        
-        /* Petites particules en arrière-plan (Optionnel) */
-        .background-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 40vw;
-            height: 40vw;
-            background: radial-gradient(circle, rgba(255,42,42,0.05) 0%, rgba(13,13,13,0) 70%);
-            transform: translate(-50%, -50%);
-            z-index: -1;
-            pointer-events: none;
-        }
+/* --- NAVIGATION --- */
+nav {
+    background: var(--bg-card) !important;
+    padding: 5px 20px !important;
+    border-bottom: 2px solid var(--primary-red) !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
 
-        /* Responsive design pour mobile */
-        @media (max-width: 768px) {
-            h1 { font-size: 6rem; }
-            h2 { font-size: 1.8rem; }
-            p { font-size: 0.9rem; padding: 0 20px; }
-        }
+nav a {
+    color: var(--text-main) !important;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* IntÃ©gration du Logo */
+nav::after {
+    content: "";
+    width: 45px;
+    height: 35px;
+    background: url('logo2.png') no-repeat center;
+    background-size: contain;
+}
+
+nav button {
+    background: #222;
+    color: #fff;
+    border: 1px solid #444;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* --- ZONE DE RECHERCHE (CALIBRÃ‰E) --- */
+.search-section {
+    background: linear-gradient(135deg, #000 0%, #1a1a1a 100%) !important;
+    padding: 10px 20px !important;
+    border-bottom: 1px solid var(--border);
+}
+
+.search-section h2 {
+    font-size: 1.4rem;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.search-section .container > div {
+    flex-direction: column; /* Mobile First */
+    gap: 15px !important;
+}
+
+.search-section select, 
+.search-section input {
+    width: 100%;
+    padding: 12px !important;
+    background: #000 !important;
+    border: 1px solid var(--border) !important;
+    color: white !important;
+    border-radius: 6px !important;
+}
+
+.search-section button {
+    background: var(--accent-blue) !important;
+    color: white !important;
+    font-weight: bold;
+    border-radius: 6px !important;
+    padding: 12px !important;
+    transition: 0.3s ease;
+}
+
+/* --- LISTE DES FEEDBACKS --- */
+.container {
+    max-width: 1000px !important;
+    margin: 20px auto !important;
+}
+
+.fb-card {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border) !important;
+    padding: 20px !important;
+    margin-bottom: 15px !important;
+    border-radius: 10px !important;
+    flex-direction: column; /* Mobile First */
+    align-items: flex-start !important;
+    gap: 15px;
+    transition: transform 0.2s;
+}
+
+.fb-card:hover {
+    border-color: var(--accent-blue) !important;
+}
+
+.rating {
+    color: #f1c40f !important; /* Jaune prÃ©servÃ© pour les Ã©toiles */
+    font-size: 1.1rem !important;
+    letter-spacing: 2px;
+}
+
+.btn-details {
+    width: 100%; /* Mobile First */
+    background: transparent !important;
+    border: 1px solid var(--accent-blue) !important;
+    color: var(--accent-blue) !important;
+    padding: 10px 20px !important;
+    font-weight: bold;
+    border-radius: 6px !important;
+    transition: 0.3s;
+}
+
+.btn-details:hover {
+    background: var(--accent-blue) !important;
+    color: #fff !important;
+}
+
+/* --- Ã‰TAT DE CHARGEMENT --- */
+.loading {
+    color: var(--accent-blue) !important;
+    font-style: normal !important;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* --- RESPONSIVITÃ‰ (TABLETTE & PC) --- */
+
+@media (min-width: 768px) {
+    /* Recherche sur une ligne */
+    .search-section .container > div {
+        flex-direction: row;
+    }
+    
+    .search-section select { width: 200px; }
+    
+    /* Cartes sur une ligne */
+    .fb-card {
+        flex-direction: row;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    .btn-details {
+        width: auto !important;
+    }
+
+    .search-section h2 {
+        text-align: left;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container {
+        padding: 0 !important;
+    }
+    
+    .fb-card {
+        padding: 25px !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
+    }
+}
+
+/* --- LOGIQUE IMAGES (Si ajoutÃ©es dynamiquement) --- */
+.user-avatar-feedback {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover !important; /* No stretch */
+    border: 2px solid var(--border);
+}        
     </style>
 </head>
 <body>
 
-    <div class="background-glow"></div>
+    <nav>
+        <a href="bl-admin-landing.html" style="text-decoration:none; color:#16a085; font-weight:bold;">â¬… Retour</a>
+        <button onclick="location.reload()" style="padding: 8px 15px; cursor: pointer;">ğŸ”„ RafraÃ®chir</button>
+    </nav>
 
-    <div class="container" id="parallax-container">
-        <h1>403</h1>
-        <h2>Oups ! Page bloquée.</h2>
-        <!-- <p>Il semblerait que vous ayez navigué hors des sentiers battus. La page que vous recherchez n'existe pas ou a été déplacée.</p> -->
-        <p>Cette page n'existe pas ou elle est momentanément bloquée</p>
-        <a style="display: none;" href="/" class="btn">Retour à l'accueil</a>
+    <div class="search-section">
+        <div class="container">
+            <h2>Feedbacks</h2>
+            <div style="display:flex; gap:10px;">
+                <select id="searchType" style="padding:10px; border-radius:5px; border:none;">
+                    <option value="name">Nom de l'utilisateur</option>
+                    <option value="id">ID Utilisateur</option>
+                </select>
+                <input type="text" id="searchInput" placeholder="Rechercher un feedback..." style="flex:1; padding:10px; border-radius:5px; border:none;">
+                <button onclick="performSearch()" style="padding:10px 25px; border-radius:5px; border:none; background:#2c3e50; color:white; cursor:pointer;">ğŸ” Rechercher</button>
+            </div>
+        </div>
     </div>
 
+    <div class="container" id="feedbackList"></div>
+    <div id="loadingIndicator" class="loading">Chargement des avis ...</div>
+
     <script>
-        // Effet de parallaxe au mouvement de la souris
-        document.addEventListener("mousemove", function(e) {
-            const container = document.getElementById("parallax-container");
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 40; // Sensibilité horizontale
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 40; // Sensibilité verticale
-            
-            // Applique la rotation pour créer l'effet 3D
-            container.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-        });
+        let currentPage = 0;
+        let isFetching = false;
+        let hasMore = true;
 
-        // Remet le bloc à plat quand la souris quitte l'écran
-        document.addEventListener("mouseleave", function() {
-            const container = document.getElementById("parallax-container");
-            container.style.transition = "transform 0.5s ease";
-            container.style.transform = `rotateY(0deg) rotateX(0deg)`;
+        window.onload = () => fetchFeedbacks();
+
+        async function fetchFeedbacks(reset = false) {
+            if (isFetching || (!hasMore && !reset)) return;
+            isFetching = true;
+            if (reset) { currentPage = 0; hasMore = true; document.getElementById('feedbackList').innerHTML = ""; }
             
-            // Restaure la transition rapide après l'animation de retour
-            setTimeout(() => {
-                container.style.transition = "transform 0.1s ease-out";
-            }, 500);
-        });
+            document.getElementById('loadingIndicator').style.display = 'block';
+            const q = document.getElementById('searchInput').value;
+            const type = document.getElementById('searchType').value;
+
+            try {
+                const res = await fetch(`https://bl-alliance-api.onrender.com/admin/get_feedbacks?page=${currentPage}&query=${q}&search_type=${type}`);
+                const data = await res.json();
+                
+                renderFeedbacks(data.feedbacks);
+                hasMore = data.has_more;
+                currentPage++;
+            } catch (e) { console.error(e); }
+            finally {
+                isFetching = false;
+                document.getElementById('loadingIndicator').style.display = 'none';
+            }
+        }
+
+        function renderFeedbacks(feedbacks) {
+            const list = document.getElementById('feedbackList');
+            feedbacks.forEach(f => {
+                const stars = "â˜…".repeat(f.rating) + "â˜†".repeat(5 - f.rating);
+                const html = `
+                    <div class="fb-card">
+                        <div>
+                            <div style="font-size:0.8em; color:#888;">${new Date(f.created_at).toLocaleDateString()}</div>
+                            <div style="font-weight:bold; font-size:1.1em;">${f.user_name}</div>
+                            <div style="color:#555; margin-top:5px;">Sujet: ${f.subject}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div class="rating">${stars}</div>
+                            <button class="btn-details" style="margin-top:10px;" onclick="location.href='admin-feedbacks-details.html?id=${f.id}'">Voir dÃ©tails</button>
+                        </div>
+                    </div>`;
+                list.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        function performSearch() { fetchFeedbacks(true); }
+
+        window.onscroll = () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+                fetchFeedbacks();
+            }
+        };
     </script>
-
 </body>
 </html>
 

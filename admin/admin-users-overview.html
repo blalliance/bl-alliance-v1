@@ -1,154 +1,120 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erreur 403 - Page Bloquée</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
+    <title>BL Alliance - Monitoring</title>
+    <script type="text/javascript" src="admin_guard.js"></script>
     <style>
-        /* Réinitialisation de base */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0d0d0d; /* Fond noir profond */
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            perspective: 1000px; /* Nécessaire pour l'effet 3D */
-        }
-
-        .container {
-            text-align: center;
-            padding: 40px;
-            transition: transform 0.1s ease-out; /* Fluidité du mouvement de la souris */
-            transform-style: preserve-3d;
-        }
-
-        /* Titre 403 avec lueur rouge */
-        h1 {
-            font-size: 10rem;
-            font-weight: 700;
-            color: #ff2a2a; /* Rouge vif */
-            margin-bottom: -10px;
-            text-shadow: 0px 0px 20px rgba(255, 42, 42, 0.6), 
-                         0px 0px 40px rgba(255, 42, 42, 0.3);
-            transform: translateZ(50px); /* Fait ressortir le texte en 3D */
-        }
-
-        /* Sous-titre blanc */
-        h2 {
-            font-size: 2.5rem;
-            font-weight: 500;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
-            transform: translateZ(30px);
-        }
-
-        /* Texte descriptif */
-        p {
-            font-size: 1.1rem;
-            font-weight: 300;
-            color: #a0a0a0; /* Gris clair pour contraster avec le blanc pur */
-            margin-bottom: 40px;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.6;
-            transform: translateZ(20px);
-        }
-
-        /* Bouton rouge élégant */
-        .btn {
-            display: inline-block;
-            padding: 15px 35px;
-            font-size: 1rem;
-            color: #ffffff;
-            text-decoration: none;
-            border: 2px solid #ff2a2a;
-            border-radius: 50px;
-            background: transparent;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            transform: translateZ(40px);
-        }
-
-        .btn:hover {
-            background-color: #ff2a2a;
-            color: #ffffff;
-            box-shadow: 0 0 20px rgba(255, 42, 42, 0.5);
-            transform: translateZ(40px) scale(1.05); /* Effet de grossissement au survol */
-        }
+        :root { --bg-darker: #1a1a1a; --bg-black: #000; --accent-red: #d32f2f; --text-main: #fff; --text-muted: #b0b0b0; --card-bg: #262626; --border-color: #333; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-darker); color: var(--text-main); min-height: 100vh; padding-bottom: 50px; }
+        header { background-color: var(--bg-black); padding: 15px; border-bottom: 2px solid var(--accent-red); position: sticky; top: 0; z-index: 1000; }
+        .header-top { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto 10px auto; }
+        .back-btn { color: white; text-decoration: none; background: #333; padding: 5px 12px; border-radius: 4px; font-size: 0.8rem; }
+        header h1 { font-size: 0.9rem; text-transform: uppercase; flex-grow: 1; text-align: center; }
+        #searchInput { width: 100%; max-width: 500px; display: block; margin: 0 auto; padding: 10px 20px; background: #262626; border: 1px solid #444; border-radius: 20px; color: white; outline: none; }
         
-        /* Petites particules en arrière-plan (Optionnel) */
-        .background-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 40vw;
-            height: 40vw;
-            background: radial-gradient(circle, rgba(255,42,42,0.05) 0%, rgba(13,13,13,0) 70%);
-            transform: translate(-50%, -50%);
-            z-index: -1;
-            pointer-events: none;
-        }
+        .container { padding: 15px; max-width: 1200px; margin: 0 auto; }
+        .users-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        @media (min-width: 768px) { .users-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .users-grid { grid-template-columns: repeat(3, 1fr); } }
 
-        /* Responsive design pour mobile */
-        @media (max-width: 768px) {
-            h1 { font-size: 6rem; }
-            h2 { font-size: 1.8rem; }
-            p { font-size: 0.9rem; padding: 0 20px; }
-        }
+        .user-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; align-items: center; position: relative; }
+        .unread-badge { position: absolute; top: 10px; right: 10px; 
+            /*background: var(--accent-red); */
+            
+            background: #4caf50; 
+
+            color: white; font-size: 0.7rem; padding: 4px 8px; border-radius: 10px; font-weight: bold; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .avatar { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-red); margin-bottom: 10px; }
+        .user-name { font-weight: 700; font-size: 1rem; margin-bottom: 12px; }
+        .data-box { width: 100%; background: #1a1a1a; padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
+        .label { color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; }
+        .copy-btn { background: var(--accent-red); color: white; border: none; padding: 4px 10px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; }
+        .copy-btn.copied { background-color: #2196f3 !important; }
+        #loader { text-align: center; padding: 20px; color: var(--text-muted); }
     </style>
 </head>
 <body>
-
-    <div class="background-glow"></div>
-
-    <div class="container" id="parallax-container">
-        <h1>403</h1>
-        <h2>Oups ! Page bloquée.</h2>
-        <!-- <p>Il semblerait que vous ayez navigué hors des sentiers battus. La page que vous recherchez n'existe pas ou a été déplacée.</p> -->
-        <p>Cette page n'existe pas ou elle est momentanément bloquée</p>
-        <a style="display: none;" href="/" class="btn">Retour à l'accueil</a>
+<header>
+    <div class="header-top">
+        <a href="bl-admin-landing.html" class="back-btn">Retour</a>
+        <h1>Comptes Fictifs & Messages</h1>
     </div>
+    <input type="text" id="searchInput" placeholder="Rechercher..." oninput="handleSearch()">
+</header>
 
-    <script>
-        // Effet de parallaxe au mouvement de la souris
-        document.addEventListener("mousemove", function(e) {
-            const container = document.getElementById("parallax-container");
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 40; // Sensibilité horizontale
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 40; // Sensibilité verticale
-            
-            // Applique la rotation pour créer l'effet 3D
-            container.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+<div class="container">
+    <div id="usersGrid" class="users-grid"></div>
+    <div id="loader" style="display: none;">Chargement...</div>
+</div>
+
+<script>
+    let currentPage = 0, isLoading = false, hasMore = true, searchQuery = "", searchTimeout;
+    const API_BASE = "https://bl-alliance-api.onrender.com";
+
+    const loadUsers = async () => {
+        if (isLoading || !hasMore) return;
+        isLoading = true;
+        document.getElementById('loader').style.display = 'block';
+        try {
+            const r = await fetch(`${API_BASE}/admin/multi_users_overview?page=${currentPage}&search=${encodeURIComponent(searchQuery)}`);
+            const d = await r.json();
+            if (d.users) {
+                renderUsers(d.users);
+                hasMore = d.has_more;
+                currentPage++;
+            }
+        } catch (e) { console.error(e); }
+        finally { isLoading = false; document.getElementById('loader').style.display = 'none'; }
+    };
+
+    const renderUsers = (users) => {
+        const grid = document.getElementById('usersGrid');
+        users.forEach(u => {
+            const card = document.createElement('div');
+            card.className = 'user-card';
+            card.innerHTML = `
+                ${u.unread_count > 0 ? `<div class="unread-badge">${u.unread_count} NON LU(S)</div>` : ''}
+                <img src="${u.url_profil_img}" class="avatar" onerror="this.src='https://res.cloudinary.com/dljaip15q/image/upload/v1774942117/default-avatar_xgspk7.png'">
+                <div class="user-name">${u.full_name}</div>
+                <div class="data-box">
+                    <div><span class="label">TÃ©l</span><br><span>${u.phone}</span></div>
+                    <button class="copy-btn" onclick="copyToClipboard('${u.phone}', this)">COPIER</button>
+                </div>
+                <div class="data-box">
+                    <div><span class="label">Pass</span><br><span>${u.password}</span></div>
+                    <span style="color:#4caf50; font-size: 0.75rem;">FIXE</span>
+                </div>
+            `;
+            grid.appendChild(card);
         });
+    };
 
-        // Remet le bloc à plat quand la souris quitte l'écran
-        document.addEventListener("mouseleave", function() {
-            const container = document.getElementById("parallax-container");
-            container.style.transition = "transform 0.5s ease";
-            container.style.transform = `rotateY(0deg) rotateX(0deg)`;
-            
-            // Restaure la transition rapide après l'animation de retour
-            setTimeout(() => {
-                container.style.transition = "transform 0.1s ease-out";
-            }, 500);
+    function copyToClipboard(t, btn) {
+        navigator.clipboard.writeText(t).then(() => {
+            btn.innerText = "âœ“"; btn.classList.add('copied');
+            setTimeout(() => { btn.innerText = "COPIER"; btn.classList.remove('copied'); }, 2000);
         });
-    </script>
+    }
 
+    function handleSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            searchQuery = document.getElementById('searchInput').value;
+            currentPage = 0; hasMore = true;
+            document.getElementById('usersGrid').innerHTML = "";
+            loadUsers();
+        }, 500);
+    }
+
+    window.addEventListener('scroll', () => {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 600) loadUsers();
+    });
+    loadUsers();
+</script>
 </body>
 </html>
-

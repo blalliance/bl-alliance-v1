@@ -1,153 +1,236 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erreur 403 - Page BloquÈe</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
-    <style>
-        /* RÈinitialisation de base */
+    <meta charset="UTF-8">
+    <title>BL Admin - Dashboard</title>
+    <script type="text/javascript" src="admin_guard.js"></script>
+    <style type="text/css">
+        /* --- RESET & VARIABLES --- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
         }
 
+        :root {
+            --bg-dark: #1a1a1a;
+            --bg-card: #000000;
+            --primary-red: #d32f2f;
+            --hover-red: #b71c1c;
+            --text-main: #ffffff;
+            --text-dim: #b0b0b0;
+            --border-color: #333333;
+            --accent-blue: #3b82f6;
+        }
+
+        /* --- SCROLLBAR PERSONNALIS√âE --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-red);
+        }
+
+        /* --- BASE --- */
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0d0d0d; /* Fond noir profond */
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            perspective: 1000px; /* NÈcessaire pour l'effet 3D */
-        }
-
-        .container {
-            text-align: center;
-            padding: 40px;
-            transition: transform 0.1s ease-out; /* FluiditÈ du mouvement de la souris */
-            transform-style: preserve-3d;
-        }
-
-        /* Titre 403 avec lueur rouge */
-        h1 {
-            font-size: 10rem;
-            font-weight: 700;
-            color: #ff2a2a; /* Rouge vif */
-            margin-bottom: -10px;
-            text-shadow: 0px 0px 20px rgba(255, 42, 42, 0.6), 
-                         0px 0px 40px rgba(255, 42, 42, 0.3);
-            transform: translateZ(50px); /* Fait ressortir le texte en 3D */
-        }
-
-        /* Sous-titre blanc */
-        h2 {
-            font-size: 2.5rem;
-            font-weight: 500;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
-            transform: translateZ(30px);
-        }
-
-        /* Texte descriptif */
-        p {
-            font-size: 1.1rem;
-            font-weight: 300;
-            color: #a0a0a0; /* Gris clair pour contraster avec le blanc pur */
-            margin-bottom: 40px;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             line-height: 1.6;
-            transform: translateZ(20px);
+            min-height: 100vh;
         }
 
-        /* Bouton rouge ÈlÈgant */
-        .btn {
+        /* --- NAVIGATION --- */
+        nav {
+            background-color: var(--bg-card);
+            border-bottom: 2px solid var(--primary-red) !important; /* Override style inline */
+            padding: 15px 20px !important;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        nav div strong {
+            color: var(--text-main);
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        /* Logo dans la nav */
+        nav::before {
+            content: "";
             display: inline-block;
-            padding: 15px 35px;
-            font-size: 1rem;
-            color: #ffffff;
-            text-decoration: none;
-            border: 2px solid #ff2a2a;
-            border-radius: 50px;
+            /*width: 40px;*/
+            /*height: 40px;*/
+            width: 90px;
+            height: 40px;
+            background: url('logo2.png') no-repeat center center;
+            background-size: contain;
+            margin-right: 10px;
+        }
+
+        nav button {
             background: transparent;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 500;
+            border: 1px solid var(--primary-red);
+            color: var(--primary-red);
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        nav button:hover {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        /* --- MAIN CONTENT --- */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px !important;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary-red);
+            padding-left: 15px;
+        }
+
+        main > p {
+            color: var(--text-dim);
+            margin-bottom: 30px;
+        }
+
+        /* --- GRID DE NAVIGATION (Cartes) --- */
+        ul {
+            display: grid;
+            grid-template-columns: 1fr; /* Mobile First: 1 colonne */
+            gap: 15px;
+        }
+
+        li {
+            margin-bottom: 0 !important; /* Nettoyage inline */
+        }
+
+        li a {
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            text-decoration: none;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
             transition: all 0.3s ease;
-            transform: translateZ(40px);
+            font-weight: 500;
         }
 
-        .btn:hover {
-            background-color: #ff2a2a;
-            color: #ffffff;
-            box-shadow: 0 0 20px rgba(255, 42, 42, 0.5);
-            transform: translateZ(40px) scale(1.05); /* Effet de grossissement au survol */
-        }
-        
-        /* Petites particules en arriËre-plan (Optionnel) */
-        .background-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 40vw;
-            height: 40vw;
-            background: radial-gradient(circle, rgba(255,42,42,0.05) 0%, rgba(13,13,13,0) 70%);
-            transform: translate(-50%, -50%);
-            z-index: -1;
-            pointer-events: none;
+        li a:hover {
+            border-color: var(--primary-red);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(211, 47, 47, 0.1);
+            background-color: #0a0a0a;
         }
 
-        /* Responsive design pour mobile */
-        @media (max-width: 768px) {
-            h1 { font-size: 6rem; }
-            h2 { font-size: 1.8rem; }
-            p { font-size: 0.9rem; padding: 0 20px; }
+        /* --- RESPONSIVIT√â --- */
+
+        /* TABLETTE (Min 768px) */
+        @media (min-width: 768px) {
+            ul {
+                grid-template-columns: repeat(2, 1fr); /* 2 colonnes */
+                gap: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            nav div strong {
+                font-size: 1.1rem;
+            }
         }
+
+        /* PC (Min 1024px) */
+        @media (min-width: 1024px) {
+            ul {
+                grid-template-columns: repeat(3, 1fr); /* 3 colonnes */
+            }
+
+            main {
+                padding-top: 50px !important;
+            }
+            
+            /* Animation subtile √† l'entr√©e */
+            li {
+                animation: fadeInUp 0.5s ease backwards;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* D√©lai d'animation pour les cartes */
+        li:nth-child(1) { animation-delay: 0.1s; }
+        li:nth-child(2) { animation-delay: 0.2s; }
+        li:nth-child(3) { animation-delay: 0.3s; }
+        li:nth-child(4) { animation-delay: 0.4s; }
+        li:nth-child(5) { animation-delay: 0.5s; }
+        li:nth-child(6) { animation-delay: 0.6s; }
+                
     </style>
 </head>
 <body>
+    <nav style="display: flex; justify-content: space-between; border-bottom: 1px solid #ccc; padding: 10px;">
+        <div><strong>BACKOFFICE</strong></div>
+        <button onclick="logoutAdmin()">D√©connexion</button>
+    </nav>
 
-    <div class="background-glow"></div>
+    <main style="padding: 20px;">
+        <h1>Espace Administrateur</h1>
+        <!-- <p>S√©lectionnez une section √† g√©rer :</p> -->
 
-    <div class="container" id="parallax-container">
-        <h1>403</h1>
-        <h2>Oups ! Page bloquÈe.</h2>
-        <!-- <p>Il semblerait que vous ayez naviguÈ hors des sentiers battus. La page que vous recherchez n'existe pas ou a ÈtÈ dÈplacÈe.</p> -->
-        <p>Cette page n'existe pas ou elle est momentanÈment bloquÈe</p>
-        <a style="display: none;" href="/" class="btn">Retour ‡ l'accueil</a>
-    </div>
-
-    <script>
-        // Effet de parallaxe au mouvement de la souris
-        document.addEventListener("mousemove", function(e) {
-            const container = document.getElementById("parallax-container");
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 40; // SensibilitÈ horizontale
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 40; // SensibilitÈ verticale
-            
-            // Applique la rotation pour crÈer l'effet 3D
-            container.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-        });
-
-        // Remet le bloc ‡ plat quand la souris quitte l'Ècran
-        document.addEventListener("mouseleave", function() {
-            const container = document.getElementById("parallax-container");
-            container.style.transition = "transform 0.5s ease";
-            container.style.transform = `rotateY(0deg) rotateX(0deg)`;
-            
-            // Restaure la transition rapide aprËs l'animation de retour
-            setTimeout(() => {
-                container.style.transition = "transform 0.1s ease-out";
-            }, 500);
-        });
-    </script>
+        <ul style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 10px;">
+                <a href="admin-activity.html">üìä Statistiques d'Activit√©</a>
+            </li>
+            <li style="margin-bottom: 10px;">
+                <a href="admin-users-list.html">üë• Listing des utilisateurs</a>
+            </li>
+            <li style="margin-bottom: 10px;">
+                <a href="admin-messages-view.html">‚úâÔ∏è Messageries (Audit messages)</a>
+            </li>
+            <li style="margin-bottom: 10px;">
+                <a href="admin-support.html">üéß BL Support (Chat Direct)</a>
+            </li>
+            <li style="margin-bottom: 10px; display: none;">
+                <a href="admin-feedbacks.html">‚≠ê Feedbacks des utilisateurs</a>
+            </li>
+            <li style="margin-bottom: 10px;">
+                <a href="admin-reports.html">üö© Reportings (Signalements)</a>
+            </li>
+            <li style="margin-bottom: 10px;">
+                <a href="admin-view-blocks.html">üö´ Blockings (Blocages)</a>
+            </li>
+            <li style="margin-bottom: 10px;">
+                <a href="admin-users-overview.html">üë• Listing comptes fictifs</a>
+            </li>
+        </ul>
+    </main>
 
 </body>
 </html>

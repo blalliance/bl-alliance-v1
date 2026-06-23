@@ -1,154 +1,285 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erreur 403 - Page Bloquée</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
+    <meta charset="UTF-8">
+    <title>DÃ©tails Feedback</title>
+    <script type="text/javascript" src="admin_guard.js"></script>
     <style>
-        /* Réinitialisation de base */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /*body { font-family: sans-serif; background: #f0f2f5; margin: 0; }
+        nav { padding: 15px; background: white; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; }
+        .container { max-width: 700px; margin: 30px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .header { border-bottom: 2px solid #f0f2f5; padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .tag { background: #e8f8f5; color: #16a085; padding: 5px 12px; border-radius: 20px; font-size: 0.85em; margin-right: 5px; display: inline-block; }
+        .comment-box { background: #f9f9f9; padding: 20px; border-radius: 8px; font-style: italic; color: #2c3e50; line-height: 1.6; margin: 20px 0; border-left: 5px solid #16a085; }
+        .user-mini-card { display: flex; align-items: center; gap: 15px; padding: 15px; background: #fff; border: 1px solid #eee; border-radius: 8px; }
+        .avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }*/
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0d0d0d; /* Fond noir profond */
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            perspective: 1000px; /* Nécessaire pour l'effet 3D */
-        }
 
-        .container {
-            text-align: center;
-            padding: 40px;
-            transition: transform 0.1s ease-out; /* Fluidité du mouvement de la souris */
-            transform-style: preserve-3d;
-        }
+/* --- CONFIGURATION GLOBALE & RESET --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
 
-        /* Titre 403 avec lueur rouge */
-        h1 {
-            font-size: 10rem;
-            font-weight: 700;
-            color: #ff2a2a; /* Rouge vif */
-            margin-bottom: -10px;
-            text-shadow: 0px 0px 20px rgba(255, 42, 42, 0.6), 
-                         0px 0px 40px rgba(255, 42, 42, 0.3);
-            transform: translateZ(50px); /* Fait ressortir le texte en 3D */
-        }
+:root {
+    --bg-dark: #1a1a1a;
+    --bg-card: #000000;
+    --primary-red: #d32f2f;
+    --accent-blue: #3b82f6;
+    --text-main: #ffffff;
+    --text-dim: #b0b0b0;
+    --border: #333333;
+}
 
-        /* Sous-titre blanc */
-        h2 {
-            font-size: 2.5rem;
-            font-weight: 500;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
-            transform: translateZ(30px);
-        }
+/* --- SCROLLBAR PERSONNALISÃ‰E --- */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; border: 2px solid var(--bg-dark); }
+::-webkit-scrollbar-thumb:hover { background: var(--primary-red); }
 
-        /* Texte descriptif */
-        p {
-            font-size: 1.1rem;
-            font-weight: 300;
-            color: #a0a0a0; /* Gris clair pour contraster avec le blanc pur */
-            margin-bottom: 40px;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.6;
-            transform: translateZ(20px);
-        }
+body {
+    background-color: var(--bg-dark) !important;
+    color: var(--text-main);
+    line-height: 1.6;
+    min-height: 100vh;
+}
 
-        /* Bouton rouge élégant */
-        .btn {
-            display: inline-block;
-            padding: 15px 35px;
-            font-size: 1rem;
-            color: #ffffff;
-            text-decoration: none;
-            border: 2px solid #ff2a2a;
-            border-radius: 50px;
-            background: transparent;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            transform: translateZ(40px);
-        }
+/* --- NAVIGATION --- */
+nav {
+    background: var(--bg-card) !important;
+    padding: 15px 20px !important;
+    border-bottom: 2px solid var(--primary-red) !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
 
-        .btn:hover {
-            background-color: #ff2a2a;
-            color: #ffffff;
-            box-shadow: 0 0 20px rgba(255, 42, 42, 0.5);
-            transform: translateZ(40px) scale(1.05); /* Effet de grossissement au survol */
-        }
-        
-        /* Petites particules en arrière-plan (Optionnel) */
-        .background-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 40vw;
-            height: 40vw;
-            background: radial-gradient(circle, rgba(255,42,42,0.05) 0%, rgba(13,13,13,0) 70%);
-            transform: translate(-50%, -50%);
-            z-index: -1;
-            pointer-events: none;
-        }
+nav a {
+    color: var(--text-main) !important;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
 
-        /* Responsive design pour mobile */
-        @media (max-width: 768px) {
-            h1 { font-size: 6rem; }
-            h2 { font-size: 1.8rem; }
-            p { font-size: 0.9rem; padding: 0 20px; }
-        }
+nav a:hover { color: var(--primary-red); }
+
+/* Logo signature Ã  droite */
+nav::after {
+    content: "";
+    width: 50px;
+    height: 35px;
+    background: url('logo2.png') no-repeat center;
+    background-size: contain;
+}
+
+nav button {
+    background: #222;
+    color: #fff;
+    border: 1px solid #444;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* --- CONTENEUR DE DÃ‰TAILS (CALIBRÃ‰) --- */
+.container {
+    max-width: 800px !important;
+    margin: 20px auto !important; /* Mobile */
+    background: var(--bg-card) !important;
+    padding: 25px !important;
+    border-radius: 8px !important;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6) !important;
+}
+
+/* --- HEADER --- */
+.header {
+    border-bottom: 1px solid var(--border) !important;
+    padding-bottom: 20px !important;
+    margin-bottom: 25px !important;
+    display: flex;
+    flex-direction: column; /* Mobile First */
+    gap: 15px;
+}
+
+.header h2 {
+    font-size: 1.5rem;
+    color: var(--text-main);
+}
+
+/* --- TAGS (APPRÃ‰CIATIONS) --- */
+.tag {
+    background: transparent !important;
+    color: var(--accent-blue) !important;
+    border: 1px solid var(--accent-blue) !important;
+    padding: 5px 12px !important;
+    border-radius: 4px !important;
+    font-size: 0.8em !important;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    display: inline-block;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/* --- ZONE DE COMMENTAIRE --- */
+.comment-box {
+    background: #0a0a0a !important;
+    padding: 25px !important;
+    border-radius: 6px !important;
+    font-style: italic !important;
+    color: #eee !important;
+    line-height: 1.8 !important;
+    margin: 15px 0 30px 0 !important;
+    border-left: 4px solid var(--primary-red) !important;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+}
+
+/* --- CARTE UTILISATEUR & AVATAR --- */
+.user-mini-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px !important;
+    background: #080808 !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px !important;
+}
+
+.avatar {
+    width: 65px !important;
+    height: 65px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important; /* EMPÃŠCHE LE STRETCH */
+    border: 2px solid var(--border) !important;
+    background: #111;
+}
+
+/* LABELS --- */
+label {
+    display: block;
+    font-weight: bold;
+    color: var(--text-dim) !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 5px;
+}
+
+/* --- RESPONSIVITÃ‰ AVANCÃ‰E --- */
+
+/* TABLETTE (768px+) */
+@media (min-width: 768px) {
+    .container {
+        margin: 40px auto !important;
+        padding: 40px !important;
+    }
+
+    .header {
+        flex-direction: row; /* AlignÃ© sur PC/Tablette */
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    .header h2 {
+        font-size: 1.8rem;
+    }
+}
+
+/* PC LARGE (1024px+) */
+@media (min-width: 1024px) {
+    .container {
+        max-width: 850px !important;
+    }
+    
+    .comment-box {
+        font-size: 1.1rem !important;
+    }
+}
+
+/* Ã‰TATS CHARGEMENT */
+#fbContent p {
+    text-align: center;
+    color: var(--accent-blue);
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
     </style>
 </head>
 <body>
 
-    <div class="background-glow"></div>
+    <nav>
+        <a href="admin-feedbacks.html" style="text-decoration:none; color:#16a085; font-weight:bold;">â¬… Retour</a>
+        <!-- <button onclick="location.reload()" style="cursor:pointer;">ðŸ”„ RafraÃ®chir</button> -->
+    </nav>
 
-    <div class="container" id="parallax-container">
-        <h1>403</h1>
-        <h2>Oups ! Page bloquée.</h2>
-        <!-- <p>Il semblerait que vous ayez navigué hors des sentiers battus. La page que vous recherchez n'existe pas ou a été déplacée.</p> -->
-        <p>Cette page n'existe pas ou elle est momentanément bloquée</p>
-        <a style="display: none;" href="/" class="btn">Retour à l'accueil</a>
+    <div class="container" id="fbContent">
+        <p>RÃ©cupÃ©ration des donnÃ©es...</p>
     </div>
 
     <script>
-        // Effet de parallaxe au mouvement de la souris
-        document.addEventListener("mousemove", function(e) {
-            const container = document.getElementById("parallax-container");
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 40; // Sensibilité horizontale
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 40; // Sensibilité verticale
-            
-            // Applique la rotation pour créer l'effet 3D
-            container.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-        });
+        const fbId = new URLSearchParams(window.location.search).get('id');
 
-        // Remet le bloc à plat quand la souris quitte l'écran
-        document.addEventListener("mouseleave", function() {
-            const container = document.getElementById("parallax-container");
-            container.style.transition = "transform 0.5s ease";
-            container.style.transform = `rotateY(0deg) rotateX(0deg)`;
+        window.onload = async () => {
+            if (!fbId) return;
+            const res = await fetch(`https://bl-alliance-api.onrender.com/admin/get_feedback_details?id=${fbId}`);
+            const data = await res.json();
+            renderDetails(data);
+        };
+
+        function renderDetails(data) {
+            const { feedback, user } = data;
+            const cont = document.getElementById('fbContent');
+            const stars = "â˜…".repeat(feedback.rating) + "â˜†".repeat(5 - feedback.rating);
             
-            // Restaure la transition rapide après l'animation de retour
-            setTimeout(() => {
-                container.style.transition = "transform 0.1s ease-out";
-            }, 500);
-        });
+            let userHtml = `<div class="user-mini-card"><i>Utilisateur Anonyme ou Profil supprimÃ©</i></div>`;
+            if (user && !feedback.is_anonymous) {
+                userHtml = `
+                <div class="user-mini-card">
+                    <img src="${user.url_profil_img}" class="avatar">
+                    <div>
+                        <div style="font-weight:bold">${user.full_name}</div>
+                        <div style="font-size:0.8em; color:#888">ID: ${user.id}</div>
+                    </div>
+                </div>`;
+            }
+
+            const appreciationsHtml = feedback.appreciations ? 
+                feedback.appreciations.map(a => `<span class="tag">${a}</span>`).join('') : '';
+
+            cont.innerHTML = `
+                <div class="header">
+                    <div>
+                        <h2 style="margin:0">${feedback.subject || 'Feedback Sans Titre'}</h2>
+                        <div style="color:#f1c40f; font-size:1.3em; margin-top:5px;">${stars}</div>
+                    </div>
+                    <div style="text-align:right; color:#888; font-size:0.9em;">
+                        ${new Date(feedback.created_at).toLocaleString('fr-FR')}
+                    </div>
+                </div>
+
+                <label style="font-weight:bold; color:#7f8c8d; font-size:0.8em;">APPRÃ‰CIATIONS CHOISIES :</label>
+                <div style="margin: 10px 0 25px 0;">${appreciationsHtml || 'Aucune'}</div>
+
+                <label style="font-weight:bold; color:#7f8c8d; font-size:0.8em;">COMMENTAIRE :</label>
+                <div class="comment-box">
+                    "${feedback.comment || 'L\'utilisateur n\'a pas laissÃ© de commentaire Ã©crit.'}"
+                </div>
+
+                <label style="font-weight:bold; color:#7f8c8d; font-size:0.8em;">AUTEUR DU FEEDBACK :</label>
+                <div style="margin-top:10px;">${userHtml}</div>
+            `;
+        }
     </script>
-
 </body>
 </html>
 
