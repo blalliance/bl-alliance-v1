@@ -1,154 +1,152 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erreur 403 - Page BloquÈe</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
+    <title>Connexion | BL Alliance</title>
     <style>
-        /* RÈinitialisation de base */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        body { background-color: #0a0a0a; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .main-card { background-color: #141414; padding: 25px; border-radius: 12px; width: 100%; max-width: 380px; border: 1px solid #222; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .logo-container { text-align: center; margin-bottom: 20px; }
+        .logo-container img { max-width: 150px; height: auto; }
+        h2 { color: #D32F2F; margin: 0 0 20px 0; text-align: center; font-size: 1.5rem; }
+        .form-group { margin-bottom: 15px; position: relative; }
+        label { display: block; font-size: 13px; color: #bbb; margin-bottom: 5px; font-weight: 500; }
+        input { width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #333; color: white; box-sizing: border-box; border-radius: 6px; font-size: 14px; transition: border 0.3s; }
+        input:focus { border-color: #D32F2F; outline: none; }
+        .pass-wrapper { position: relative; }
+        .eye-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #666; font-size: 18px; }
+        button { width: 100%; padding: 14px; background: #D32F2F; color: white; border: none; font-weight: bold; cursor: pointer; border-radius: 6px; font-size: 16px; transition: 0.3s; }
+        button:hover { background: #b71c1c; }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0d0d0d; /* Fond noir profond */
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            perspective: 1000px; /* NÈcessaire pour l'effet 3D */
-        }
-
-        .container {
-            text-align: center;
-            padding: 40px;
-            transition: transform 0.1s ease-out; /* FluiditÈ du mouvement de la souris */
-            transform-style: preserve-3d;
-        }
-
-        /* Titre 403 avec lueur rouge */
-        h1 {
-            font-size: 10rem;
-            font-weight: 700;
-            color: #ff2a2a; /* Rouge vif */
-            margin-bottom: -10px;
-            text-shadow: 0px 0px 20px rgba(255, 42, 42, 0.6), 
-                         0px 0px 40px rgba(255, 42, 42, 0.3);
-            transform: translateZ(50px); /* Fait ressortir le texte en 3D */
-        }
-
-        /* Sous-titre blanc */
-        h2 {
-            font-size: 2.5rem;
-            font-weight: 500;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
-            transform: translateZ(30px);
-        }
-
-        /* Texte descriptif */
-        p {
-            font-size: 1.1rem;
-            font-weight: 300;
-            color: #a0a0a0; /* Gris clair pour contraster avec le blanc pur */
-            margin-bottom: 40px;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.6;
-            transform: translateZ(20px);
-        }
-
-        /* Bouton rouge ÈlÈgant */
-        .btn {
-            display: inline-block;
-            padding: 15px 35px;
-            font-size: 1rem;
-            color: #ffffff;
-            text-decoration: none;
-            border: 2px solid #ff2a2a;
-            border-radius: 50px;
-            background: transparent;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            transform: translateZ(40px);
-        }
-
-        .btn:hover {
-            background-color: #ff2a2a;
-            color: #ffffff;
-            box-shadow: 0 0 20px rgba(255, 42, 42, 0.5);
-            transform: translateZ(40px) scale(1.05); /* Effet de grossissement au survol */
-        }
+        button:active { transform: scale(0.98); opacity: 0.9; }
+        button:disabled { background: #333; cursor: not-allowed; }
+        .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.8s linear infinite; margin-left: 10px; vertical-align: middle; }
+        @keyframes spin { to { transform: rotate(360deg); } }
         
-        /* Petites particules en arriËre-plan (Optionnel) */
-        .background-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 40vw;
-            height: 40vw;
-            background: radial-gradient(circle, rgba(255,42,42,0.05) 0%, rgba(13,13,13,0) 70%);
-            transform: translate(-50%, -50%);
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        /* Responsive design pour mobile */
-        @media (max-width: 768px) {
-            h1 { font-size: 6rem; }
-            h2 { font-size: 1.8rem; }
-            p { font-size: 0.9rem; padding: 0 20px; }
-        }
+        #message { margin-top: 15px; font-size: 14px; text-align: center; min-height: 20px; }
+        /* Style Modal Identique au Signup */
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 15px; box-sizing: border-box; }
+        .modal-content { background: #1a1a1a; padding: 25px; border-radius: 12px; width: 100%; max-width: 350px; border: 1px solid #333; text-align: center; }
+        .modal-content h3 { color: #D32F2F; margin-top: 0; }
+        .modal-content p { font-size: 14px; line-height: 1.5; color: #ccc; margin-bottom: 20px; }
+        @media (max-width: 480px) { .main-card { padding: 20px; } }
     </style>
-</head>
+    </head>
 <body>
 
-    <div class="background-glow"></div>
-
-    <div class="container" id="parallax-container">
-        <h1>403</h1>
-        <h2>Oups ! Page bloquÈe.</h2>
-        <!-- <p>Il semblerait que vous ayez naviguÈ hors des sentiers battus. La page que vous recherchez n'existe pas ou a ÈtÈ dÈplacÈe.</p> -->
-        <p>Cette page n'existe pas ou elle est momentanÈment bloquÈe</p>
-        <a style="display: none;" href="/" class="btn">Retour ‡ l'accueil</a>
-    </div>
-
     <script>
-        // Effet de parallaxe au mouvement de la souris
-        document.addEventListener("mousemove", function(e) {
-            const container = document.getElementById("parallax-container");
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 40; // SensibilitÈ horizontale
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 40; // SensibilitÈ verticale
-            
-            // Applique la rotation pour crÈer l'effet 3D
-            container.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-        });
-
-        // Remet le bloc ‡ plat quand la souris quitte l'Ècran
-        document.addEventListener("mouseleave", function() {
-            const container = document.getElementById("parallax-container");
-            container.style.transition = "transform 0.5s ease";
-            container.style.transform = `rotateY(0deg) rotateX(0deg)`;
-            
-            // Restaure la transition rapide aprËs l'animation de retour
-            setTimeout(() => {
-                container.style.transition = "transform 0.1s ease-out";
-            }, 500);
-        });
+        // --- LOGIQUE DE SESSION PERMANENTE ---
+        // Si l'utilisateur est d√©j√† connect√©, on l'envoie direct au dashboard
+        if (localStorage.getItem('user_id') && localStorage.getItem('token')) {
+            window.location.href = "dashboard.html";
+        }
     </script>
 
+    <div class="main-card">
+        <div class="logo-container">
+            <img src="assets/logo2.png" alt="BL Alliance Logo">
+        </div>
+        <h2>Connexion</h2>
+        
+        <div class="form-group">
+            <label for="phone">Num√©ro de t√©l√©phone</label>
+            <input type="text" id="phone" placeholder="Ex: 0820000000">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <div class="pass-wrapper">
+                <input type="password" id="password" placeholder="Votre mot de passe">
+                <span class="eye-icon" onclick="togglePass()">üëÅÔ∏è</span>
+            </div>
+        </div>
+
+¬† ¬† ¬† ¬† <button id="btn-login" onclick="handleLogin()">
+            <span id="btn-text">Se connecter</span>
+            <div id="loader" class="spinner" style="display:none;"></div>
+        </button>
+
+        <div id="message"></div>
+        
+        <p style="text-align: center; font-size: 12px; margin-top: 20px;">
+            Pas encore de compte ? <a href="signup.html" style="color: #D32F2F; text-decoration: none;">S'inscrire</a>
+        </p>
+        <p style="text-align: center; font-size: 12px; margin-top: 10px;">
+            <a href="index.html" style="color: #888; text-decoration: none;">‚Üê Retour</a>
+        </p>
+    </div>
+
+    <div id="modal-error" class="modal-overlay">
+        <div class="modal-content">
+            <h3>√âchec de connexion</h3>
+            <p>Num√©ro ou mot de passe incorrect. Veuillez v√©rifier vos acc√®s.</p>
+            <button onclick="closeModal()">R√©essayer</button>
+        </div>
+    </div>
+<script>
+        // -- DEBUT DU BLOCK √Ä AJOUTER/MODIFIER --
+        function togglePass() {
+            const input = document.getElementById('password');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        function openModal() { document.getElementById('modal-error').style.display = 'flex'; }
+        function closeModal() { document.getElementById('modal-error').style.display = 'none'; }
+
+        async function handleLogin() {
+¬† ¬† ¬† ¬† ¬† ¬† const phone = document.getElementById('phone').value;
+            // -- DEBUT DU BLOCK √Ä MODIFIER --
+            const password = document.getElementById('password').value;
+            const msgDiv = document.getElementById('message');
+            const btn = document.getElementById('btn-login');
+            const btnText = document.getElementById('btn-text');
+            const loader = document.getElementById('loader');
+
+            if(!phone || !password) {
+                msgDiv.style.color = "orange";
+                msgDiv.innerText = "Remplissez tous les champs";
+                return;
+            }
+
+            // √âtat de chargement
+            btn.disabled = true;
+            btnText.innerText = "Veuillez patienter...";
+            loader.style.display = "inline-block";
+            msgDiv.innerText = "";
+
+            try {
+                const response = await fetch('https://bl-alliance-api.onrender.com/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone, password })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('user_id', result.session.user_id);
+                    localStorage.setItem('token', result.session.access_token);
+                    localStorage.setItem('is_paid', result.session.is_paid);
+
+                    msgDiv.style.color = "lightgreen";
+                    msgDiv.innerText = "Succ√®s ! Redirection...";
+                    setTimeout(() => { window.location.href = "dashboard.html"; }, 800);
+                } else {
+                    btn.disabled = false;
+                    btnText.innerText = "Se connecter";
+                    loader.style.display = "none";
+                    openModal(); 
+                }
+            } catch (error) {
+                btn.disabled = false;
+                btnText.innerText = "Se connecter";
+                loader.style.display = "none";
+                msgDiv.style.color = "#ff4444";
+                msgDiv.innerText = "Erreur de connexion au serveur";
+            }
+            // -- FIN DU BLOCK √Ä MODIFIER --
+¬† ¬† ¬† ¬† }
+    </script>
 </body>
 </html>
-
