@@ -1,309 +1,154 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-    <title>Admin - Signalements</title>
-    <script type="text/javascript" src="admin_guard.js"></script>
-    <style>
-        /*body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f9; }
-        nav { padding: 15px; background: white; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; }
-        .search-section { padding: 20px; background: #2c3e50; color: white; }
-        table { width: 100%; border-collapse: collapse; background: white; margin-top: 10px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #f8f9fa; color: #333; }
-        .btn-view { background: #3498db; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
-        .loading { text-align: center; padding: 20px; display: none; }*/
-
-
-/* --- CONFIGURATION & VARIABLE --- */
-:root {
-    --bg-dark: #1a1a1a;
-    --bg-card: #000000;
-    --primary-red: #d32f2f;
-    --accent-blue: #3b82f6;
-    --text-main: #ffffff;
-    --text-dim: #b0b0b0;
-    --border: #333333;
-}
-
-/* --- RESET & SCROLLBAR --- */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
-
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-dark); }
-::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: var(--primary-red); }
-
-body { background: var(--bg-dark); color: var(--text-main); line-height: 1.6; }
-
-/* --- NAVIGATION & LOGO --- */
-nav {
-    background: var(--bg-card) !important;
-    padding: 12px 20px !important;
-    border-bottom: 2px solid var(--primary-red) !important;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-nav a { color: var(--text-main) !important; text-decoration: none; font-weight: bold; font-size: 0.9rem; }
-
-nav::after {
-    content: "";
-    width: 60px;
-    height: 40px;
-    background: url('logo2.png') no-repeat center;
-    background-size: contain;
-}
-
-nav button {
-    background: #222;
-    color: white;
-    border: 1px solid #444;
-    padding: 7px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.8rem;
-}
-
-/* --- SECTION RECHERCHE --- */
-.search-section {
-    background: #000 !important;
-    padding: 25px 15px !important;
-    border-bottom: 1px solid var(--border);
-}
-
-.search-section h2 {
-    font-size: 1.3rem;
-    margin-bottom: 15px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--primary-red);
-}
-
-.search-section > div { display: flex; flex-direction: column; gap: 12px; }
-
-.search-section select, .search-section input {
-    padding: 12px !important;
-    background: #111 !important;
-    border: 1px solid var(--border) !important;
-    color: white !important;
-    border-radius: 5px;
-    outline: none;
-}
-
-.search-section button {
-    background: var(--accent-blue) !important;
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-/* --- TABLEAU RESPONSIVE (MOBILE FIRST) --- */
-table { width: 100%; border-collapse: collapse; margin-top: 0; }
-
-/* Mobile : On cache l'en-t√™te classique */
-thead { display: none; }
-
-/* Chaque ligne devient une carte */
-tbody tr {
-    display: block;
-    background: var(--bg-card);
-    margin: 15px;
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-tbody td {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #1a1a1a;
-    font-size: 0.9rem;
-    text-align: right;
-}
-
-tbody td:last-child { border-bottom: none; }
-
-/* Injection des titres de colonnes sur mobile */
-tbody td::before {
-    content: attr(data-label);
-    font-weight: bold;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    font-size: 0.7rem;
-    text-align: left;
-    flex: 1;
-}
-
-.btn-view {
-    width: 50%;
-    background: transparent !important;
-    border: 1px solid var(--accent-blue) !important;
-    color: var(--accent-blue) !important;
-    padding: 8px !important;
-    border-radius: 4px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-/* --- GESTION DES IMAGES (AVATARS) --- */
-.user-img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover !important; /* No stretch */
-    border: 2px solid var(--border);
-}
-
-/* --- ETAT DE CHARGEMENT --- */
-.loading { color: var(--accent-blue); font-weight: bold; letter-spacing: 2px; padding: 40px; }
-
-/* --- RESPONSIVIT√â (TABLETTE & PC) --- */
-@media (min-width: 768px) {
-    .search-section { padding: 30px 50px !important; }
-    .search-section > div { flex-direction: row; }
-    .search-section select { width: 180px; }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erreur 403 - Page BloquÈe</title>
     
-    thead { display: table-header-group; }
-    thead th {
-        background: #080808;
-        color: var(--text-dim);
-        padding: 15px;
-        text-align: left;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        border-bottom: 2px solid var(--border);
-    }
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
-    tbody tr { display: table-row; background: transparent; }
-    tbody tr:hover { background: rgba(255,255,255,0.02); }
+    <style>
+        /* RÈinitialisation de base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    tbody td {
-        display: table-cell;
-        padding: 15px !important;
-        border-bottom: 1px solid var(--border);
-        text-align: left;
-    }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0d0d0d; /* Fond noir profond */
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            perspective: 1000px; /* NÈcessaire pour l'effet 3D */
+        }
 
-    tbody td::before { display: none; } /* On cache les labels mobiles */
+        .container {
+            text-align: center;
+            padding: 40px;
+            transition: transform 0.1s ease-out; /* FluiditÈ du mouvement de la souris */
+            transform-style: preserve-3d;
+        }
 
-    .btn-view { width: auto; padding: 6px 15px !important; }
-}
+        /* Titre 403 avec lueur rouge */
+        h1 {
+            font-size: 10rem;
+            font-weight: 700;
+            color: #ff2a2a; /* Rouge vif */
+            margin-bottom: -10px;
+            text-shadow: 0px 0px 20px rgba(255, 42, 42, 0.6), 
+                         0px 0px 40px rgba(255, 42, 42, 0.3);
+            transform: translateZ(50px); /* Fait ressortir le texte en 3D */
+        }
 
-@media (min-width: 1024px) {
-    table { max-width: 1200px; margin: 20px auto; }
-}
+        /* Sous-titre blanc */
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            transform: translateZ(30px);
+        }
 
+        /* Texte descriptif */
+        p {
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: #a0a0a0; /* Gris clair pour contraster avec le blanc pur */
+            margin-bottom: 40px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+            transform: translateZ(20px);
+        }
+
+        /* Bouton rouge ÈlÈgant */
+        .btn {
+            display: inline-block;
+            padding: 15px 35px;
+            font-size: 1rem;
+            color: #ffffff;
+            text-decoration: none;
+            border: 2px solid #ff2a2a;
+            border-radius: 50px;
+            background: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            transform: translateZ(40px);
+        }
+
+        .btn:hover {
+            background-color: #ff2a2a;
+            color: #ffffff;
+            box-shadow: 0 0 20px rgba(255, 42, 42, 0.5);
+            transform: translateZ(40px) scale(1.05); /* Effet de grossissement au survol */
+        }
+        
+        /* Petites particules en arriËre-plan (Optionnel) */
+        .background-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle, rgba(255,42,42,0.05) 0%, rgba(13,13,13,0) 70%);
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Responsive design pour mobile */
+        @media (max-width: 768px) {
+            h1 { font-size: 6rem; }
+            h2 { font-size: 1.8rem; }
+            p { font-size: 0.9rem; padding: 0 20px; }
+        }
     </style>
 </head>
 <body>
 
-    <nav>
-        <a href="bl-admin-landing.html" style="text-decoration:none; color:#3498db; font-weight:bold;">‚¨Ö Retour</a>
-        <button onclick="location.reload()">üîÑ Rafra√Æchir</button>
-    </nav>
+    <div class="background-glow"></div>
 
-    <div class="search-section">
-        <h2>Gestion des Signalements</h2>
-        <div style="display:flex; gap:10px;">
-            <select id="searchType" style="padding:10px;">
-                <option value="name">Nom</option>
-                <option value="id">ID</option>
-            </select>
-            <input type="text" id="searchInput" placeholder="Rechercher un utilisateur impliqu√©..." style="flex:1; padding:10px;">
-            <button onclick="performSearch()" style="padding:10px 20px;">üîç Chercher</button>
-        </div>
+    <div class="container" id="parallax-container">
+        <h1>403</h1>
+        <h2>Oups ! Page bloquÈe.</h2>
+        <!-- <p>Il semblerait que vous ayez naviguÈ hors des sentiers battus. La page que vous recherchez n'existe pas ou a ÈtÈ dÈplacÈe.</p> -->
+        <p>Cette page n'existe pas ou elle est momentanÈment bloquÈe</p>
+        <a style="display: none;" href="/" class="btn">Retour ‡ l'accueil</a>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Auteur du signalement</th>
-                <th>Personne signal√©e</th>
-                <th>Raison</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="reportsTableBody"></tbody>
-    </table>
-
-    <div id="loadingIndicator" class="loading">Chargement ...</div>
-
     <script>
-        let currentPage = 0;
-        let isFetching = false;
-        let hasMore = true;
-
-        window.onload = () => fetchReports();
-
-        async function fetchReports(reset = false) {
-            if (isFetching || (!hasMore && !reset)) return;
-            isFetching = true;
-            if (reset) { currentPage = 0; hasMore = true; document.getElementById('reportsTableBody').innerHTML = ""; }
+        // Effet de parallaxe au mouvement de la souris
+        document.addEventListener("mousemove", function(e) {
+            const container = document.getElementById("parallax-container");
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 40; // SensibilitÈ horizontale
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 40; // SensibilitÈ verticale
             
-            document.getElementById('loadingIndicator').style.display = 'block';
+            // Applique la rotation pour crÈer l'effet 3D
+            container.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+
+        // Remet le bloc ‡ plat quand la souris quitte l'Ècran
+        document.addEventListener("mouseleave", function() {
+            const container = document.getElementById("parallax-container");
+            container.style.transition = "transform 0.5s ease";
+            container.style.transform = `rotateY(0deg) rotateX(0deg)`;
             
-            const q = document.getElementById('searchInput').value;
-            const type = document.getElementById('searchType').value;
-
-            try {
-                const res = await fetch(`https://bl-alliance-api.onrender.com/admin/get_reports?page=${currentPage}&query=${q}&search_type=${type}`);
-                const data = await res.json();
-                
-                renderTable(data.reports);
-                hasMore = data.has_more;
-                currentPage++;
-            } catch (e) { console.error(e); }
-            finally {
-                isFetching = false;
-                document.getElementById('loadingIndicator').style.display = 'none';
-            }
-        }
-
-        function renderTable(reports) {
-            const tbody = document.getElementById('reportsTableBody');
-            reports.forEach(r => {
-                // const row = `<tr>
-                //     <td>${new Date(r.created_at).toLocaleDateString()}</td>
-                //     <td><b>${r.reporter_name}</b></td>
-                //     <td><b>${r.reported_name}</b></td>
-                //     <td>${r.reason}</td>
-                //     <td><button class="btn-view" onclick="location.href='admin-reports-details.html?id=${r.id}'">Voir d√©tails</button></td>
-                // </tr>`;
-
-                const row = `<tr>
-                    <td data-label="Date">${new Date(r.created_at).toLocaleDateString('fr-FR')}</td>
-                    <td data-label="Auteur"><b>${r.reporter_name}</b></td>
-                    <td data-label="Signal√©"><b>${r.reported_name}</b></td>
-                    <td data-label="Raison">${r.reason}</td>
-                    <td data-label="Action"><button class="btn-view" onclick="location.href='admin-reports-details.html?id=${r.id}'">Voir d√©tails</button></td>
-                </tr>`;
-
-                tbody.insertAdjacentHTML('beforeend', row);
-            });
-        }
-
-        function performSearch() { fetchReports(true); }
-
-        window.onscroll = () => {
-            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50) {
-                fetchReports();
-            }
-        };
+            // Restaure la transition rapide aprËs l'animation de retour
+            setTimeout(() => {
+                container.style.transition = "transform 0.1s ease-out";
+            }, 500);
+        });
     </script>
+
 </body>
 </html>
 
